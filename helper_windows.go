@@ -10,14 +10,6 @@ import (
 	"syscall"
 )
 
-func (c *opt) sysfd() (syscall.Handle, error) {
-	switch p := c.Conn.(type) {
-	case *net.TCPConn:
-		return sysfd(p)
-	}
-	return syscall.InvalidHandle, errInvalidConnType
-}
-
 func sysfd(c net.Conn) (syscall.Handle, error) {
 	cv := reflect.ValueOf(c)
 	switch ce := cv.Elem(); ce.Kind() {

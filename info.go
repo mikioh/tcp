@@ -4,6 +4,8 @@
 
 package tcp
 
+import "time"
+
 // A State represents a state of TCP connection.
 type State int
 
@@ -47,7 +49,26 @@ func (st State) String() string {
 
 // An Info represents a TCP information.
 type Info struct {
-	State       State    // connection state
-	Options     []Option // requesting options
-	PeerOptions []Option // requested options
+	State            State              // connection state
+	Options          []Option           // requesting options
+	PeerOptions      []Option           // options requested from peer
+	SenderMSS        MaxSegSize         // maximum segment size for sender
+	ReceiverMSS      MaxSegSize         // maximum sengment size for receiver
+	LastDataSent     time.Duration      // since last data sent [linux only]
+	LastDataReceived time.Duration      // since last data received
+	LastAckReceived  time.Duration      // since last ack received [linux only]
+	CC               *CongestionControl // congestion control information
+	SysInfo          *SysInfo           // platform-specific information
+}
+
+// A CongestionControl represents a TCP congestion control
+// information.
+type CongestionControl struct {
+	RTO                 time.Duration // retransmission timeout
+	ATO                 time.Duration // delayed acknowledgement timeout [linux only]
+	RTT                 time.Duration // round trip time
+	RTTStdDev           time.Duration // standard deviation of round trip time
+	SenderSSThreshold   uint          // slow start threshold for sender
+	ReceiverSSThreshold uint          // slow start threshold for receiver [linux only]
+	SenderWindow        uint          // congestion window for sender
 }

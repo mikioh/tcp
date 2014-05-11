@@ -4,8 +4,13 @@
 
 package tcp
 
-type sysSockoptLen uint32
-
-const (
-	ianaProtocolTCP = 6 // Transmission Control
+import (
+	"fmt"
+	"os"
+	"syscall"
+	"unsafe"
 )
+
+func (opt *opt) info() (*Info, error) {
+	return nil, errOpNoSupport
+}

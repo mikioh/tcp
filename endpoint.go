@@ -2,16 +2,11 @@
 // Use of this source code is governed by a BSD-style
 // license that can be found in the LICENSE file.
 
-// Package tcp implements TCP-level socket options.
-//
-// The package provides TCP-level socket options that allow
-// manipulation of TCP connection facilities.
 package tcp
 
 import (
 	"io"
 	"net"
-	"sync"
 	"syscall"
 	"time"
 )
@@ -26,11 +21,13 @@ import (
 //	https://tools.ietf.org/html/rfc4022
 // RFC 6994  Shared Use of Experimental TCP Options
 //	http://tools.ietf.org/html/rfc6994
+// 1323bis   TCP Extensions for High Performance
+//	http://tools.ietf.org/html/draft-ietf-tcpm-1323bis-21
 
 var _ net.Conn = &Conn{}
 
 // A Conn represents a network endpoint that uses TCP connection.
-// It allows to set non-portable, platfrom-dependent  TCP-level socket
+// It allows to set non-portable, platform-dependent TCP-level socket
 // options.
 type Conn struct {
 	opt
@@ -38,12 +35,6 @@ type Conn struct {
 
 type opt struct {
 	*net.TCPConn
-	flowctl struct { // flow control
-		sync.RWMutex
-		corking bool // corking or no-pushing
-	}
-	congctl struct { // congestion control
-	}
 }
 
 func (c *opt) ok() bool { return c != nil && c.TCPConn != nil }
@@ -155,13 +146,12 @@ func (c *Conn) SetKeepAlive(on bool) error {
 	return c.TCPConn.SetKeepAlive(on)
 }
 
-// SetKeepAlivePeriod implemets the SetKeepAlivePeriod method of
-// net.TCPConn.
-func (c *Conn) SetKeepAlivePeriod(d time.Duration) error {
+// SetKeepAliveProbes sets the maximum number of keep alive probes.
+func (c *Conn) SetKeepAliveProbes(max int) error {
 	if !c.opt.ok() {
 		return syscall.EINVAL
 	}
-	return c.TCPConn.SetKeepAlivePeriod(d)
+	return c.opt.setKeepAliveProbes(max)
 }
 
 // SetReadBuffer implements the SetReadBuffer method of net.TCPConn.
@@ -188,38 +178,30 @@ func (c *Conn) SetNoDelay(on bool) error {
 	return c.TCPConn.SetNoDelay(on)
 }
 
-// SetBufferedWrite enables TCP_CORK option on Linux, TCP_NOPUSH
-// option on FreeBSD.
-func (c *Conn) SetBufferedWrite() error {
+// Cork enables TCP_CORK option on Linux, TCP_NOPUSH option on Darwin,
+// DragonFlyBSD, FreeBSD and OpenBSD.
+func (c *Conn) Cork() error {
 	if !c.opt.ok() {
 		return syscall.EINVAL
 	}
-	c.opt.flowctl.Lock()
-	defer c.opt.flowctl.Unlock()
-	if c.opt.flowctl.corking {
-		return nil
-	}
-	if err := c.opt.setCorkedBuffer(true); err != nil {
+	if err := c.opt.setCork(true); err != nil {
 		return err
 	}
-	c.opt.flowctl.corking = true
 	return nil
 }
 
-// Flush disables TCP_CORK option on Linux, TCP_NOPUSH option on
-// FreeBSD.
-func (c *Conn) Flush() error {
+// Uncork disables TCP_CORK option on Linux, TCP_NOPUSH option on
+// Darwin, DragonFly BSD, FreeBSD and OpenBSD.
+func (c *Conn) Uncork() error {
 	if !c.opt.ok() {
 		return syscall.EINVAL
 	}
-	c.opt.flowctl.Lock()
-	c.opt.setCorkedBuffer(false)
-	c.opt.flowctl.corking = false
-	c.opt.flowctl.Unlock()
+	c.opt.setCork(false)
 	return nil
 }
 
-// Info returns connection on the connection.
+// Info returns an information of current connection. For now this
+// option is supported on FreeBSD and Linux.
 func (c *Conn) Info() (*Info, error) {
 	if !c.opt.ok() {
 		return nil, syscall.EINVAL

@@ -2,11 +2,15 @@
 // Use of this source code is governed by a BSD-style
 // license that can be found in the LICENSE file.
 
-// +build !freebsd,!linux
+// +build !darwin,!dragonfly,!freebsd,!linux,!netbsd,!openbsd,!solaris
 
 package tcp
 
-func (opt *opt) setCorkedBuffer(on bool) error {
+func (opt *opt) setKeepAliveProbes(max int) error {
+	return errOpNoSupport
+}
+
+func (opt *opt) setCork(on bool) error {
 	return errOpNoSupport
 }
 

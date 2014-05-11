@@ -18,9 +18,9 @@ func (opt *opt) setKeepAliveProbes(max int) error {
 }
 
 func (opt *opt) setCork(on bool) error {
-	fd, err := opt.sysfd()
-	if err != nil {
-		return err
-	}
-	return os.NewSyscallError("setsockopt", syscall.SetsockoptInt(fd, syscall.IPPROTO_TCP, syscall.TCP_CORK, boolint(on)))
+	return errOpNoSupport
+}
+
+func (opt *opt) info() (*Info, error) {
+	return nil, errOpNoSupport
 }

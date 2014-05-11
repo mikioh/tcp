@@ -2,6 +2,8 @@
 // Use of this source code is governed by a BSD-style
 // license that can be found in the LICENSE file.
 
+// +build go1.3
+
 package tcp
 
 import (
@@ -22,5 +24,9 @@ func (opt *opt) setCork(on bool) error {
 	if err != nil {
 		return err
 	}
-	return os.NewSyscallError("setsockopt", syscall.SetsockoptInt(fd, syscall.IPPROTO_TCP, syscall.TCP_CORK, boolint(on)))
+	return os.NewSyscallError("setsockopt", syscall.SetsockoptInt(fd, syscall.IPPROTO_TCP, syscall.TCP_NOPUSH, boolint(on)))
+}
+
+func (opt *opt) info() (*Info, error) {
+	return nil, errOpNoSupport
 }
