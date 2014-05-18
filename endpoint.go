@@ -200,8 +200,8 @@ func (c *Conn) Uncork() error {
 	return nil
 }
 
-// Info returns an information of current connection. For now this
-// option is supported on FreeBSD and Linux.
+// Info returns information of current connection. For now this option
+// is supported on FreeBSD and Linux.
 func (c *Conn) Info() (*Info, error) {
 	if !c.opt.ok() {
 		return nil, syscall.EINVAL

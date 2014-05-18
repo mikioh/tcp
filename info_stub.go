@@ -6,6 +6,6 @@
 
 package tcp
 
-// A SysInfo represents a platform-specific information.
+// A SysInfo represents platform-specific information.
 type SysInfo struct {
 }

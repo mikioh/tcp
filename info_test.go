@@ -2,16 +2,16 @@
 // Use of this source code is governed by a BSD-style
 // license that can be found in the LICENSE file.
 
-// +build freebsd linux,amd64 linux,arm
-
 package tcp_test
 
 import (
 	"crypto/tls"
+	"encoding/json"
 	"io"
 	"io/ioutil"
 	"net"
 	"net/http"
+	"runtime"
 	"testing"
 	"time"
 
@@ -25,6 +25,13 @@ var (
 )
 
 func TestInfoWithGoogle(t *testing.T) {
+	switch {
+	case runtime.GOOS == "freebsd":
+	case runtime.GOOS == "linux" && runtime.GOARCH == "amd64" || runtime.GOOS == "linux" && runtime.GOARCH == "arm":
+	default:
+		t.Skipf("not supported on %s/%s", runtime.GOOS, runtime.GOARCH)
+	}
+
 	tt = t
 	tr := &http.Transport{
 		Dial:            dialWithTCPConnMonitor,
@@ -57,30 +64,18 @@ func dialWithTCPConnMonitor(network, address string) (net.Conn, error) {
 }
 
 func tcpConnMonitor(c *tcp.Conn) {
-	dir := func(i int) string {
-		if i == 0 {
-			return "requesting"
-		}
-		return "requested"
-	}
 	tt.Logf("%v -> %v", c.LocalAddr(), c.RemoteAddr())
 	for {
 		ti, err := c.Info()
 		if err != nil {
 			break
 		}
-		tt.Logf("---- State: %v ----", ti.State)
-		for i, opts := range [][]tcp.Option{ti.Options, ti.PeerOptions} {
-			for _, opt := range opts {
-				tt.Logf("%v %v: %v", dir(i), opt.Kind(), opt)
-			}
+		text, err := json.Marshal(ti)
+		if err != nil {
+			tt.Error(err)
+			return
 		}
-		tt.Logf("MSS: sender: %v, receiver: %v", ti.SenderMSS, ti.ReceiverMSS)
-		tt.Logf("Time: last data sent: %v, last data received: %v, last ack received: %v", ti.LastDataSent, ti.LastDataReceived, ti.LastAckReceived)
-		if ti.CC != nil {
-			tt.Logf("CC: rto: %v, ato: %v, rtt: %v, rtt stdev: %v, sender ssthresh: %v, receiver ssthresh: %v, window: %v", ti.CC.RTO, ti.CC.ATO, ti.CC.RTT, ti.CC.RTTStdDev, ti.CC.SenderSSThreshold, ti.CC.ReceiverSSThreshold, ti.CC.SenderWindow)
-		}
-		tt.Logf("SysInfo: %+v", ti.SysInfo)
-		time.Sleep(30 * time.Millisecond)
+		tt.Log(string(text))
+		time.Sleep(20 * time.Millisecond)
 	}
 }

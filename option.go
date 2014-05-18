@@ -15,10 +15,10 @@ const (
 )
 
 var optionKinds = map[OptionKind]string{
-	KindMaxSegSize:    "maximum segment size",
-	KindWindowScale:   "window scale",
-	KindSackPermitted: "sack permitted",
-	KindTimestamps:    "timestamps",
+	KindMaxSegSize:    "mss",
+	KindWindowScale:   "wscale",
+	KindSackPermitted: "sack perm",
+	KindTimestamps:    "tmstamps",
 }
 
 func (k OptionKind) String() string {

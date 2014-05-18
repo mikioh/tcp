@@ -53,5 +53,9 @@
 //			if err != nil {
 //				// error handling
 //			}
-//			fmt.Println("rtt: %v, rtt stddev: %v", ti.CC.RTT, ti.CC.RTTStdDev)
+//			text, err := json.Marshal(ti)
+//			if err != nil {
+//				// error handling
+//			}
+//			fmt.Println(text)
 package tcp

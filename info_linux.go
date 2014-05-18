@@ -25,12 +25,12 @@ func (st CAState) String() string {
 
 // A SysInfo represents platform-specific information.
 type SysInfo struct {
-	AdvertisedMSS  MaxSegSize // advertised maximum segment size
-	ReceiverWindow uint       // advertised receiver window in bytes
-	CAState        CAState    // state of congestion avoidance
-	UnackSegs      uint       // # of unack'd segments in transmission queue
-	SackSegs       uint       // # of sack'd segments in tranmission queue
-	LostSegs       uint       // # of lost segments in transmission queue
-	RetransSegs    uint       // # of retransmitted segments in transmission queue
-	ForwardAckSegs uint       // # of forward ack'd segments in transmission queue
+	AdvertisedMSS  MaxSegSize `json:"adv mss"'`     // advertised maximum segment size
+	ReceiverWindow uint       `json:"rcv wnd"`      // advertised receiver window in bytes
+	CAState        CAState    `json:"ca state"`     // state of congestion avoidance
+	UnackSegs      uint       `json:"unack segs"`   // # of unack'd segments in transmission queue
+	SackSegs       uint       `json:"sack segs"`    // # of sack'd segments in tranmission queue
+	LostSegs       uint       `json:"lost segs"`    // # of lost segments in transmission queue
+	RetransSegs    uint       `json:"retrans segs"` // # of retransmitting segments in transmission queue
+	ForwardAckSegs uint       `json:"fack segs"`    // # of forward ack'd segments in transmission queue
 }
