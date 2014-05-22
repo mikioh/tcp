@@ -9,7 +9,7 @@ import (
 	"syscall"
 )
 
-func (opt *opt) setKeepAliveProbes(max int) error {
+func (opt *opt) setMaxKeepAliveProbes(max int) error {
 	fd, err := opt.sysfd()
 	if err != nil {
 		return err

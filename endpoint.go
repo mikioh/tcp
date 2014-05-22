@@ -146,12 +146,15 @@ func (c *Conn) SetKeepAlive(on bool) error {
 	return c.TCPConn.SetKeepAlive(on)
 }
 
-// SetKeepAliveProbes sets the maximum number of keep alive probes.
-func (c *Conn) SetKeepAliveProbes(max int) error {
+// SetMaxKeepAliveProbes sets the maximum number of keep alive probes.
+func (c *Conn) SetMaxKeepAliveProbes(probes int) error {
 	if !c.opt.ok() {
 		return syscall.EINVAL
 	}
-	return c.opt.setKeepAliveProbes(max)
+	if probes < 1 {
+		return syscall.EINVAL
+	}
+	return c.opt.setMaxKeepAliveProbes(probes)
 }
 
 // SetReadBuffer implements the SetReadBuffer method of net.TCPConn.

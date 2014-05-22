@@ -6,7 +6,7 @@
 
 package tcp
 
-func (opt *opt) setKeepAliveProbes(max int) error {
+func (opt *opt) setMaxKeepAliveProbes(max int) error {
 	return errOpNoSupport
 }
 
