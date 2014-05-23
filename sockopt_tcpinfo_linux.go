@@ -53,14 +53,16 @@ func parseTCPInfo(sti *syscall.TCPInfo) *Info {
 		SenderWindow:        uint(sti.Snd_cwnd),
 	}
 	ti.SysInfo = &SysInfo{
-		AdvertisedMSS:  MaxSegSize(sti.Advmss),
-		ReceiverWindow: uint(sti.Rcv_space),
-		CAState:        CAState(sti.Ca_state),
-		UnackSegs:      uint(sti.Unacked),
-		SackSegs:       uint(sti.Sacked),
-		LostSegs:       uint(sti.Lost),
-		RetransSegs:    uint(sti.Retrans),
-		ForwardAckSegs: uint(sti.Fackets),
+		PathMTU:         uint(sti.Pmtu),
+		AdvertisedMSS:   MaxSegSize(sti.Advmss),
+		ReceiverWindow:  uint(sti.Rcv_space),
+		CAState:         CAState(sti.Ca_state),
+		KeepAliveProbes: uint(sti.Probes),
+		UnackSegs:       uint(sti.Unacked),
+		SackSegs:        uint(sti.Sacked),
+		LostSegs:        uint(sti.Lost),
+		RetransSegs:     uint(sti.Retrans),
+		ForwardAckSegs:  uint(sti.Fackets),
 	}
 	return ti
 }

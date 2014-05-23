@@ -11,7 +11,7 @@ type SysInfo struct {
 	NextEgressSeq     uint `json:"egress seq"`      // next egress seq. number
 	NextIngressSeq    uint `json:"ingress seq"`     // next ingress seq. number
 	RetransSegs       uint `json:"retrans segs"`    // # of retransmit segments sent
-	OutOfOrderSegs    uint `json:"ooo segs"`        // #of out-of-order segments received
+	OutOfOrderSegs    uint `json:"ooo segs"`        // # of out-of-order segments received
 	ZeroWindowUpdates uint `json:"zerownd updates"` // # of zero-window updates sent
 	Offloading        bool `json:"offloading"`      // TCP offload processing
 }

@@ -58,14 +58,14 @@ type Info struct {
 	Options          []Option           `json:"opts"`           // requesting options
 	PeerOptions      []Option           `json:"peer opts"`      // options requested from peer
 	RTT              time.Duration      `json:"rtt"`            // round-trip time
-	RTTVar           time.Duration      `json:"rttvar"`         // round-trip time variation
+	RTTVar           time.Duration      `json:"rtt var"`        // round-trip time variation
 	RTO              time.Duration      `json:"rto"`            // retransmission timeout
 	ATO              time.Duration      `json:"ato"`            // delayed acknowledgement timeout [linux only]
 	LastDataSent     time.Duration      `json:"last data sent"` // since last data sent [linux only]
 	LastDataReceived time.Duration      `json:"last data rcvd"` // since last data received
 	LastAckReceived  time.Duration      `json:"last ack rcvd"`  // since last ack received [linux only]
 	CC               *CongestionControl `json:"cc"`             // congestion control information
-	SysInfo          *SysInfo           `json:"sysinfo"`        // platform-specific information
+	SysInfo          *SysInfo           `json:"sys info"`       // platform-specific information
 }
 
 // MarshalJSON implements the MarshalJSON method of json.Marshaler
@@ -88,7 +88,7 @@ func (info *Info) MarshalJSON() ([]byte, error) {
 		raw["peer opts"] = opts
 	}
 	raw["rtt"] = info.RTT
-	raw["rttvar"] = info.RTTVar
+	raw["rtt var"] = info.RTTVar
 	raw["rto"] = info.RTO
 	raw["ato"] = info.ATO
 	raw["last data sent"] = info.LastDataSent
@@ -98,7 +98,7 @@ func (info *Info) MarshalJSON() ([]byte, error) {
 		raw["cc"] = info.CC
 	}
 	if info.SysInfo != nil {
-		raw["sysinfo"] = info.SysInfo
+		raw["sys info"] = info.SysInfo
 	}
 	return json.Marshal(&raw)
 }
