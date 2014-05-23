@@ -19,6 +19,10 @@ import (
 //	http://tools.ietf.org/html/rfc2780
 // RFC 4022  Management Information Base for the Transmission Control Protocol (TCP)
 //	https://tools.ietf.org/html/rfc4022
+// RFC 5681 TCP Congestion Control
+//	http://tools.ietf.org/html/rfc5681
+// RFC 6298 Computing TCP's Retransmission Timer
+//	http://tools.ietf.org/html/rfc6298
 // RFC 6994  Shared Use of Experimental TCP Options
 //	http://tools.ietf.org/html/rfc6994
 // 1323bis   TCP Extensions for High Performance

@@ -57,8 +57,10 @@ type Info struct {
 	State            State              `json:"state"`          // connection state
 	Options          []Option           `json:"opts"`           // requesting options
 	PeerOptions      []Option           `json:"peer opts"`      // options requested from peer
-	SenderMSS        MaxSegSize         `json:"snd mss"`        // maximum segment size for sender
-	ReceiverMSS      MaxSegSize         `json:"rcv mss"`        // maximum sengment size for receiver
+	RTT              time.Duration      `json:"rtt"`            // round-trip time
+	RTTVar           time.Duration      `json:"rttvar"`         // round-trip time variation
+	RTO              time.Duration      `json:"rto"`            // retransmission timeout
+	ATO              time.Duration      `json:"ato"`            // delayed acknowledgement timeout [linux only]
 	LastDataSent     time.Duration      `json:"last data sent"` // since last data sent [linux only]
 	LastDataReceived time.Duration      `json:"last data rcvd"` // since last data received
 	LastAckReceived  time.Duration      `json:"last ack rcvd"`  // since last ack received [linux only]
@@ -85,8 +87,10 @@ func (info *Info) MarshalJSON() ([]byte, error) {
 		}
 		raw["peer opts"] = opts
 	}
-	raw["snd mss"] = info.SenderMSS
-	raw["rcv mss"] = info.ReceiverMSS
+	raw["rtt"] = info.RTT
+	raw["rttvar"] = info.RTTVar
+	raw["rto"] = info.RTO
+	raw["ato"] = info.ATO
 	raw["last data sent"] = info.LastDataSent
 	raw["last data rcvd"] = info.LastDataReceived
 	raw["last ack rcvd"] = info.LastAckReceived
@@ -101,11 +105,9 @@ func (info *Info) MarshalJSON() ([]byte, error) {
 
 // A CongestionControl represents TCP congestion control information.
 type CongestionControl struct {
-	RTO                 time.Duration `json:"rto"`          // retransmission timeout
-	ATO                 time.Duration `json:"ato"`          // delayed acknowledgement timeout [linux only]
-	RTT                 time.Duration `json:"rtt"`          // round trip time
-	RTTStdDev           time.Duration `json:"rtt stddev"`   // standard deviation of round trip time
-	SenderSSThreshold   uint          `json:"snd ssthresh"` // slow start threshold for sender
-	ReceiverSSThreshold uint          `json:"rcv ssthresh"` // slow start threshold for receiver [linux only]
-	SenderWindow        uint          `json:"cwnd"`         // congestion window for sender
+	SenderMSS           MaxSegSize `json:"snd mss"`      // maximum segment size for sender
+	ReceiverMSS         MaxSegSize `json:"rcv mss"`      // maximum sengment size for receiver
+	SenderSSThreshold   uint       `json:"snd ssthresh"` // slow start threshold for sender
+	ReceiverSSThreshold uint       `json:"rcv ssthresh"` // slow start threshold for receiver [linux only]
+	SenderWindow        uint       `json:"cwnd"`         // congestion window for sender
 }

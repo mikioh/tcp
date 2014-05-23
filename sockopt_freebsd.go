@@ -52,16 +52,16 @@ func parseTCPInfo(sti *sysTCPInfo) *Info {
 		ti.Options = append(ti.Options, Timestamps(true))
 		ti.PeerOptions = append(ti.PeerOptions, Timestamps(true))
 	}
-	ti.SenderMSS = MaxSegSize(sti.Snd_mss)
-	ti.ReceiverMSS = MaxSegSize(sti.Rcv_mss)
+	ti.RTT = time.Duration(sti.Rtt) * time.Microsecond
+	ti.RTTVar = time.Duration(sti.Rttvar) * time.Microsecond
+	ti.RTO = time.Duration(sti.Rto) * time.Microsecond
+	ti.ATO = time.Duration(sti.X__tcpi_ato) * time.Microsecond
 	ti.LastDataSent = time.Duration(sti.X__tcpi_last_data_sent) * time.Microsecond
 	ti.LastDataReceived = time.Duration(sti.Last_data_recv) * time.Microsecond
 	ti.LastAckReceived = time.Duration(sti.X__tcpi_last_ack_recv) * time.Microsecond
 	ti.CC = &CongestionControl{
-		RTO:                 time.Duration(sti.Rto) * time.Microsecond,
-		ATO:                 time.Duration(sti.X__tcpi_ato) * time.Microsecond,
-		RTT:                 time.Duration(sti.Rtt) * time.Microsecond,
-		RTTStdDev:           time.Duration(sti.Rttvar) * time.Microsecond,
+		SenderMSS:           MaxSegSize(sti.Snd_mss),
+		ReceiverMSS:         MaxSegSize(sti.Rcv_mss),
 		SenderSSThreshold:   uint(sti.Snd_ssthresh),
 		ReceiverSSThreshold: uint(sti.X__tcpi_rcv_ssthresh),
 		SenderWindow:        uint(sti.Snd_cwnd),
