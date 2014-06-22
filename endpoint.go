@@ -150,6 +150,15 @@ func (c *Conn) SetKeepAlive(on bool) error {
 	return c.TCPConn.SetKeepAlive(on)
 }
 
+// SetKeepAlivePeriod implemets the SetKeepAlivePeriod method of
+// net.TCPConn.
+func (c *Conn) SetKeepAlivePeriod(d time.Duration) error {
+	if !c.opt.ok() {
+		return syscall.EINVAL
+	}
+	return c.TCPConn.SetKeepAlivePeriod(d)
+}
+
 // SetMaxKeepAliveProbes sets the maximum number of keep alive probes.
 func (c *Conn) SetMaxKeepAliveProbes(probes int) error {
 	if !c.opt.ok() {
