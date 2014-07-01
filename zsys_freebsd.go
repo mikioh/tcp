@@ -1,19 +1,17 @@
 // Created by cgo -godefs - DO NOT EDIT
-// cgo -godefs sys_freebsd.go
+// cgo -godefs defs_freebsd.go
 
 package tcp
 
 const (
-	sysSockoptTCPInfo = 0x20
-
 	sysTCPIOptTimestamps = 0x1
 	sysTCPIOptSack       = 0x2
 	sysTCPIOptWscale     = 0x4
 	sysTCPIOptECN        = 0x8
 	sysTCPIOptTOE        = 0x10
-)
 
-const sysSizeofTCPInfo = 0xec
+	sysSizeofTCPInfo = 0xec
+)
 
 type sysTCPInfo struct {
 	State                  uint8

@@ -14,7 +14,7 @@ func (opt *opt) setMaxKeepAliveProbes(max int) error {
 	if err != nil {
 		return err
 	}
-	return os.NewSyscallError("setsockopt", syscall.SetsockoptInt(fd, syscall.IPPROTO_TCP, syscall.TCP_KEEPCNT, max))
+	return os.NewSyscallError("setsockopt", syscall.SetsockoptInt(fd, ianaProtocolTCP, sysSockoptTCPKeepAliveCount, max))
 }
 
 func (opt *opt) setCork(on bool) error {
@@ -22,5 +22,5 @@ func (opt *opt) setCork(on bool) error {
 	if err != nil {
 		return err
 	}
-	return os.NewSyscallError("setsockopt", syscall.SetsockoptInt(fd, syscall.IPPROTO_TCP, syscall.TCP_CORK, boolint(on)))
+	return os.NewSyscallError("setsockopt", syscall.SetsockoptInt(fd, ianaProtocolTCP, sysSockoptTCPCork, boolint(on)))
 }

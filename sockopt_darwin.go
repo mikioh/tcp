@@ -18,7 +18,7 @@ func (opt *opt) setCork(on bool) error {
 	if err != nil {
 		return err
 	}
-	return os.NewSyscallError("setsockopt", syscall.SetsockoptInt(fd, syscall.IPPROTO_TCP, syscall.TCP_NOPUSH, boolint(on)))
+	return os.NewSyscallError("setsockopt", syscall.SetsockoptInt(fd, ianaProtocolTCP, sysSockoptTCPNoPush, boolint(on)))
 }
 
 func (opt *opt) info() (*Info, error) {

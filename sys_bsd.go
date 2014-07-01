@@ -2,10 +2,13 @@
 // Use of this source code is governed by a BSD-style
 // license that can be found in the LICENSE file.
 
+// +build freebsd dragonfly
+
 package tcp
 
 const (
-	sysSockoptTCPKeepAliveCount = 0x6
-	sysSockoptTCPCork           = 0x3
-	sysSockoptTCPInfo           = 0xb
+	sysGetsockopt = 118
+
+	sysSockoptTCPKeepAliveCount = 0x400
+	sysSockoptTCPNoPush         = 0x4
 )

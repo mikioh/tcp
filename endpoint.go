@@ -5,9 +5,9 @@
 package tcp
 
 import (
+	"errors"
 	"io"
 	"net"
-	"syscall"
 	"time"
 )
 
@@ -28,7 +28,11 @@ import (
 // 1323bis   TCP Extensions for High Performance
 //	http://tools.ietf.org/html/draft-ietf-tcpm-1323bis-21
 
-var _ net.Conn = &Conn{}
+var (
+	_ net.Conn = &Conn{}
+
+	errInvalidArgument = errors.New("invalid argument")
+)
 
 // A Conn represents a network endpoint that uses TCP connection.
 // It allows to set non-portable, platform-dependent TCP-level socket
@@ -46,7 +50,7 @@ func (c *opt) ok() bool { return c != nil && c.TCPConn != nil }
 // Read implements the Read method of net.Conn interface.
 func (c *Conn) Read(b []byte) (int, error) {
 	if !c.opt.ok() {
-		return 0, syscall.EINVAL
+		return 0, errInvalidArgument
 	}
 	return c.TCPConn.Read(b)
 }
@@ -54,7 +58,7 @@ func (c *Conn) Read(b []byte) (int, error) {
 // Write implements the Write method of net.Conn interface.
 func (c *Conn) Write(b []byte) (int, error) {
 	if !c.opt.ok() {
-		return 0, syscall.EINVAL
+		return 0, errInvalidArgument
 	}
 	return c.TCPConn.Write(b)
 }
@@ -79,7 +83,7 @@ func (c *Conn) RemoteAddr() net.Addr {
 // interface.
 func (c *Conn) SetDeadline(t time.Time) error {
 	if !c.opt.ok() {
-		return syscall.EINVAL
+		return errInvalidArgument
 	}
 	return c.TCPConn.SetDeadline(t)
 }
@@ -88,7 +92,7 @@ func (c *Conn) SetDeadline(t time.Time) error {
 // interface.
 func (c *Conn) SetReadDeadline(t time.Time) error {
 	if !c.opt.ok() {
-		return syscall.EINVAL
+		return errInvalidArgument
 	}
 	return c.TCPConn.SetReadDeadline(t)
 }
@@ -97,7 +101,7 @@ func (c *Conn) SetReadDeadline(t time.Time) error {
 // interface.
 func (c *Conn) SetWriteDeadline(t time.Time) error {
 	if !c.opt.ok() {
-		return syscall.EINVAL
+		return errInvalidArgument
 	}
 	return c.TCPConn.SetWriteDeadline(t)
 }
@@ -105,7 +109,7 @@ func (c *Conn) SetWriteDeadline(t time.Time) error {
 // Close implements the Close method of net.Conn interface.
 func (c *Conn) Close() error {
 	if !c.opt.ok() {
-		return syscall.EINVAL
+		return errInvalidArgument
 	}
 	return c.TCPConn.Close()
 }
@@ -113,7 +117,7 @@ func (c *Conn) Close() error {
 // ReadFrom implements the ReadFrom method of io.ReaderFrom interface.
 func (c *Conn) ReadFrom(r io.Reader) (int64, error) {
 	if !c.opt.ok() {
-		return 0, syscall.EINVAL
+		return 0, errInvalidArgument
 	}
 	return c.TCPConn.ReadFrom(r)
 }
@@ -121,7 +125,7 @@ func (c *Conn) ReadFrom(r io.Reader) (int64, error) {
 // CloseRead implemets the CloseRead method of net.TCPConn.
 func (c *Conn) CloseRead() error {
 	if !c.opt.ok() {
-		return syscall.EINVAL
+		return errInvalidArgument
 	}
 	return c.TCPConn.CloseRead()
 }
@@ -129,7 +133,7 @@ func (c *Conn) CloseRead() error {
 // CloseWrite implemets the CloseWrite method of net.TCPConn.
 func (c *Conn) CloseWrite() error {
 	if !c.opt.ok() {
-		return syscall.EINVAL
+		return errInvalidArgument
 	}
 	return c.TCPConn.CloseWrite()
 }
@@ -137,7 +141,7 @@ func (c *Conn) CloseWrite() error {
 // SetLinger implemets the SetLinger method of net.TCPConn.
 func (c *Conn) SetLinger(sec int) error {
 	if !c.opt.ok() {
-		return syscall.EINVAL
+		return errInvalidArgument
 	}
 	return c.TCPConn.SetLinger(sec)
 }
@@ -145,7 +149,7 @@ func (c *Conn) SetLinger(sec int) error {
 // SetKeepAlive implements the SetKeepAlive method of net.TCPConn.
 func (c *Conn) SetKeepAlive(on bool) error {
 	if !c.opt.ok() {
-		return syscall.EINVAL
+		return errInvalidArgument
 	}
 	return c.TCPConn.SetKeepAlive(on)
 }
@@ -154,7 +158,7 @@ func (c *Conn) SetKeepAlive(on bool) error {
 // net.TCPConn.
 func (c *Conn) SetKeepAlivePeriod(d time.Duration) error {
 	if !c.opt.ok() {
-		return syscall.EINVAL
+		return errInvalidArgument
 	}
 	return c.TCPConn.SetKeepAlivePeriod(d)
 }
@@ -162,10 +166,10 @@ func (c *Conn) SetKeepAlivePeriod(d time.Duration) error {
 // SetMaxKeepAliveProbes sets the maximum number of keep alive probes.
 func (c *Conn) SetMaxKeepAliveProbes(probes int) error {
 	if !c.opt.ok() {
-		return syscall.EINVAL
+		return errInvalidArgument
 	}
 	if probes < 1 {
-		return syscall.EINVAL
+		return errInvalidArgument
 	}
 	return c.opt.setMaxKeepAliveProbes(probes)
 }
@@ -173,7 +177,7 @@ func (c *Conn) SetMaxKeepAliveProbes(probes int) error {
 // SetReadBuffer implements the SetReadBuffer method of net.TCPConn.
 func (c *Conn) SetReadBuffer(bytes int) error {
 	if !c.opt.ok() {
-		return syscall.EINVAL
+		return errInvalidArgument
 	}
 	return c.TCPConn.SetReadBuffer(bytes)
 }
@@ -181,7 +185,7 @@ func (c *Conn) SetReadBuffer(bytes int) error {
 // SetWriteBuffer implements the SetWriteBuffer method of net.TCPConn.
 func (c *Conn) SetWriteBuffer(bytes int) error {
 	if !c.opt.ok() {
-		return syscall.EINVAL
+		return errInvalidArgument
 	}
 	return c.TCPConn.SetWriteBuffer(bytes)
 }
@@ -189,7 +193,7 @@ func (c *Conn) SetWriteBuffer(bytes int) error {
 // SetNoDelay implements the SetNoDealy method of net.TCPConn.
 func (c *Conn) SetNoDelay(on bool) error {
 	if !c.opt.ok() {
-		return syscall.EINVAL
+		return errInvalidArgument
 	}
 	return c.TCPConn.SetNoDelay(on)
 }
@@ -198,7 +202,7 @@ func (c *Conn) SetNoDelay(on bool) error {
 // DragonFlyBSD, FreeBSD and OpenBSD.
 func (c *Conn) Cork() error {
 	if !c.opt.ok() {
-		return syscall.EINVAL
+		return errInvalidArgument
 	}
 	if err := c.opt.setCork(true); err != nil {
 		return err
@@ -210,7 +214,7 @@ func (c *Conn) Cork() error {
 // Darwin, DragonFly BSD, FreeBSD and OpenBSD.
 func (c *Conn) Uncork() error {
 	if !c.opt.ok() {
-		return syscall.EINVAL
+		return errInvalidArgument
 	}
 	c.opt.setCork(false)
 	return nil
@@ -220,7 +224,7 @@ func (c *Conn) Uncork() error {
 // is supported on FreeBSD and Linux.
 func (c *Conn) Info() (*Info, error) {
 	if !c.opt.ok() {
-		return nil, syscall.EINVAL
+		return nil, errInvalidArgument
 	}
 	return c.opt.info()
 }
@@ -231,6 +235,6 @@ func NewConn(c net.Conn) (*Conn, error) {
 	case *net.TCPConn:
 		return &Conn{opt: opt{TCPConn: c}}, nil
 	default:
-		return nil, syscall.EINVAL
+		return nil, errInvalidArgument
 	}
 }

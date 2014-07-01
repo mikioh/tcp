@@ -20,7 +20,7 @@ func (opt *opt) info() (*Info, error) {
 	}
 	var v syscall.TCPInfo
 	l := sysSockoptLen(syscall.SizeofTCPInfo)
-	if err := getsockopt(fd, syscall.IPPROTO_TCP, syscall.TCP_INFO, unsafe.Pointer(&v), &l); err != nil {
+	if err := getsockopt(fd, ianaProtocolTCP, sysSockoptTCPInfo, unsafe.Pointer(&v), &l); err != nil {
 		return nil, os.NewSyscallError("getsockopt", err)
 	}
 	return parseTCPInfo(&v), nil

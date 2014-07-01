@@ -4,8 +4,4 @@
 
 package tcp
 
-const (
-	sysSockoptTCPKeepAliveCount = 0x6
-	sysSockoptTCPCork           = 0x3
-	sysSockoptTCPInfo           = 0xb
-)
+const ianaProtocolTCP = 0x6
