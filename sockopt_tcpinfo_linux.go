@@ -8,7 +8,6 @@ package tcp
 
 import (
 	"os"
-	"syscall"
 	"time"
 	"unsafe"
 )
@@ -18,8 +17,8 @@ func (opt *opt) info() (*Info, error) {
 	if err != nil {
 		return nil, err
 	}
-	var v syscall.TCPInfo
-	l := sysSockoptLen(syscall.SizeofTCPInfo)
+	var v sysTCPInfo
+	l := sysSockoptLen(sysSizeofTCPInfo)
 	if err := getsockopt(fd, ianaProtocolTCP, sysSockoptTCPInfo, unsafe.Pointer(&v), &l); err != nil {
 		return nil, os.NewSyscallError("getsockopt", err)
 	}
@@ -28,7 +27,7 @@ func (opt *opt) info() (*Info, error) {
 
 var sysStates = [12]State{Unknown, Established, SynSent, SynReceived, FinWait1, FinWait2, TimeWait, Closed, CloseWait, LastAck, Listen, Closing}
 
-func parseTCPInfo(sti *syscall.TCPInfo) *Info {
+func parseTCPInfo(sti *sysTCPInfo) *Info {
 	ti := &Info{State: sysStates[sti.State]}
 	if sti.Options&sysTCPIOptWscale != 0 {
 		ti.Options = append(ti.Options, WindowScale(sti.Pad_cgo_0[0]>>4))

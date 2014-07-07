@@ -4,13 +4,6 @@
 
 package tcp
 
-import (
-	"fmt"
-	"os"
-	"syscall"
-	"unsafe"
-)
-
 func (opt *opt) info() (*Info, error) {
 	return nil, errOpNoSupport
 }
