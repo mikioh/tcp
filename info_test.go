@@ -27,7 +27,7 @@ var (
 func TestInfoWithGoogle(t *testing.T) {
 	switch {
 	case runtime.GOOS == "freebsd":
-	case runtime.GOOS == "linux" && runtime.GOARCH == "amd64" || runtime.GOOS == "linux" && runtime.GOARCH == "arm":
+	case runtime.GOOS == "linux" && (runtime.GOARCH == "amd64" || runtime.GOARCH == "arm"):
 	default:
 		t.Skipf("not supported on %s/%s", runtime.GOOS, runtime.GOARCH)
 	}
