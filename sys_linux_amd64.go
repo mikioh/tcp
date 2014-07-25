@@ -4,4 +4,4 @@
 
 package tcp
 
-const sysGetsockopt = 0x37
+const sysGETSOCKOPT = 0x37

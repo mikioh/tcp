@@ -4,4 +4,4 @@
 
 package tcp
 
-const sysSockoptTCPInfo = 0x20
+const sysTCP_INFO = 0x20

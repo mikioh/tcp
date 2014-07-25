@@ -5,8 +5,8 @@
 package tcp
 
 const (
-	sysGetsockopt = 0x76
+	sysGETSOCKOPT = 0x76
 
-	sysSockoptTCPKeepAliveCount = 0x102
-	sysSockoptTCPNoPush         = 0x4
+	sysTCP_KEEPCNT = 0x102
+	sysTCP_NOPUSH  = 0x4
 )

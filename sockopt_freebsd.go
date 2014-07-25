@@ -16,7 +16,7 @@ func (opt *opt) setMaxKeepAliveProbes(max int) error {
 	if err != nil {
 		return err
 	}
-	return os.NewSyscallError("setsockopt", syscall.SetsockoptInt(fd, ianaProtocolTCP, sysSockoptTCPKeepAliveCount, max))
+	return os.NewSyscallError("setsockopt", syscall.SetsockoptInt(fd, ianaProtocolTCP, sysTCP_KEEPCNT, max))
 }
 
 func (opt *opt) setCork(on bool) error {
@@ -24,7 +24,7 @@ func (opt *opt) setCork(on bool) error {
 	if err != nil {
 		return err
 	}
-	return os.NewSyscallError("setsockopt", syscall.SetsockoptInt(fd, ianaProtocolTCP, sysSockoptTCPNoPush, boolint(on)))
+	return os.NewSyscallError("setsockopt", syscall.SetsockoptInt(fd, ianaProtocolTCP, sysTCP_NOPUSH, boolint(on)))
 }
 
 func (opt *opt) info() (*Info, error) {
@@ -34,7 +34,7 @@ func (opt *opt) info() (*Info, error) {
 	}
 	var v sysTCPInfo
 	l := sysSockoptLen(sysSizeofTCPInfo)
-	if err := getsockopt(fd, ianaProtocolTCP, sysSockoptTCPInfo, unsafe.Pointer(&v), &l); err != nil {
+	if err := getsockopt(fd, ianaProtocolTCP, sysTCP_INFO, unsafe.Pointer(&v), &l); err != nil {
 		return nil, os.NewSyscallError("getsockopt", err)
 	}
 	return parseTCPInfo(&v), nil
