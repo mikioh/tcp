@@ -26,7 +26,7 @@ func (st CAState) String() string {
 // A SysInfo represents platform-specific information.
 type SysInfo struct {
 	PathMTU         uint       `json:"path mtu"`     // path maximum transmission unit
-	AdvertisedMSS   MaxSegSize `json:"adv mss"'`     // advertised maximum segment size
+	AdvertisedMSS   MaxSegSize `json:"adv mss"`      // advertised maximum segment size
 	ReceiverWindow  uint       `json:"rcv wnd"`      // advertised receiver window in bytes
 	CAState         CAState    `json:"ca state"`     // state of congestion avoidance
 	KeepAliveProbes uint       `json:"ka probes"`    // # of keep alive probes sent"`
