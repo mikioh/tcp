@@ -4,11 +4,11 @@
 package tcp
 
 const (
-	sysTCPIOptTimestamps = 0x1
-	sysTCPIOptSack       = 0x2
-	sysTCPIOptWscale     = 0x4
-	sysTCPIOptECN        = 0x8
-	sysTCPIOptTOE        = 0x10
+	sysTCPI_OPT_TIMESTAMPS = 0x1
+	sysTCPI_OPT_SACK       = 0x2
+	sysTCPI_OPT_WSCALE     = 0x4
+	sysTCPI_OPT_ECN        = 0x8
+	sysTCPI_OPT_TOE        = 0x10
 
 	sysSizeofTCPInfo = 0xec
 )

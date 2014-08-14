@@ -44,11 +44,11 @@ var sysStates = [11]State{Closed, Listen, SynSent, SynReceived, Established, Clo
 
 func parseTCPInfo(sti *sysTCPInfo) *Info {
 	ti := &Info{State: sysStates[sti.State]}
-	if sti.Options&sysTCPIOptWscale != 0 {
+	if sti.Options&sysTCPI_OPT_WSCALE != 0 {
 		ti.Options = append(ti.Options, WindowScale(sti.Pad_cgo_0[0]>>4))
 		ti.PeerOptions = append(ti.PeerOptions, WindowScale(sti.Pad_cgo_0[0]&0x0f))
 	}
-	if sti.Options&sysTCPIOptTimestamps != 0 {
+	if sti.Options&sysTCPI_OPT_TIMESTAMPS != 0 {
 		ti.Options = append(ti.Options, Timestamps(true))
 		ti.PeerOptions = append(ti.PeerOptions, Timestamps(true))
 	}
@@ -75,7 +75,7 @@ func parseTCPInfo(sti *sysTCPInfo) *Info {
 		OutOfOrderSegs:    uint(sti.Rcv_ooopack),
 		ZeroWindowUpdates: uint(sti.Snd_zerowin),
 	}
-	if sti.Options&sysTCPIOptTOE != 0 {
+	if sti.Options&sysTCPI_OPT_TOE != 0 {
 		ti.SysInfo.Offloading = true
 	}
 	return ti

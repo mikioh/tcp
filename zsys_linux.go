@@ -4,12 +4,12 @@
 package tcp
 
 const (
-	sysTCPIOptTimestamps = 0x1
-	sysTCPIOptSack       = 0x2
-	sysTCPIOptWscale     = 0x4
-	sysTCPIOptECN        = 0x8
-	sysTCPIOptECNSeen    = 0x10
-	sysTCPIOptSynData    = 0x20
+	sysTCPI_OPT_TIMESTAMPS = 0x1
+	sysTCPI_OPT_SACK       = 0x2
+	sysTCPI_OPT_WSCALE     = 0x4
+	sysTCPI_OPT_ECN        = 0x8
+	sysTCPI_OPT_ECN_SEEN   = 0x10
+	sysTCPI_OPT_SYN_DATA   = 0x20
 
 	CAOpen     CAState = 0x0
 	CADisorder CAState = 0x1

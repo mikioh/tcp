@@ -29,11 +29,11 @@ var sysStates = [12]State{Unknown, Established, SynSent, SynReceived, FinWait1, 
 
 func parseTCPInfo(sti *sysTCPInfo) *Info {
 	ti := &Info{State: sysStates[sti.State]}
-	if sti.Options&sysTCPIOptWscale != 0 {
+	if sti.Options&sysTCPI_OPT_WSCALE != 0 {
 		ti.Options = append(ti.Options, WindowScale(sti.Pad_cgo_0[0]>>4))
 		ti.PeerOptions = append(ti.PeerOptions, WindowScale(sti.Pad_cgo_0[0]&0x0f))
 	}
-	if sti.Options&sysTCPIOptTimestamps != 0 {
+	if sti.Options&sysTCPI_OPT_TIMESTAMPS != 0 {
 		ti.Options = append(ti.Options, Timestamps(true))
 		ti.PeerOptions = append(ti.PeerOptions, Timestamps(true))
 	}

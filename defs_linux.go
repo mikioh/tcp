@@ -12,12 +12,12 @@ package tcp
 import "C"
 
 const (
-	sysTCPIOptTimestamps = C.TCPI_OPT_TIMESTAMPS
-	sysTCPIOptSack       = C.TCPI_OPT_SACK
-	sysTCPIOptWscale     = C.TCPI_OPT_WSCALE
-	sysTCPIOptECN        = C.TCPI_OPT_ECN
-	sysTCPIOptECNSeen    = C.TCPI_OPT_ECN_SEEN
-	sysTCPIOptSynData    = C.TCPI_OPT_SYN_DATA
+	sysTCPI_OPT_TIMESTAMPS = C.TCPI_OPT_TIMESTAMPS
+	sysTCPI_OPT_SACK       = C.TCPI_OPT_SACK
+	sysTCPI_OPT_WSCALE     = C.TCPI_OPT_WSCALE
+	sysTCPI_OPT_ECN        = C.TCPI_OPT_ECN
+	sysTCPI_OPT_ECN_SEEN   = C.TCPI_OPT_ECN_SEEN
+	sysTCPI_OPT_SYN_DATA   = C.TCPI_OPT_SYN_DATA
 
 	CAOpen     CAState = C.TCP_CA_Open
 	CADisorder CAState = C.TCP_CA_Disorder
