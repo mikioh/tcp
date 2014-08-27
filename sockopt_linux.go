@@ -9,16 +9,16 @@ import (
 	"syscall"
 )
 
-func (opt *opt) setMaxKeepAliveProbes(max int) error {
-	fd, err := opt.sysfd()
+func (c *Conn) setMaxKeepAliveProbes(max int) error {
+	fd, err := c.sysfd()
 	if err != nil {
 		return err
 	}
 	return os.NewSyscallError("setsockopt", syscall.SetsockoptInt(fd, ianaProtocolTCP, sysTCP_KEEPCNT, max))
 }
 
-func (opt *opt) setCork(on bool) error {
-	fd, err := opt.sysfd()
+func (c *Conn) setCork(on bool) error {
+	fd, err := c.sysfd()
 	if err != nil {
 		return err
 	}

@@ -6,14 +6,14 @@
 
 package tcp
 
-func (opt *opt) setMaxKeepAliveProbes(max int) error {
+func (c *Conn) setMaxKeepAliveProbes(max int) error {
 	return errOpNoSupport
 }
 
-func (opt *opt) setCork(on bool) error {
+func (c *Conn) setCork(on bool) error {
 	return errOpNoSupport
 }
 
-func (opt *opt) info() (*Info, error) {
+func (c *Conn) info() (*Info, error) {
 	return nil, errOpNoSupport
 }

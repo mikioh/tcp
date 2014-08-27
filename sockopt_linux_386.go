@@ -4,6 +4,6 @@
 
 package tcp
 
-func (opt *opt) info() (*Info, error) {
+func (c *Conn) info() (*Info, error) {
 	return nil, errOpNoSupport
 }

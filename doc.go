@@ -26,7 +26,7 @@
 //			return nil, err
 //		}
 //		go tcpConnMonitor(tc) // launch a TCP connection monitor goroutine
-//		return tc, nil
+//		return &tc.TCPConn, nil
 //	}
 //
 // Also an application needs to construct a custom client such as a

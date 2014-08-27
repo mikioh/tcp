@@ -6,9 +6,7 @@ package tcp
 
 import (
 	"errors"
-	"io"
 	"net"
-	"time"
 )
 
 // References:
@@ -38,173 +36,21 @@ var (
 // It allows to set non-portable, platform-dependent TCP-level socket
 // options.
 type Conn struct {
-	opt
-}
-
-type opt struct {
-	*net.TCPConn
-}
-
-func (c *opt) ok() bool { return c != nil && c.TCPConn != nil }
-
-// Read implements the Read method of net.Conn interface.
-func (c *Conn) Read(b []byte) (int, error) {
-	if !c.opt.ok() {
-		return 0, errInvalidArgument
-	}
-	return c.TCPConn.Read(b)
-}
-
-// Write implements the Write method of net.Conn interface.
-func (c *Conn) Write(b []byte) (int, error) {
-	if !c.opt.ok() {
-		return 0, errInvalidArgument
-	}
-	return c.TCPConn.Write(b)
-}
-
-// LocalAddr implements the LocalAddr method of net.Conn interface.
-func (c *Conn) LocalAddr() net.Addr {
-	if !c.opt.ok() {
-		return nil
-	}
-	return c.TCPConn.LocalAddr()
-}
-
-// RemoteAddr implements the RemoteAddr method of net.Conn interface.
-func (c *Conn) RemoteAddr() net.Addr {
-	if !c.opt.ok() {
-		return nil
-	}
-	return c.TCPConn.RemoteAddr()
-}
-
-// SetDeadline implements the SetDeadline method of net.Conn
-// interface.
-func (c *Conn) SetDeadline(t time.Time) error {
-	if !c.opt.ok() {
-		return errInvalidArgument
-	}
-	return c.TCPConn.SetDeadline(t)
-}
-
-// SetReadDeadline implements the SetReadDeadline method of net.Conn
-// interface.
-func (c *Conn) SetReadDeadline(t time.Time) error {
-	if !c.opt.ok() {
-		return errInvalidArgument
-	}
-	return c.TCPConn.SetReadDeadline(t)
-}
-
-// SetWriteDeadline implements the SetWriteDeadline method of net.Conn
-// interface.
-func (c *Conn) SetWriteDeadline(t time.Time) error {
-	if !c.opt.ok() {
-		return errInvalidArgument
-	}
-	return c.TCPConn.SetWriteDeadline(t)
-}
-
-// Close implements the Close method of net.Conn interface.
-func (c *Conn) Close() error {
-	if !c.opt.ok() {
-		return errInvalidArgument
-	}
-	return c.TCPConn.Close()
-}
-
-// ReadFrom implements the ReadFrom method of io.ReaderFrom interface.
-func (c *Conn) ReadFrom(r io.Reader) (int64, error) {
-	if !c.opt.ok() {
-		return 0, errInvalidArgument
-	}
-	return c.TCPConn.ReadFrom(r)
-}
-
-// CloseRead implemets the CloseRead method of net.TCPConn.
-func (c *Conn) CloseRead() error {
-	if !c.opt.ok() {
-		return errInvalidArgument
-	}
-	return c.TCPConn.CloseRead()
-}
-
-// CloseWrite implemets the CloseWrite method of net.TCPConn.
-func (c *Conn) CloseWrite() error {
-	if !c.opt.ok() {
-		return errInvalidArgument
-	}
-	return c.TCPConn.CloseWrite()
-}
-
-// SetLinger implemets the SetLinger method of net.TCPConn.
-func (c *Conn) SetLinger(sec int) error {
-	if !c.opt.ok() {
-		return errInvalidArgument
-	}
-	return c.TCPConn.SetLinger(sec)
-}
-
-// SetKeepAlive implements the SetKeepAlive method of net.TCPConn.
-func (c *Conn) SetKeepAlive(on bool) error {
-	if !c.opt.ok() {
-		return errInvalidArgument
-	}
-	return c.TCPConn.SetKeepAlive(on)
-}
-
-// SetKeepAlivePeriod implemets the SetKeepAlivePeriod method of
-// net.TCPConn.
-func (c *Conn) SetKeepAlivePeriod(d time.Duration) error {
-	if !c.opt.ok() {
-		return errInvalidArgument
-	}
-	return c.TCPConn.SetKeepAlivePeriod(d)
+	net.TCPConn
 }
 
 // SetMaxKeepAliveProbes sets the maximum number of keep alive probes.
 func (c *Conn) SetMaxKeepAliveProbes(probes int) error {
-	if !c.opt.ok() {
-		return errInvalidArgument
-	}
 	if probes < 1 {
 		return errInvalidArgument
 	}
-	return c.opt.setMaxKeepAliveProbes(probes)
-}
-
-// SetReadBuffer implements the SetReadBuffer method of net.TCPConn.
-func (c *Conn) SetReadBuffer(bytes int) error {
-	if !c.opt.ok() {
-		return errInvalidArgument
-	}
-	return c.TCPConn.SetReadBuffer(bytes)
-}
-
-// SetWriteBuffer implements the SetWriteBuffer method of net.TCPConn.
-func (c *Conn) SetWriteBuffer(bytes int) error {
-	if !c.opt.ok() {
-		return errInvalidArgument
-	}
-	return c.TCPConn.SetWriteBuffer(bytes)
-}
-
-// SetNoDelay implements the SetNoDealy method of net.TCPConn.
-func (c *Conn) SetNoDelay(on bool) error {
-	if !c.opt.ok() {
-		return errInvalidArgument
-	}
-	return c.TCPConn.SetNoDelay(on)
+	return c.setMaxKeepAliveProbes(probes)
 }
 
 // Cork enables TCP_CORK option on Linux, TCP_NOPUSH option on Darwin,
 // DragonFlyBSD, FreeBSD and OpenBSD.
 func (c *Conn) Cork() error {
-	if !c.opt.ok() {
-		return errInvalidArgument
-	}
-	if err := c.opt.setCork(true); err != nil {
+	if err := c.setCork(true); err != nil {
 		return err
 	}
 	return nil
@@ -213,27 +59,20 @@ func (c *Conn) Cork() error {
 // Uncork disables TCP_CORK option on Linux, TCP_NOPUSH option on
 // Darwin, DragonFly BSD, FreeBSD and OpenBSD.
 func (c *Conn) Uncork() error {
-	if !c.opt.ok() {
-		return errInvalidArgument
-	}
-	c.opt.setCork(false)
-	return nil
+	return c.setCork(false)
 }
 
 // Info returns information of current connection. For now this option
 // is supported on FreeBSD and Linux.
 func (c *Conn) Info() (*Info, error) {
-	if !c.opt.ok() {
-		return nil, errInvalidArgument
-	}
-	return c.opt.info()
+	return c.info()
 }
 
 // NewConn returns a new Conn.
 func NewConn(c net.Conn) (*Conn, error) {
 	switch c := c.(type) {
 	case *net.TCPConn:
-		return &Conn{opt: opt{TCPConn: c}}, nil
+		return &Conn{TCPConn: *c}, nil
 	default:
 		return nil, errInvalidArgument
 	}

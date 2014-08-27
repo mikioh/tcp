@@ -60,7 +60,7 @@ func dialWithTCPConnMonitor(network, address string) (net.Conn, error) {
 		return nil, err
 	}
 	go tcpConnMonitor(tc)
-	return tc, nil
+	return &tc.TCPConn, nil
 }
 
 func tcpConnMonitor(c *tcp.Conn) {

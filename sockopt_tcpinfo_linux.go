@@ -12,8 +12,8 @@ import (
 	"unsafe"
 )
 
-func (opt *opt) info() (*Info, error) {
-	fd, err := opt.sysfd()
+func (c *Conn) info() (*Info, error) {
+	fd, err := c.sysfd()
 	if err != nil {
 		return nil, err
 	}

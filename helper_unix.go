@@ -8,8 +8,8 @@ package tcp
 
 import "reflect"
 
-func (c *opt) sysfd() (int, error) {
-	cv := reflect.ValueOf(c.TCPConn)
+func (c *Conn) sysfd() (int, error) {
+	cv := reflect.ValueOf(&c.TCPConn)
 	switch ce := cv.Elem(); ce.Kind() {
 	case reflect.Struct:
 		nfd := ce.FieldByName("conn").FieldByName("fd")
