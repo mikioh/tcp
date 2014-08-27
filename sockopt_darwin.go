@@ -10,7 +10,11 @@ import (
 )
 
 func (c *Conn) setMaxKeepAliveProbes(max int) error {
-	return errOpNoSupport
+	fd, err := c.sysfd()
+	if err != nil {
+		return err
+	}
+	return os.NewSyscallError("setsockopt", syscall.SetsockoptInt(fd, ianaProtocolTCP, sysTCP_KEEPCNT, max))
 }
 
 func (c *Conn) setCork(on bool) error {
