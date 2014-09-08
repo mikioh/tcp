@@ -7,6 +7,7 @@ package tcp
 import (
 	"errors"
 	"net"
+	"time"
 )
 
 // References:
@@ -39,7 +40,19 @@ type Conn struct {
 	net.TCPConn
 }
 
-// SetMaxKeepAliveProbes sets the maximum number of keep alive probes.
+// SetKeepAliveIdlePeriod sets the idle period before keepalive probes
+// are sent.
+func (c *Conn) SetKeepAliveIdlePeriod(d time.Duration) error {
+	return c.setKeepAliveIdlePeriod(d)
+}
+
+// SekKeepAliveProbeInterval sets the interval between keepalive
+// probes.
+func (c *Conn) SetKeepAliveProbeInterval(d time.Duration) error {
+	return c.setKeepAliveProbeInterval(d)
+}
+
+// SetMaxKeepAliveProbes sets the maximum number of keepalive probes.
 func (c *Conn) SetMaxKeepAliveProbes(probes int) error {
 	if probes < 1 {
 		return errInvalidArgument

@@ -7,7 +7,28 @@ package tcp
 import (
 	"os"
 	"syscall"
+	"time"
 )
+
+func (c *Conn) setKeepAliveIdlePeriod(d time.Duration) error {
+	fd, err := c.sysfd()
+	if err != nil {
+		return err
+	}
+	d += (time.Second - time.Nanosecond)
+	secs := int(d.Seconds())
+	return os.NewSyscallError("setsockopt", syscall.SetsockoptInt(fd, ianaProtocolTCP, sysTCP_KEEPIDLE, secs))
+}
+
+func (c *Conn) setKeepAliveProbeInterval(d time.Duration) error {
+	fd, err := c.sysfd()
+	if err != nil {
+		return err
+	}
+	d += (time.Second - time.Nanosecond)
+	secs := int(d.Seconds())
+	return os.NewSyscallError("setsockopt", syscall.SetsockoptInt(fd, ianaProtocolTCP, sysTCP_KEEPINTVL, secs))
+}
 
 func (c *Conn) setMaxKeepAliveProbes(max int) error {
 	fd, err := c.sysfd()

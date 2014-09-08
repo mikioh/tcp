@@ -6,6 +6,16 @@
 
 package tcp
 
+import "time"
+
+func (c *Conn) setKeepAliveIdlePeriod(d time.Duration) error {
+	return errOpNoSupport
+}
+
+func (c *Conn) setKeepAliveProbeInterval(d time.Duration) error {
+	return errOpNoSupport
+}
+
 func (c *Conn) setMaxKeepAliveProbes(max int) error {
 	return errOpNoSupport
 }

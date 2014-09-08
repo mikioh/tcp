@@ -7,6 +7,8 @@
 package tcp
 
 const (
-	sysTCP_KEEPCNT = 0x23
-	sysTCP_CORK    = 0x18
+	sysTCP_KEEPIDLE  = 0x22
+	sysTCP_KEEPCNT   = 0x23
+	sysTCP_KEEPINTVL = 0x24
+	sysTCP_CORK      = 0x18
 )

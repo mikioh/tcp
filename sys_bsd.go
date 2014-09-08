@@ -9,6 +9,8 @@ package tcp
 const (
 	sysGETSOCKOPT = 0x76
 
-	sysTCP_KEEPCNT = 0x400
-	sysTCP_NOPUSH  = 0x4
+	sysTCP_KEEPIDLE  = 0x100
+	sysTCP_KEEPCNT   = 0x400
+	sysTCP_KEEPINTVL = 0x200
+	sysTCP_NOPUSH    = 0x4
 )

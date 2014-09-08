@@ -7,5 +7,7 @@ package tcp
 const (
 	sysGETSOCKOPT = 0x76
 
-	sysTCP_KEEPCNT = 0x6
+	sysTCP_KEEPIDLE  = 0x3
+	sysTCP_KEEPCNT   = 0x6
+	sysTCP_KEEPINTVL = 0x5
 )

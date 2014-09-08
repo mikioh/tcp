@@ -5,7 +5,9 @@
 package tcp
 
 const (
-	sysTCP_KEEPCNT = 0x6
-	sysTCP_CORK    = 0x3
-	sysTCP_INFO    = 0xb
+	sysTCP_KEEPIDLE  = 0x4
+	sysTCP_KEEPCNT   = 0x6
+	sysTCP_KEEPINTVL = 0x5
+	sysTCP_CORK      = 0x3
+	sysTCP_INFO      = 0xb
 )

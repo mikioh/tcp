@@ -18,7 +18,7 @@ func TestCorkAndUncork(t *testing.T) {
 	switch runtime.GOOS {
 	case "freebsd", "linux":
 	default:
-		t.Skipf("not supported on %s/%s", runtime.GOOS, runtime.GOARCH)
+		t.Skipf("%s/%s", runtime.GOOS, runtime.GOARCH)
 	}
 
 	const N = 1280
