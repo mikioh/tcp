@@ -25,9 +25,8 @@ var (
 )
 
 func TestInfoWithGoogle(t *testing.T) {
-	switch {
-	case runtime.GOOS == "freebsd":
-	case runtime.GOOS == "linux" && (runtime.GOARCH == "amd64" || runtime.GOARCH == "arm"):
+	switch runtime.GOOS {
+	case "freebsd", "linux":
 	default:
 		t.Skipf("not supported on %s/%s", runtime.GOOS, runtime.GOARCH)
 	}
@@ -68,6 +67,11 @@ func tcpConnMonitor(c *tcp.Conn) {
 	for {
 		ti, err := c.Info()
 		if err != nil {
+			if runtime.GOOS == "linux" && runtime.GOARCH == "386" {
+				tt.Log(err)
+			} else {
+				tt.Error(err)
+			}
 			break
 		}
 		text, err := json.Marshal(ti)

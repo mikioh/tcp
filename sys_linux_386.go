@@ -4,6 +4,4 @@
 
 package tcp
 
-func (c *Conn) info() (*Info, error) {
-	return nil, errOpNoSupport
-}
+const sysGETSOCKOPT = 0xf

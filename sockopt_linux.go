@@ -7,6 +7,8 @@ package tcp
 import (
 	"os"
 	"syscall"
+	"time"
+	"unsafe"
 )
 
 func (c *Conn) setMaxKeepAliveProbes(max int) error {
@@ -23,4 +25,58 @@ func (c *Conn) setCork(on bool) error {
 		return err
 	}
 	return os.NewSyscallError("setsockopt", syscall.SetsockoptInt(fd, ianaProtocolTCP, sysTCP_CORK, boolint(on)))
+}
+
+func (c *Conn) info() (*Info, error) {
+	fd, err := c.sysfd()
+	if err != nil {
+		return nil, err
+	}
+	var v sysTCPInfo
+	l := sysSockoptLen(sysSizeofTCPInfo)
+	if err := getsockopt(fd, ianaProtocolTCP, sysTCP_INFO, unsafe.Pointer(&v), &l); err != nil {
+		return nil, os.NewSyscallError("getsockopt", err)
+	}
+	return parseTCPInfo(&v), nil
+}
+
+var sysStates = [12]State{Unknown, Established, SynSent, SynReceived, FinWait1, FinWait2, TimeWait, Closed, CloseWait, LastAck, Listen, Closing}
+
+func parseTCPInfo(sti *sysTCPInfo) *Info {
+	ti := &Info{State: sysStates[sti.State]}
+	if sti.Options&sysTCPI_OPT_WSCALE != 0 {
+		ti.Options = append(ti.Options, WindowScale(sti.Pad_cgo_0[0]>>4))
+		ti.PeerOptions = append(ti.PeerOptions, WindowScale(sti.Pad_cgo_0[0]&0x0f))
+	}
+	if sti.Options&sysTCPI_OPT_TIMESTAMPS != 0 {
+		ti.Options = append(ti.Options, Timestamps(true))
+		ti.PeerOptions = append(ti.PeerOptions, Timestamps(true))
+	}
+	ti.RTT = time.Duration(sti.Rtt) * time.Microsecond
+	ti.RTTVar = time.Duration(sti.Rttvar) * time.Microsecond
+	ti.RTO = time.Duration(sti.Rto) * time.Microsecond
+	ti.ATO = time.Duration(sti.Ato) * time.Microsecond
+	ti.LastDataSent = time.Duration(sti.Last_data_sent) * time.Millisecond
+	ti.LastDataReceived = time.Duration(sti.Last_data_recv) * time.Millisecond
+	ti.LastAckReceived = time.Duration(sti.Last_ack_recv) * time.Millisecond
+	ti.CC = &CongestionControl{
+		SenderMSS:           MaxSegSize(sti.Snd_mss),
+		ReceiverMSS:         MaxSegSize(sti.Rcv_mss),
+		SenderSSThreshold:   uint(sti.Snd_ssthresh),
+		ReceiverSSThreshold: uint(sti.Rcv_ssthresh),
+		SenderWindow:        uint(sti.Snd_cwnd),
+	}
+	ti.SysInfo = &SysInfo{
+		PathMTU:         uint(sti.Pmtu),
+		AdvertisedMSS:   MaxSegSize(sti.Advmss),
+		ReceiverWindow:  uint(sti.Rcv_space),
+		CAState:         CAState(sti.Ca_state),
+		KeepAliveProbes: uint(sti.Probes),
+		UnackSegs:       uint(sti.Unacked),
+		SackSegs:        uint(sti.Sacked),
+		LostSegs:        uint(sti.Lost),
+		RetransSegs:     uint(sti.Retrans),
+		ForwardAckSegs:  uint(sti.Fackets),
+	}
+	return ti
 }
