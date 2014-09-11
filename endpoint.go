@@ -40,10 +40,10 @@ type Conn struct {
 	net.TCPConn
 }
 
-// SetKeepAliveIdlePeriod sets the idle period before keepalive probes
-// are sent.
-func (c *Conn) SetKeepAliveIdlePeriod(d time.Duration) error {
-	return c.setKeepAliveIdlePeriod(d)
+// SetKeepAliveIdleInterval sets the idle interval until the first
+// probe is sent.
+func (c *Conn) SetKeepAliveIdleInterval(d time.Duration) error {
+	return c.setKeepAliveIdleInterval(d)
 }
 
 // SekKeepAliveProbeInterval sets the interval between keepalive
@@ -52,12 +52,12 @@ func (c *Conn) SetKeepAliveProbeInterval(d time.Duration) error {
 	return c.setKeepAliveProbeInterval(d)
 }
 
-// SetMaxKeepAliveProbes sets the maximum number of keepalive probes.
-func (c *Conn) SetMaxKeepAliveProbes(probes int) error {
+// SetKeepAliveProbes sets the number of keepalive probes.
+func (c *Conn) SetKeepAliveProbes(probes int) error {
 	if probes < 1 {
 		return errInvalidArgument
 	}
-	return c.setMaxKeepAliveProbes(probes)
+	return c.setKeepAliveProbes(probes)
 }
 
 // Cork enables TCP_CORK option on Linux, TCP_NOPUSH option on Darwin,

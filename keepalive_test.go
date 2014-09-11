@@ -49,13 +49,13 @@ func TestKeepAlive(t *testing.T) {
 	if err := tc.SetKeepAlive(true); err != nil {
 		t.Error(err)
 	}
-	if err := tc.SetKeepAliveIdlePeriod(time.Second); err != nil {
+	if err := tc.SetKeepAliveIdleInterval(time.Second); err != nil {
 		t.Error(err)
 	}
 	if err := tc.SetKeepAliveProbeInterval(time.Second); err != nil {
 		t.Error(err)
 	}
-	if err := tc.SetMaxKeepAliveProbes(1); err != nil {
+	if err := tc.SetKeepAliveProbes(1); err != nil {
 		t.Error(err)
 	}
 }

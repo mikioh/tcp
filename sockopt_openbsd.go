@@ -10,7 +10,7 @@ import (
 	"time"
 )
 
-func (c *Conn) setKeepAliveIdlePeriod(d time.Duration) error {
+func (c *Conn) setKeepAliveIdleInterval(d time.Duration) error {
 	return errOpNoSupport
 }
 
@@ -18,7 +18,7 @@ func (c *Conn) setKeepAliveProbeInterval(d time.Duration) error {
 	return errOpNoSupport
 }
 
-func (c *Conn) setMaxKeepAliveProbes(max int) error {
+func (c *Conn) setKeepAliveProbes(n int) error {
 	return errOpNoSupport
 }
 

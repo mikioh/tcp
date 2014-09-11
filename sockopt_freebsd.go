@@ -11,7 +11,7 @@ import (
 	"unsafe"
 )
 
-func (c *Conn) setKeepAliveIdlePeriod(d time.Duration) error {
+func (c *Conn) setKeepAliveIdleInterval(d time.Duration) error {
 	fd, err := c.sysfd()
 	if err != nil {
 		return err
@@ -31,12 +31,12 @@ func (c *Conn) setKeepAliveProbeInterval(d time.Duration) error {
 	return os.NewSyscallError("setsockopt", syscall.SetsockoptInt(fd, ianaProtocolTCP, sysTCP_KEEPINTVL, secs))
 }
 
-func (c *Conn) setMaxKeepAliveProbes(max int) error {
+func (c *Conn) setKeepAliveProbes(n int) error {
 	fd, err := c.sysfd()
 	if err != nil {
 		return err
 	}
-	return os.NewSyscallError("setsockopt", syscall.SetsockoptInt(fd, ianaProtocolTCP, sysTCP_KEEPCNT, max))
+	return os.NewSyscallError("setsockopt", syscall.SetsockoptInt(fd, ianaProtocolTCP, sysTCP_KEEPCNT, n))
 }
 
 func (c *Conn) setCork(on bool) error {
