@@ -45,6 +45,7 @@ func TestInfoWithGoogle(t *testing.T) {
 	if _, err := io.Copy(ioutil.Discard, resp.Body); err != nil {
 		t.Fatal(err)
 	}
+	time.Sleep(100 * time.Millisecond)
 }
 
 func dialWithTCPConnMonitor(network, address string) (net.Conn, error) {
