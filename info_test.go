@@ -72,7 +72,7 @@ func tcpConnMonitor(c *tcp.Conn) {
 			} else {
 				tt.Error(err)
 			}
-			break
+			return
 		}
 		text, err := json.Marshal(ti)
 		if err != nil {
@@ -80,6 +80,6 @@ func tcpConnMonitor(c *tcp.Conn) {
 			return
 		}
 		tt.Log(string(text))
-		time.Sleep(20 * time.Millisecond)
+		time.Sleep(10 * time.Millisecond)
 	}
 }
