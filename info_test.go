@@ -80,6 +80,6 @@ func tcpConnMonitor(c *tcp.Conn) {
 			return
 		}
 		tt.Log(string(text))
-		time.Sleep(10 * time.Millisecond)
+		time.Sleep(5 * time.Millisecond)
 	}
 }
