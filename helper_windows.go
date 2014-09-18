@@ -5,12 +5,11 @@
 package tcp
 
 import (
-	"net"
 	"reflect"
 	"syscall"
 )
 
-func sysfd(c net.Conn) (syscall.Handle, error) {
+func (c *Conn) sysfd() (syscall.Handle, error) {
 	cv := reflect.ValueOf(c)
 	switch ce := cv.Elem(); ce.Kind() {
 	case reflect.Struct:
