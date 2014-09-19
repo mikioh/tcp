@@ -29,8 +29,8 @@
 //		return &tc.TCPConn, nil
 //	}
 //
-// Also an application needs to construct a custom client such as a
-// HTTP client containing a custom net.Dial function and get into a
+// Also an application needs to construct a custom client such as an
+// HTTP client containing a custom net.Dial function and get into an
 // HTTP over TLS over TCP conversation.
 //
 //	tr := &http.Transport{
