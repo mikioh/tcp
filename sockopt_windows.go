@@ -12,7 +12,7 @@ import (
 	"unsafe"
 )
 
-var tcpKeepAlive = struct {
+var keepAlive = struct {
 	sync.RWMutex
 	syscall.TCPKeepalive
 }{
@@ -28,16 +28,16 @@ func (c *Conn) setKeepAliveIdleInterval(d time.Duration) error {
 	if err != nil {
 		return err
 	}
-	tcpKeepAlive.Lock()
-	defer tcpKeepAlive.Unlock()
+	keepAlive.Lock()
+	defer keepAlive.Unlock()
 	d += (time.Millisecond - time.Nanosecond)
 	msecs := uint32(d / time.Millisecond)
-	prev := tcpKeepAlive.Time
-	tcpKeepAlive.Time = msecs
+	prev := keepAlive.Time
+	keepAlive.Time = msecs
 	rv := uint32(0)
-	siz := uint32(unsafe.Sizeof(tcpKeepAlive))
-	if err := syscall.WSAIoctl(fd, syscall.SIO_KEEPALIVE_VALS, (*byte)(unsafe.Pointer(&tcpKeepAlive)), siz, nil, 0, &rv, nil, 0); err != nil {
-		tcpKeepAlive.Time = prev
+	siz := uint32(unsafe.Sizeof(keepAlive))
+	if err := syscall.WSAIoctl(fd, syscall.SIO_KEEPALIVE_VALS, (*byte)(unsafe.Pointer(&keepAlive)), siz, nil, 0, &rv, nil, 0); err != nil {
+		keepAlive.Time = prev
 		return os.NewSyscallError("WSAIoctl", err)
 	}
 	return nil
@@ -48,16 +48,16 @@ func (c *Conn) setKeepAliveProbeInterval(d time.Duration) error {
 	if err != nil {
 		return err
 	}
-	tcpKeepAlive.Lock()
-	defer tcpKeepAlive.Unlock()
+	keepAlive.Lock()
+	defer keepAlive.Unlock()
 	d += (time.Millisecond - time.Nanosecond)
 	msecs := uint32(d / time.Millisecond)
-	prev := tcpKeepAlive.Interval
-	tcpKeepAlive.Interval = msecs
+	prev := keepAlive.Interval
+	keepAlive.Interval = msecs
 	rv := uint32(0)
-	siz := uint32(unsafe.Sizeof(tcpKeepAlive))
-	if err := syscall.WSAIoctl(fd, syscall.SIO_KEEPALIVE_VALS, (*byte)(unsafe.Pointer(&tcpKeepAlive)), siz, nil, 0, &rv, nil, 0); err != nil {
-		tcpKeepAlive.Interval = prev
+	siz := uint32(unsafe.Sizeof(keepAlive))
+	if err := syscall.WSAIoctl(fd, syscall.SIO_KEEPALIVE_VALS, (*byte)(unsafe.Pointer(&keepAlive)), siz, nil, 0, &rv, nil, 0); err != nil {
+		keepAlive.Interval = prev
 		return os.NewSyscallError("WSAIoctl", err)
 	}
 	return nil
