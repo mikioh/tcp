@@ -57,12 +57,12 @@ func (c *Conn) info() (*Info, error) {
 	if err := getsockopt(fd, ianaProtocolTCP, sysTCP_INFO, unsafe.Pointer(&v), &l); err != nil {
 		return nil, os.NewSyscallError("getsockopt", err)
 	}
-	return parseTCPInfo(&v), nil
+	return parseInfo(&v), nil
 }
 
 var sysStates = [11]State{Closed, Listen, SynSent, SynReceived, Established, CloseWait, FinWait1, Closing, LastAck, FinWait2, TimeWait}
 
-func parseTCPInfo(sti *sysTCPInfo) *Info {
+func parseInfo(sti *sysTCPInfo) *Info {
 	ti := &Info{State: sysStates[sti.State]}
 	if sti.Options&sysTCPI_OPT_WSCALE != 0 {
 		ti.Options = append(ti.Options, WindowScale(sti.Pad_cgo_0[0]>>4))
