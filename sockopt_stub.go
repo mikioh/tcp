@@ -23,11 +23,3 @@ func (c *Conn) setKeepAliveProbes(probes int) error {
 func (c *Conn) setCork(on bool) error {
 	return errOpNoSupport
 }
-
-func getInt(fd int, opt *sockOpt) (int, error) {
-	return 0, errOpNoSupport
-}
-
-func setInt(fd int, opt *sockOpt, v int) error {
-	return errOpNoSupport
-}
