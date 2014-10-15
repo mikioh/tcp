@@ -105,7 +105,7 @@ func TestWriteBuffer(t *testing.T) {
 			return
 		}
 		n := tc.Available()
-		if n == 0 {
+		if n <= 0 {
 			t.Errorf("got %v; want >0", n)
 			return
 		}
