@@ -15,7 +15,7 @@ import (
 
 func TestKeepAlive(t *testing.T) {
 	switch runtime.GOOS {
-	case "darwin", "freebsd", "linux":
+	case "darwin", "dragonfly", "freebsd", "linux", "netbsd", "solaris", "windows":
 	default:
 		t.Skipf("%s/%s", runtime.GOOS, runtime.GOARCH)
 	}
