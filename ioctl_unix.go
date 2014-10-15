@@ -16,11 +16,7 @@ func (c *Conn) buffered() int {
 	if err != nil {
 		return 0
 	}
-	opt := sockOpts[ssoBuffered]
-	if opt.name < 1 || opt.typ != ssoTypeInt {
-		return 0
-	}
-	n, err := getsockoptIntByIoctl(fd, opt.name)
+	n, err := getIntByIoctl(fd, &sockOpts[ssoBuffered])
 	if err != nil {
 		return 0
 	}
@@ -32,11 +28,7 @@ func (c *Conn) available() int {
 	if err != nil {
 		return 0
 	}
-	opt := sockOpts[ssoAvailable]
-	if opt.name < 1 || opt.typ != ssoTypeInt {
-		return 0
-	}
-	n, err := getsockoptIntByIoctl(fd, opt.name)
+	n, err := getIntByIoctl(fd, &sockOpts[ssoAvailable])
 	if err != nil {
 		return 0
 	}
@@ -48,4 +40,15 @@ func (c *Conn) available() int {
 		return l - n
 	}
 	return n
+}
+
+func getIntByIoctl(fd int, opt *sockOpt) (int, error) {
+	if opt.name < 1 || opt.typ != ssoTypeInt {
+		return 0, errOpNoSupport
+	}
+	v, err := getsockoptIntByIoctl(fd, opt.name)
+	if err != nil {
+		return 0, err
+	}
+	return v, nil
 }
