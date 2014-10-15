@@ -7,9 +7,9 @@
 package tcp
 
 func (c *Conn) buffered() int {
-	return 0
+	return -1
 }
 
 func (c *Conn) available() int {
-	return 0
+	return -1
 }

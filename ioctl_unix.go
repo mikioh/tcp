@@ -14,11 +14,11 @@ import (
 func (c *Conn) buffered() int {
 	fd, err := c.sysfd()
 	if err != nil {
-		return 0
+		return -1
 	}
 	n, err := getIntByIoctl(fd, &sockOpts[ssoBuffered])
 	if err != nil {
-		return 0
+		return -1
 	}
 	return n
 }
@@ -26,16 +26,16 @@ func (c *Conn) buffered() int {
 func (c *Conn) available() int {
 	fd, err := c.sysfd()
 	if err != nil {
-		return 0
+		return -1
 	}
 	n, err := getIntByIoctl(fd, &sockOpts[ssoAvailable])
 	if err != nil {
-		return 0
+		return -1
 	}
 	if runtime.GOOS == "linux" {
 		l, err := syscall.GetsockoptInt(fd, syscall.SOL_SOCKET, syscall.SO_RCVBUF)
 		if err != nil {
-			return 0
+			return -1
 		}
 		return l - n
 	}

@@ -41,13 +41,15 @@ type Conn struct {
 }
 
 // Buffered returns the number of bytes that can be read from the
-// underlying socket read buffer.
+// underlying socket read buffer. It returns -1 when the platform
+// doesn't support this feature.
 func (c *Conn) Buffered() int {
 	return c.buffered()
 }
 
 // Available returns how many bytes are unused in the underlying
-// socket write buffer.
+// socket write buffer. It returns -1 when the platform doesn't
+// support this feature.
 func (c *Conn) Available() int {
 	return c.available()
 }
