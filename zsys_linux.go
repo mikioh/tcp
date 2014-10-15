@@ -4,6 +4,9 @@
 package tcp
 
 const (
+	sysSIOCINQ  = 0x541b
+	sysSIOCOUTQ = 0x5411
+
 	sysTCPI_OPT_TIMESTAMPS = 0x1
 	sysTCPI_OPT_SACK       = 0x2
 	sysTCPI_OPT_WSCALE     = 0x4

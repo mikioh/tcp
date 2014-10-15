@@ -7,11 +7,18 @@
 package tcp
 
 /*
+#include <sys/ioctl.h>
+
+#include <linux/sockios.h>
+
 #include <netinet/tcp.h>
 */
 import "C"
 
 const (
+	sysSIOCINQ  = C.SIOCINQ
+	sysSIOCOUTQ = C.SIOCOUTQ
+
 	sysTCPI_OPT_TIMESTAMPS = C.TCPI_OPT_TIMESTAMPS
 	sysTCPI_OPT_SACK       = C.TCPI_OPT_SACK
 	sysTCPI_OPT_WSCALE     = C.TCPI_OPT_WSCALE
