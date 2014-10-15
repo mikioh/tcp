@@ -17,3 +17,11 @@ func getsockopt(fd int, level, name int, v unsafe.Pointer, l *sysSockoptLen) err
 	}
 	return nil
 }
+
+func getsockoptIntByIoctl(fd, ioc int) (int, error) {
+	var i int
+	if _, _, errno := syscall.Syscall(syscall.SYS_IOCTL, uintptr(fd), uintptr(ioc), uintptr(unsafe.Pointer(&i))); errno != 0 {
+		return 0, error(errno)
+	}
+	return i, nil
+}

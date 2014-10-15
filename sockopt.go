@@ -8,7 +8,9 @@ import "time"
 
 // Socket options
 const (
-	ssoKeepAliveIdleInterval = iota
+	ssoBuffered = iota
+	ssoAvailable
+	ssoKeepAliveIdleInterval
 	ssoKeepAliveProbeInterval
 	ssoKeepAliveProbes
 	ssoCork

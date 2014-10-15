@@ -40,6 +40,18 @@ type Conn struct {
 	net.TCPConn
 }
 
+// Buffered returns the number of bytes that can be read from the
+// underlying socket read buffer.
+func (c *Conn) Buffered() int {
+	return c.buffered()
+}
+
+// Available returns how many bytes are unused in the underlying
+// socket write buffer.
+func (c *Conn) Available() int {
+	return c.available()
+}
+
 // SetKeepAliveIdleInterval sets the idle interval until the first
 // probe is sent.
 func (c *Conn) SetKeepAliveIdleInterval(d time.Duration) error {

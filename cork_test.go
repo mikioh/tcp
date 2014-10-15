@@ -16,7 +16,7 @@ import (
 
 func TestCorkAndUncork(t *testing.T) {
 	switch runtime.GOOS {
-	case "freebsd", "linux":
+	case "darwin", "freebsd", "linux", "openbsd", "solaris":
 	default:
 		t.Skipf("%s/%s", runtime.GOOS, runtime.GOARCH)
 	}
