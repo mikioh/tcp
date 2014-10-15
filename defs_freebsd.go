@@ -7,11 +7,17 @@
 package tcp
 
 /*
+#include <sys/ioctl.h>
+
 #include <netinet/tcp.h>
 */
 import "C"
 
 const (
+	sysFIONREAD  = C.FIONREAD
+	sysFIONWRITE = C.FIONWRITE
+	sysFIONSPACE = C.FIONSPACE
+
 	sysTCPI_OPT_TIMESTAMPS = C.TCPI_OPT_TIMESTAMPS
 	sysTCPI_OPT_SACK       = C.TCPI_OPT_SACK
 	sysTCPI_OPT_WSCALE     = C.TCPI_OPT_WSCALE

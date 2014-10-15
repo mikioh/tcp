@@ -9,6 +9,8 @@ import (
 	"unsafe"
 )
 
+const sysGETSOCKOPT = 0xf
+
 func socketcall(call int, a0, a1, a2, a3, a4, a5 uintptr) (int, syscall.Errno)
 
 func getsockopt(s, level, name int, v unsafe.Pointer, l *sysSockoptLen) error {

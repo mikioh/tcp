@@ -6,4 +6,4 @@ package tcp
 
 const ianaProtocolTCP = 0x6
 
-type sysSockoptLen uint32
+type sysSockoptLen int32

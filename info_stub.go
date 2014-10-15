@@ -9,3 +9,7 @@ package tcp
 // A SysInfo represents platform-specific information.
 type SysInfo struct {
 }
+
+func (c *Conn) info() (*Info, error) {
+	return nil, errOpNoSupport
+}

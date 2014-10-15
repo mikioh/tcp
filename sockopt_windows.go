@@ -71,7 +71,3 @@ func (c *Conn) setKeepAliveProbes(max int) error {
 func (c *Conn) setCork(on bool) error {
 	return errOpNoSupport
 }
-
-func (c *Conn) info() (*Info, error) {
-	return nil, errOpNoSupport
-}

@@ -6,9 +6,18 @@
 
 package tcp
 
+import "time"
+
 const (
 	sysTCP_KEEPIDLE  = 0x22
-	sysTCP_KEEPCNT   = 0x23
 	sysTCP_KEEPINTVL = 0x24
+	sysTCP_KEEPCNT   = 0x23
 	sysTCP_CORK      = 0x18
 )
+
+var sockOpts = [ssoMax]sockOpt{
+	ssoKeepAliveIdleInterval:  {sysTCP_KEEPIDLE, ssoTypeInt, time.Second},
+	ssoKeepAliveProbeInterval: {sysTCP_KEEPINTVL, ssoTypeInt, time.Second},
+	ssoKeepAliveProbes:        {sysTCP_KEEPCNT, ssoTypeInt, 0},
+	ssoCork:                   {sysTCP_CORK, ssoTypeInt, 0},
+}

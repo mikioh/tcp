@@ -4,10 +4,20 @@
 
 package tcp
 
+import "time"
+
 const (
 	sysTCP_KEEPIDLE  = 0x4
-	sysTCP_KEEPCNT   = 0x6
 	sysTCP_KEEPINTVL = 0x5
+	sysTCP_KEEPCNT   = 0x6
 	sysTCP_CORK      = 0x3
 	sysTCP_INFO      = 0xb
 )
+
+var sockOpts = [ssoMax]sockOpt{
+	ssoKeepAliveIdleInterval:  {sysTCP_KEEPIDLE, ssoTypeInt, time.Second},
+	ssoKeepAliveProbeInterval: {sysTCP_KEEPINTVL, ssoTypeInt, time.Second},
+	ssoKeepAliveProbes:        {sysTCP_KEEPCNT, ssoTypeInt, 0},
+	ssoCork:                   {sysTCP_CORK, ssoTypeInt, 0},
+	ssoInfo:                   {sysTCP_INFO, ssoTypeInfo, 0},
+}

@@ -4,8 +4,8 @@
 
 package tcp
 
-const (
-	sysGETSOCKOPT = 0x76
+const sysTCP_NOPUSH = 0x10
 
-	sysTCP_NOPUSH = 0x10
-)
+var sockOpts = [ssoMax]sockOpt{
+	ssoCork: {sysTCP_NOPUSH, ssoTypeInt, 0},
+}

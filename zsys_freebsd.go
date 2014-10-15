@@ -4,6 +4,10 @@
 package tcp
 
 const (
+	sysFIONREAD  = 0x4004667f
+	sysFIONWRITE = 0x40046677
+	sysFIONSPACE = 0x40046676
+
 	sysTCPI_OPT_TIMESTAMPS = 0x1
 	sysTCPI_OPT_SACK       = 0x2
 	sysTCPI_OPT_WSCALE     = 0x4
