@@ -54,6 +54,7 @@ func TestReadBuffer(t *testing.T) {
 			t.Errorf("got %v; want %v", n, len(m))
 			return
 		}
+		t.Logf("%v bytes buffered to be read", n)
 	}()
 
 	c, err := net.Dial(ln.Addr().Network(), ln.Addr().String())
@@ -109,6 +110,7 @@ func TestWriteBuffer(t *testing.T) {
 			t.Errorf("got %v; want >0", n)
 			return
 		}
+		t.Logf("%v bytes write available", n)
 	}()
 
 	c, err := ln.Accept()
