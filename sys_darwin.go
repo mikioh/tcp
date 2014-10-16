@@ -6,6 +6,8 @@ package tcp
 
 import "time"
 
+type sysSockoptLen int32
+
 const (
 	sysTCP_KEEPALIVE = 0x10
 	sysTCP_KEEPINTVL = 0x101

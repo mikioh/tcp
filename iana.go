@@ -5,5 +5,3 @@
 package tcp
 
 const ianaProtocolTCP = 0x6
-
-type sysSockoptLen int32

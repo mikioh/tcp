@@ -4,6 +4,8 @@
 
 package tcp
 
+type sysSockoptLen int32
+
 const sysTCP_NOPUSH = 0x10
 
 var sockOpts = [ssoMax]sockOpt{
