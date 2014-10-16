@@ -49,7 +49,7 @@ func TestKeepAlive(t *testing.T) {
 	if err := tc.SetKeepAlive(true); err != nil {
 		t.Error(err)
 	}
-	if err := tc.SetKeepAliveIdleInterval(time.Second); err != nil {
+	if err := tc.SetKeepAliveIdleInterval(10 * time.Second); err != nil { // solaris requires 10 seconds as the lowest value
 		t.Error(err)
 	}
 	if err := tc.SetKeepAliveProbeInterval(time.Second); err != nil {
