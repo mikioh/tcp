@@ -16,7 +16,7 @@ import (
 
 func TestReadBuffer(t *testing.T) {
 	switch runtime.GOOS {
-	case "darwin", "dragonfly", "freebsd", "linux":
+	case "darwin", "dragonfly", "freebsd", "linux", "openbsd":
 	default:
 		t.Skipf("%s/%s", runtime.GOOS, runtime.GOARCH)
 	}
