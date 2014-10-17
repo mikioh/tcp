@@ -43,12 +43,15 @@ func TestReadBuffer(t *testing.T) {
 			return
 		}
 		defer c.Close()
+		if err := c.(*net.TCPConn).SetReadBuffer(65535); err != nil {
+			t.Error(err)
+			return
+		}
 		tc, err := tcp.NewConn(c)
 		if err != nil {
 			t.Error(err)
 			return
 		}
-		time.Sleep(5 * time.Millisecond)
 		n := tc.Buffered()
 		if n != len(m) {
 			t.Errorf("got %v; want %v", n, len(m))
@@ -95,6 +98,10 @@ func TestWriteBuffer(t *testing.T) {
 			return
 		}
 		defer c.Close()
+		if err := c.(*net.TCPConn).SetWriteBuffer(65535); err != nil {
+			t.Error(err)
+			return
+		}
 		tc, err := tcp.NewConn(c)
 		if err != nil {
 			t.Error(err)
