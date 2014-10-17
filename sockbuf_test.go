@@ -52,7 +52,8 @@ func TestReadBuffer(t *testing.T) {
 			t.Error(err)
 			return
 		}
-		n := tc.Buffered()
+		time.Sleep(100 * time.Millisecond)
+		n := tc.ReadBufferLen()
 		if n != len(m) {
 			t.Errorf("got %v; want %v", n, len(m))
 			return
@@ -112,7 +113,7 @@ func TestWriteBuffer(t *testing.T) {
 			t.Error(err)
 			return
 		}
-		n := tc.Available()
+		n := tc.WriteBufferSpace()
 		if n <= 0 {
 			t.Errorf("got %v; want >0", n)
 			return

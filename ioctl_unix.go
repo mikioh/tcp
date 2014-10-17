@@ -11,29 +11,29 @@ import (
 	"syscall"
 )
 
-func (c *Conn) buffered() int {
+func (c *Conn) readBufferLen() int {
 	fd, err := c.sysfd()
 	if err != nil {
 		return -1
 	}
-	n, err := getIntByIoctl(fd, &sockOpts[ssoBuffered])
+	n, err := getIntByIoctl(fd, &sockOpts[ssoReadBufferLen])
 	if err != nil {
 		return -1
 	}
 	return n
 }
 
-func (c *Conn) available() int {
+func (c *Conn) writeBufferSpace() int {
 	fd, err := c.sysfd()
 	if err != nil {
 		return -1
 	}
-	n, err := getIntByIoctl(fd, &sockOpts[ssoAvailable])
+	n, err := getIntByIoctl(fd, &sockOpts[ssoWriteBufferSpace])
 	if err != nil {
 		return -1
 	}
 	if runtime.GOOS == "linux" {
-		l, err := syscall.GetsockoptInt(fd, syscall.SOL_SOCKET, syscall.SO_RCVBUF)
+		l, err := syscall.GetsockoptInt(fd, syscall.SOL_SOCKET, syscall.SO_SNDBUF)
 		if err != nil {
 			return -1
 		}

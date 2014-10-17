@@ -18,7 +18,7 @@ const (
 )
 
 var sockOpts = [ssoMax]sockOpt{
-	ssoBuffered:               {sysFIONREAD, ssoTypeInt, 0},
+	ssoReadBufferLen:          {sysFIONREAD, ssoTypeInt, 0},
 	ssoKeepAliveIdleInterval:  {sysTCP_KEEPIDLE, ssoTypeInt, time.Millisecond},
 	ssoKeepAliveProbeInterval: {sysTCP_KEEPINTVL, ssoTypeInt, time.Millisecond},
 	ssoKeepAliveProbes:        {sysTCP_KEEPCNT, ssoTypeInt, 0},

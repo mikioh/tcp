@@ -40,18 +40,18 @@ type Conn struct {
 	net.TCPConn
 }
 
-// Buffered returns the number of bytes that can be read from the
+// ReadBufferLen returns the number of bytes that can be read from the
 // underlying socket read buffer. It returns -1 when the platform
 // doesn't support this feature.
-func (c *Conn) Buffered() int {
-	return c.buffered()
+func (c *Conn) ReadBufferLen() int {
+	return c.readBufferLen()
 }
 
-// Available returns how many bytes are unused in the underlying
-// socket write buffer. It returns -1 when the platform doesn't
-// support this feature.
-func (c *Conn) Available() int {
-	return c.available()
+// WriteBufferSpace returns how many bytes are unused in the
+// underlying socket write buffer. It returns -1 when the platform
+// doesn't support this feature.
+func (c *Conn) WriteBufferSpace() int {
+	return c.writeBufferSpace()
 }
 
 // SetKeepAliveIdleInterval sets the idle interval until the first

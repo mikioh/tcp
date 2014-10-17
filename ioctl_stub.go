@@ -6,10 +6,10 @@
 
 package tcp
 
-func (c *Conn) buffered() int {
+func (c *Conn) readBufferLen() int {
 	return -1
 }
 
-func (c *Conn) available() int {
+func (c *Conn) writeBufferSpace() int {
 	return -1
 }

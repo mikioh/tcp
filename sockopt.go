@@ -8,8 +8,8 @@ import "time"
 
 // Socket options
 const (
-	ssoBuffered = iota
-	ssoAvailable
+	ssoReadBufferLen = iota
+	ssoWriteBufferSpace
 	ssoKeepAliveIdleInterval
 	ssoKeepAliveProbeInterval
 	ssoKeepAliveProbes
