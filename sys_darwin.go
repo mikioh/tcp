@@ -8,17 +8,11 @@ import "time"
 
 type sysSockoptLen int32
 
-const (
-	sysTCP_KEEPALIVE = 0x10
-	sysTCP_KEEPINTVL = 0x101
-	sysTCP_KEEPCNT   = 0x102
-	sysTCP_NOPUSH    = 0x4
-)
-
 var sockOpts = [ssoMax]sockOpt{
-	ssoReadBufferLen:          {sysFIONREAD, ssoTypeInt, 0},
+	ssoBuffered:               {sysFIONREAD, ssoTypeInt, 0},
+	ssoCork:                   {sysTCP_NOPUSH, ssoTypeInt, 0},
+	ssoNotsentLowWatermark:    {sysTCP_NOTSENT_LOWAT, ssoTypeInt, 0},
 	ssoKeepAliveIdleInterval:  {sysTCP_KEEPALIVE, ssoTypeInt, time.Second},
 	ssoKeepAliveProbeInterval: {sysTCP_KEEPINTVL, ssoTypeInt, time.Second},
-	ssoKeepAliveProbes:        {sysTCP_KEEPCNT, ssoTypeInt, 0},
-	ssoCork:                   {sysTCP_NOPUSH, ssoTypeInt, 0},
+	ssoKeepAliveProbeCount:    {sysTCP_KEEPCNT, ssoTypeInt, 0},
 }

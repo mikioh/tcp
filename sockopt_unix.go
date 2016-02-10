@@ -12,71 +12,40 @@ import (
 	"time"
 )
 
-func (c *Conn) setKeepAliveIdleInterval(d time.Duration) error {
-	fd, err := c.sysfd()
-	if err != nil {
-		return err
-	}
+func setCork(s int, on bool) error {
+	return setInt(s, &sockOpts[ssoCork], boolint(on))
+}
+
+func setKeepAliveIdleInterval(s int, d time.Duration) error {
 	d += (sockOpts[ssoKeepAliveIdleInterval].tmu - time.Nanosecond)
 	v := int(d / sockOpts[ssoKeepAliveIdleInterval].tmu)
-	if err := setInt(fd, &sockOpts[ssoKeepAliveIdleInterval], v); err != nil {
-		return err
-	}
-	return nil
+	return setInt(s, &sockOpts[ssoKeepAliveIdleInterval], v)
 }
 
-func (c *Conn) setKeepAliveProbeInterval(d time.Duration) error {
-	fd, err := c.sysfd()
-	if err != nil {
-		return err
-	}
+func setKeepAliveProbeInterval(s int, d time.Duration) error {
 	d += (sockOpts[ssoKeepAliveIdleInterval].tmu - time.Nanosecond)
 	v := int(d / sockOpts[ssoKeepAliveIdleInterval].tmu)
-	if err := setInt(fd, &sockOpts[ssoKeepAliveProbeInterval], v); err != nil {
-		return err
-	}
-	return nil
+	return setInt(s, &sockOpts[ssoKeepAliveProbeInterval], v)
 }
 
-func (c *Conn) setKeepAliveProbes(probes int) error {
-	if probes < 1 {
-		return errInvalidArgument
-	}
-	fd, err := c.sysfd()
-	if err != nil {
-		return err
-	}
-	if err := setInt(fd, &sockOpts[ssoKeepAliveProbes], probes); err != nil {
-		return err
-	}
-	return nil
+func setKeepAliveProbeCount(s int, probes int) error {
+	return setInt(s, &sockOpts[ssoKeepAliveProbeCount], probes)
 }
 
-func (c *Conn) setCork(on bool) error {
-	fd, err := c.sysfd()
-	if err != nil {
-		return err
-	}
-	if err := setInt(fd, &sockOpts[ssoCork], boolint(on)); err != nil {
-		return err
-	}
-	return nil
-}
-
-func getInt(fd int, opt *sockOpt) (int, error) {
+func getInt(s int, opt *sockOpt) (int, error) {
 	if opt.name < 1 || opt.typ != ssoTypeInt {
 		return 0, errOpNoSupport
 	}
-	v, err := syscall.GetsockoptInt(fd, ianaProtocolTCP, opt.name)
+	v, err := syscall.GetsockoptInt(s, ianaProtocolTCP, opt.name)
 	if err != nil {
 		return 0, os.NewSyscallError("getsockopt", err)
 	}
 	return v, nil
 }
 
-func setInt(fd int, opt *sockOpt, v int) error {
+func setInt(s int, opt *sockOpt, v int) error {
 	if opt.name < 1 || opt.typ != ssoTypeInt {
 		return errOpNoSupport
 	}
-	return os.NewSyscallError("setsockopt", syscall.SetsockoptInt(fd, ianaProtocolTCP, opt.name, v))
+	return os.NewSyscallError("setsockopt", syscall.SetsockoptInt(s, ianaProtocolTCP, opt.name, v))
 }

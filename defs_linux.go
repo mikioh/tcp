@@ -10,14 +10,20 @@ package tcp
 #include <sys/ioctl.h>
 
 #include <linux/sockios.h>
-
-#include <netinet/tcp.h>
+#include <linux/tcp.h>
 */
 import "C"
 
 const (
 	sysSIOCINQ  = C.SIOCINQ
 	sysSIOCOUTQ = C.SIOCOUTQ
+
+	sysTCP_KEEPIDLE      = C.TCP_KEEPIDLE
+	sysTCP_KEEPINTVL     = C.TCP_KEEPINTVL
+	sysTCP_KEEPCNT       = C.TCP_KEEPCNT
+	sysTCP_CORK          = C.TCP_CORK
+	sysTCP_INFO          = C.TCP_INFO
+	sysTCP_NOTSENT_LOWAT = C.TCP_NOTSENT_LOWAT
 
 	sysTCPI_OPT_TIMESTAMPS = C.TCPI_OPT_TIMESTAMPS
 	sysTCPI_OPT_SACK       = C.TCPI_OPT_SACK

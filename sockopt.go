@@ -8,12 +8,13 @@ import "time"
 
 // Socket options
 const (
-	ssoReadBufferLen = iota
-	ssoWriteBufferSpace
+	ssoBuffered = iota
+	ssoAvailable
+	ssoCork
+	ssoNotsentLowWatermark
 	ssoKeepAliveIdleInterval
 	ssoKeepAliveProbeInterval
-	ssoKeepAliveProbes
-	ssoCork
+	ssoKeepAliveProbeCount
 	ssoInfo
 	ssoMax
 )

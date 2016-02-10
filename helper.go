@@ -9,6 +9,7 @@ import "errors"
 var (
 	errOpNoSupport     = errors.New("operation not supported")
 	errInvalidConnType = errors.New("invalid conn type")
+	errInvalidArgument = errors.New("invalid argument")
 )
 
 func boolint(b bool) int {

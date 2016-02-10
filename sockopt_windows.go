@@ -12,6 +12,10 @@ import (
 	"unsafe"
 )
 
+func setCork(s syscall.Handle, on bool) error {
+	return errOpNoSupport
+}
+
 var keepAlive = struct {
 	sync.RWMutex
 	syscall.TCPKeepalive
@@ -23,11 +27,7 @@ var keepAlive = struct {
 	},
 }
 
-func (c *Conn) setKeepAliveIdleInterval(d time.Duration) error {
-	fd, err := c.sysfd()
-	if err != nil {
-		return err
-	}
+func setKeepAliveIdleInterval(s syscall.Handle, d time.Duration) error {
 	keepAlive.Lock()
 	defer keepAlive.Unlock()
 	d += (time.Millisecond - time.Nanosecond)
@@ -36,18 +36,14 @@ func (c *Conn) setKeepAliveIdleInterval(d time.Duration) error {
 	keepAlive.Time = msecs
 	rv := uint32(0)
 	siz := uint32(unsafe.Sizeof(keepAlive))
-	if err := syscall.WSAIoctl(fd, syscall.SIO_KEEPALIVE_VALS, (*byte)(unsafe.Pointer(&keepAlive)), siz, nil, 0, &rv, nil, 0); err != nil {
+	if err := syscall.WSAIoctl(s, syscall.SIO_KEEPALIVE_VALS, (*byte)(unsafe.Pointer(&keepAlive)), siz, nil, 0, &rv, nil, 0); err != nil {
 		keepAlive.Time = prev
 		return os.NewSyscallError("WSAIoctl", err)
 	}
 	return nil
 }
 
-func (c *Conn) setKeepAliveProbeInterval(d time.Duration) error {
-	fd, err := c.sysfd()
-	if err != nil {
-		return err
-	}
+func setKeepAliveProbeInterval(s syscall.Handle, d time.Duration) error {
 	keepAlive.Lock()
 	defer keepAlive.Unlock()
 	d += (time.Millisecond - time.Nanosecond)
@@ -56,18 +52,32 @@ func (c *Conn) setKeepAliveProbeInterval(d time.Duration) error {
 	keepAlive.Interval = msecs
 	rv := uint32(0)
 	siz := uint32(unsafe.Sizeof(keepAlive))
-	if err := syscall.WSAIoctl(fd, syscall.SIO_KEEPALIVE_VALS, (*byte)(unsafe.Pointer(&keepAlive)), siz, nil, 0, &rv, nil, 0); err != nil {
+	if err := syscall.WSAIoctl(s, syscall.SIO_KEEPALIVE_VALS, (*byte)(unsafe.Pointer(&keepAlive)), siz, nil, 0, &rv, nil, 0); err != nil {
 		keepAlive.Interval = prev
 		return os.NewSyscallError("WSAIoctl", err)
 	}
 	return nil
 }
 
-func (c *Conn) setKeepAliveProbes(max int) error {
+func setKeepAliveProbeCount(s syscall.Handle, n int) error {
 	// See http://msdn.microsoft.com/en-us/library/windows/desktop/dd877220(v=vs.85).aspx
 	return errOpNoSupport
 }
 
-func (c *Conn) setCork(on bool) error {
-	return errOpNoSupport
+func getInt(s syscall.Handle, opt *sockOpt) (int, error) {
+	if opt.name < 1 || opt.typ != ssoTypeInt {
+		return 0, errOpNoSupport
+	}
+	v, err := syscall.GetsockoptInt(s, ianaProtocolTCP, opt.name)
+	if err != nil {
+		return 0, os.NewSyscallError("getsockopt", err)
+	}
+	return v, nil
+}
+
+func setInt(s syscall.Handle, opt *sockOpt, v int) error {
+	if opt.name < 1 || opt.typ != ssoTypeInt {
+		return errOpNoSupport
+	}
+	return os.NewSyscallError("setsockopt", syscall.SetsockoptInt(s, ianaProtocolTCP, opt.name, v))
 }

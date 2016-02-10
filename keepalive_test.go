@@ -13,7 +13,7 @@ import (
 	"github.com/mikioh/tcp"
 )
 
-func TestKeepAlive(t *testing.T) {
+func TestKeepAliveOptions(t *testing.T) {
 	switch runtime.GOOS {
 	case "darwin", "dragonfly", "freebsd", "linux", "netbsd", "solaris", "windows":
 	default:
@@ -46,16 +46,16 @@ func TestKeepAlive(t *testing.T) {
 		t.Fatal(err)
 	}
 	defer tc.Close()
+
+	opt := tcp.KeepAliveOptions{
+		IdleInterval:  10 * time.Second, // solaris requires 10 seconds as the lowest value
+		ProbeInterval: time.Second,
+		ProbeCount:    1,
+	}
 	if err := tc.SetKeepAlive(true); err != nil {
 		t.Error(err)
 	}
-	if err := tc.SetKeepAliveIdleInterval(10 * time.Second); err != nil { // solaris requires 10 seconds as the lowest value
-		t.Error(err)
-	}
-	if err := tc.SetKeepAliveProbeInterval(time.Second); err != nil {
-		t.Error(err)
-	}
-	if err := tc.SetKeepAliveProbes(1); err != nil {
+	if err := tc.SetKeepAliveOptions(&opt); err != nil {
 		t.Error(err)
 	}
 }

@@ -18,8 +18,8 @@ const (
 )
 
 var sockOpts = [ssoMax]sockOpt{
+	ssoCork:                   {sysTCP_CORK, ssoTypeInt, 0},
 	ssoKeepAliveIdleInterval:  {sysTCP_KEEPIDLE, ssoTypeInt, time.Second},
 	ssoKeepAliveProbeInterval: {sysTCP_KEEPINTVL, ssoTypeInt, time.Second},
-	ssoKeepAliveProbes:        {sysTCP_KEEPCNT, ssoTypeInt, 0},
-	ssoCork:                   {sysTCP_CORK, ssoTypeInt, 0},
+	ssoKeepAliveProbeCount:    {sysTCP_KEEPCNT, ssoTypeInt, 0},
 }

@@ -20,9 +20,9 @@
 //
 // Monitoring a TCP connection
 //
-// For now only Linux and FreeBSD kernels support the TCP information
-// option. A custom net.Dial function that hooks up an underlying
-// transport connection must be prepared before monitoring.
+// For now only Darwin, FreeBSD and Linux kernels support the TCP
+// information option. A custom net.Dial function that hooks up an
+// underlying transport connection must be prepared before monitoring.
 //
 //	func dialWithTCPConnMonitor(network, address string) (net.Conn, error) {
 //		d := net.Dialer{}
@@ -45,10 +45,10 @@
 //
 //	tr := &http.Transport{
 //		Dial:            dialWithTCPConnMonitor,
-//		TLSClientConfig: &tls.Config{ServerName: host},
+//		TLSClientConfig: &tls.Config{ServerName: "golang.org"},
 //	}
 //	client := http.Client{Transport: tr}
-//	resp, err := client.Get(url)
+//	resp, err := client.Get("https://golang.org")
 //	if err != nil {
 //		// error handling
 //	}

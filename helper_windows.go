@@ -10,11 +10,11 @@ import (
 )
 
 func (c *Conn) sysfd() (syscall.Handle, error) {
-	cv := reflect.ValueOf(c)
+	cv := reflect.ValueOf(&c.TCPConn)
 	switch ce := cv.Elem(); ce.Kind() {
 	case reflect.Struct:
-		netfd := ce.FieldByName("conn").FieldByName("fd")
-		switch fe := netfd.Elem(); fe.Kind() {
+		nfd := ce.FieldByName("conn").FieldByName("fd")
+		switch fe := nfd.Elem(); fe.Kind() {
 		case reflect.Struct:
 			fd := fe.FieldByName("sysfd")
 			return syscall.Handle(fd.Uint()), nil

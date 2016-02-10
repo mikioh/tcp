@@ -23,13 +23,13 @@ type SysInfo struct {
 }
 
 func (c *Conn) info() (*Info, error) {
-	fd, err := c.sysfd()
+	s, err := c.sysfd()
 	if err != nil {
 		return nil, err
 	}
 	var v sysTCPInfo
 	l := sysSockoptLen(sysSizeofTCPInfo)
-	if err := getsockopt(fd, ianaProtocolTCP, sysTCP_INFO, unsafe.Pointer(&v), &l); err != nil {
+	if err := getsockopt(s, ianaProtocolTCP, sysTCP_INFO, unsafe.Pointer(&v), &l); err != nil {
 		return nil, os.NewSyscallError("getsockopt", err)
 	}
 	return parseInfo(&v), nil

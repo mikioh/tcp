@@ -11,29 +11,21 @@ import (
 	"syscall"
 )
 
-func (c *Conn) readBufferLen() int {
-	fd, err := c.sysfd()
-	if err != nil {
-		return -1
-	}
-	n, err := getIntByIoctl(fd, &sockOpts[ssoReadBufferLen])
+func buffered(s int) int {
+	n, err := ioctlGetInt(s, &sockOpts[ssoBuffered])
 	if err != nil {
 		return -1
 	}
 	return n
 }
 
-func (c *Conn) writeBufferSpace() int {
-	fd, err := c.sysfd()
-	if err != nil {
-		return -1
-	}
-	n, err := getIntByIoctl(fd, &sockOpts[ssoWriteBufferSpace])
+func available(s int) int {
+	n, err := ioctlGetInt(s, &sockOpts[ssoAvailable])
 	if err != nil {
 		return -1
 	}
 	if runtime.GOOS == "linux" {
-		l, err := syscall.GetsockoptInt(fd, syscall.SOL_SOCKET, syscall.SO_SNDBUF)
+		l, err := syscall.GetsockoptInt(s, syscall.SOL_SOCKET, syscall.SO_SNDBUF)
 		if err != nil {
 			return -1
 		}
@@ -42,11 +34,11 @@ func (c *Conn) writeBufferSpace() int {
 	return n
 }
 
-func getIntByIoctl(fd int, opt *sockOpt) (int, error) {
+func ioctlGetInt(s int, opt *sockOpt) (int, error) {
 	if opt.name < 1 || opt.typ != ssoTypeInt {
 		return 0, errOpNoSupport
 	}
-	v, err := getsockoptIntByIoctl(fd, opt.name)
+	v, err := ioctl(s, opt.name)
 	if err != nil {
 		return 0, err
 	}

@@ -62,7 +62,7 @@ type Info struct {
 	RTO              time.Duration      `json:"rto"`                 // retransmission timeout
 	ATO              time.Duration      `json:"ato"`                 // delayed acknowledgement timeout [linux only]
 	LastDataSent     time.Duration      `json:"last data sent"`      // since last data sent [linux only]
-	LastDataReceived time.Duration      `json:"last data rcvd"`      // since last data received
+	LastDataReceived time.Duration      `json:"last data rcvd"`      // since last data received [freebsd and linux only]
 	LastAckReceived  time.Duration      `json:"last ack rcvd"`       // since last ack received [linux only]
 	CC               *CongestionControl `json:"cc,omitempty"`        // congestion control information
 	SysInfo          *SysInfo           `json:"sys info,omitempty"`  // platform-specific information

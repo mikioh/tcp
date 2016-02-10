@@ -14,7 +14,119 @@ import (
 	"github.com/mikioh/tcp"
 )
 
-func TestReadBuffer(t *testing.T) {
+func TestCorkAndUncork(t *testing.T) {
+	switch runtime.GOOS {
+	case "darwin", "dragonfly", "freebsd", "linux", "openbsd", "solaris":
+	default:
+		t.Skipf("%s/%s", runtime.GOOS, runtime.GOARCH)
+	}
+
+	const N = 1280
+	const M = N / 10
+
+	ln, err := net.Listen("tcp", "127.0.0.1:0")
+	if err != nil {
+		t.Fatal(err)
+	}
+	defer ln.Close()
+
+	var wg sync.WaitGroup
+	wg.Add(1)
+
+	go func() {
+		defer wg.Done()
+		if err := ln.(*net.TCPListener).SetDeadline(time.Now().Add(200 * time.Millisecond)); err != nil {
+			t.Error(err)
+			return
+		}
+		c, err := ln.Accept()
+		if err != nil {
+			t.Error(err)
+			return
+		}
+		defer c.Close()
+		b := make([]byte, N)
+		n, err := c.Read(b)
+		if err != nil {
+			t.Error(err)
+			return
+		}
+		if n != N {
+			t.Errorf("got %v; want %v", n, N)
+			return
+		}
+	}()
+
+	c, err := net.Dial(ln.Addr().Network(), ln.Addr().String())
+	if err != nil {
+		t.Fatal(err)
+	}
+	defer c.Close()
+	tc, err := tcp.NewConn(c)
+	if err != nil {
+		t.Fatal(err)
+	}
+	defer tc.Close()
+	if err := tc.Cork(); err != nil {
+		t.Fatal(err)
+	}
+	b := make([]byte, N)
+	for i := 0; i+M <= N; i += M {
+		if _, err := tc.Write(b[i : i+M]); err != nil {
+			t.Fatal(err)
+		}
+		time.Sleep(5 * time.Millisecond)
+	}
+	if err := tc.Uncork(); err != nil {
+		t.Fatal(err)
+	}
+
+	wg.Wait()
+}
+
+func TestBufferOptions(t *testing.T) {
+	switch runtime.GOOS {
+	case "darwin", "linux":
+	default:
+		t.Skipf("%s/%s", runtime.GOOS, runtime.GOARCH)
+	}
+
+	ln, err := net.Listen("tcp", "127.0.0.1:0")
+	if err != nil {
+		t.Fatal(err)
+	}
+	defer ln.Close()
+
+	go func() {
+		for {
+			c, err := ln.Accept()
+			if err != nil {
+				break
+			}
+			defer c.Close()
+		}
+	}()
+
+	c, err := net.Dial(ln.Addr().Network(), ln.Addr().String())
+	if err != nil {
+		t.Fatal(err)
+	}
+	defer c.Close()
+	tc, err := tcp.NewConn(c)
+	if err != nil {
+		t.Fatal(err)
+	}
+	defer tc.Close()
+
+	opt := tcp.BufferOptions{
+		NotsentLowWatermark: 1024,
+	}
+	if err := tc.SetBufferOptions(&opt); err != nil {
+		t.Error(err)
+	}
+}
+
+func TestBuffered(t *testing.T) {
 	switch runtime.GOOS {
 	case "darwin", "dragonfly", "freebsd", "linux", "netbsd", "openbsd":
 	default:
@@ -53,7 +165,7 @@ func TestReadBuffer(t *testing.T) {
 			return
 		}
 		time.Sleep(100 * time.Millisecond)
-		n := tc.ReadBufferLen()
+		n := tc.Buffered()
 		if n != len(m) {
 			t.Errorf("got %v; want %v", n, len(m))
 			return
@@ -73,7 +185,7 @@ func TestReadBuffer(t *testing.T) {
 	wg.Wait()
 }
 
-func TestWriteBuffer(t *testing.T) {
+func TestAvailable(t *testing.T) {
 	switch runtime.GOOS {
 	case "freebsd", "linux", "netbsd":
 	default:
@@ -113,7 +225,7 @@ func TestWriteBuffer(t *testing.T) {
 			t.Error(err)
 			return
 		}
-		n := tc.WriteBufferSpace()
+		n := tc.Available()
 		if n <= 0 {
 			t.Errorf("got %v; want >0", n)
 			return
