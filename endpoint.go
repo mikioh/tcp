@@ -129,7 +129,11 @@ func (c *Conn) Uncork() error {
 // Info returns information of current connection.
 // For now this option is supported on Darwin, FreeBSD and Linux.
 func (c *Conn) Info() (*Info, error) {
-	return c.info()
+	s, err := c.sysfd()
+	if err != nil {
+		return nil, err
+	}
+	return info(s)
 }
 
 // NewConn returns a new Conn.

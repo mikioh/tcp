@@ -16,11 +16,7 @@ type SysInfo struct {
 	ReceiverWindow uint `json:"rcv wnd"` // advertised receiver window in bytes
 }
 
-func (c *Conn) info() (*Info, error) {
-	s, err := c.sysfd()
-	if err != nil {
-		return nil, err
-	}
+func info(s int) (*Info, error) {
 	var v sysTCPConnInfo
 	l := sysSockoptLen(sysSizeofTCPConnInfo)
 	if err := getsockopt(s, ianaProtocolTCP, sysTCP_CONNECTION_INFO, unsafe.Pointer(&v), &l); err != nil {

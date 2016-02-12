@@ -43,11 +43,7 @@ type SysInfo struct {
 	ForwardAckSegs  uint       `json:"fack segs"`    // # of forward ack'd segments in transmission queue
 }
 
-func (c *Conn) info() (*Info, error) {
-	s, err := c.sysfd()
-	if err != nil {
-		return nil, err
-	}
+func info(s int) (*Info, error) {
 	var v sysTCPInfo
 	l := sysSockoptLen(sysSizeofTCPInfo)
 	if err := getsockopt(s, ianaProtocolTCP, sysTCP_INFO, unsafe.Pointer(&v), &l); err != nil {

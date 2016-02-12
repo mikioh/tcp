@@ -2,14 +2,14 @@
 // Use of this source code is governed by a BSD-style
 // license that can be found in the LICENSE file.
 
-// +build !darwin,!freebsd,!linux,!windows
-
 package tcp
+
+import "syscall"
 
 // A SysInfo represents platform-specific information.
 type SysInfo struct {
 }
 
-func info(s int) (*Info, error) {
+func info(s syscall.Handle) (*Info, error) {
 	return nil, errOpNoSupport
 }
