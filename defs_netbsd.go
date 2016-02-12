@@ -8,6 +8,8 @@ package tcp
 
 /*
 #include <sys/ioctl.h>
+
+#include <netinet/tcp.h>
 */
 import "C"
 
@@ -15,4 +17,8 @@ const (
 	sysFIONREAD  = C.FIONREAD
 	sysFIONWRITE = C.FIONWRITE
 	sysFIONSPACE = C.FIONSPACE
+
+	sysTCP_KEEPIDLE  = C.TCP_KEEPIDLE
+	sysTCP_KEEPINTVL = C.TCP_KEEPINTVL
+	sysTCP_KEEPCNT   = C.TCP_KEEPCNT
 )

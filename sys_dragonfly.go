@@ -10,13 +10,6 @@ import "time"
 
 type sysSockoptLen int32
 
-const (
-	sysTCP_KEEPIDLE  = 0x100
-	sysTCP_KEEPINTVL = 0x200
-	sysTCP_KEEPCNT   = 0x400
-	sysTCP_NOPUSH    = 0x4
-)
-
 var sockOpts = [ssoMax]sockOpt{
 	ssoBuffered:               {sysFIONREAD, ssoTypeInt, 0},
 	ssoCork:                   {sysTCP_NOPUSH, ssoTypeInt, 0},

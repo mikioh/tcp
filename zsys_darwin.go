@@ -6,10 +6,10 @@ package tcp
 const (
 	sysFIONREAD = 0x4004667f
 
+	sysTCP_NOPUSH          = 0x4
 	sysTCP_KEEPALIVE       = 0x10
 	sysTCP_KEEPINTVL       = 0x101
 	sysTCP_KEEPCNT         = 0x102
-	sysTCP_NOPUSH          = 0x4
 	sysTCP_CONNECTION_INFO = 0x106
 	sysTCP_NOTSENT_LOWAT   = 0x201
 

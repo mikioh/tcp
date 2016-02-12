@@ -7,10 +7,10 @@ const (
 	sysSIOCINQ  = 0x541b
 	sysSIOCOUTQ = 0x5411
 
+	sysTCP_CORK          = 0x3
 	sysTCP_KEEPIDLE      = 0x4
 	sysTCP_KEEPINTVL     = 0x5
 	sysTCP_KEEPCNT       = 0x6
-	sysTCP_CORK          = 0x3
 	sysTCP_INFO          = 0xb
 	sysTCP_NOTSENT_LOWAT = 0x19
 

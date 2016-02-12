@@ -8,9 +8,13 @@ package tcp
 
 /*
 #include <sys/ioctl.h>
+
+#include <netinet/tcp.h>
 */
 import "C"
 
 const (
 	sysFIONREAD = C.FIONREAD
+
+	sysTCP_NOPUSH = C.TCP_NOPUSH
 )

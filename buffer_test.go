@@ -16,7 +16,9 @@ import (
 
 func TestCorkAndUncork(t *testing.T) {
 	switch runtime.GOOS {
-	case "darwin", "dragonfly", "freebsd", "linux", "openbsd", "solaris":
+	case "darwin", "freebsd", "linux", "openbsd", "solaris":
+	case "dragonfly":
+		t.Log("you may need to adjust the net.inet.tcp.disable_nopush kernel state")
 	default:
 		t.Skipf("%s/%s", runtime.GOOS, runtime.GOARCH)
 	}
