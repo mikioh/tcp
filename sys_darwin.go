@@ -11,7 +11,7 @@ type sysSockoptLen int32
 var sockOpts = [ssoMax]sockOpt{
 	ssoBuffered:               {sysFIONREAD, ssoTypeInt, 0},
 	ssoCork:                   {sysTCP_NOPUSH, ssoTypeInt, 0},
-	ssoNotsentLowWatermark:    {sysTCP_NOTSENT_LOWAT, ssoTypeInt, 0},
+	ssoUnsentThreshold:        {sysTCP_NOTSENT_LOWAT, ssoTypeInt, 0},
 	ssoKeepAliveIdleInterval:  {sysTCP_KEEPALIVE, ssoTypeInt, time.Second},
 	ssoKeepAliveProbeInterval: {sysTCP_KEEPINTVL, ssoTypeInt, time.Second},
 	ssoKeepAliveProbeCount:    {sysTCP_KEEPCNT, ssoTypeInt, 0},

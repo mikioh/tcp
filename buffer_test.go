@@ -121,7 +121,7 @@ func TestBufferOptions(t *testing.T) {
 	defer tc.Close()
 
 	opt := tcp.BufferOptions{
-		NotsentLowWatermark: 1024,
+		UnsentThreshold: 1024,
 	}
 	if err := tc.SetBufferOptions(&opt); err != nil {
 		t.Error(err)

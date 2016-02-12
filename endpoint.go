@@ -41,17 +41,17 @@ func (c *Conn) SetKeepAliveOptions(opt *KeepAliveOptions) error {
 	if err != nil {
 		return err
 	}
-	if opt.IdleInterval > 0 {
+	if opt.IdleInterval >= 0 { // BSD variants accept 0, Linux doesn't
 		if err := setKeepAliveIdleInterval(s, opt.IdleInterval); err != nil {
 			return err
 		}
 	}
-	if opt.ProbeInterval > 0 {
+	if opt.ProbeInterval >= 0 { // BSD variants accept 0, Linux doesn't
 		if err := setKeepAliveProbeInterval(s, opt.ProbeInterval); err != nil {
 			return err
 		}
 	}
-	if opt.ProbeCount > 0 {
+	if opt.ProbeCount >= 0 { // BSD variants accept 0, Linux doesn't
 		if err := setKeepAliveProbeCount(s, opt.ProbeCount); err != nil {
 			return err
 		}
@@ -63,11 +63,11 @@ func (c *Conn) SetKeepAliveOptions(opt *KeepAliveOptions) error {
 type BufferOptions struct {
 	// The runtime-integrated network poller doesn't report that
 	// the connection is writable while the amount of unsent TCP
-	// data size is greater than NotsentLowWatermark.
+	// data size is greater than UnsentThreshold.
 	//
 	// For now only Darwin and Linux support this option.
 	// See TCP_NOTSENT_LOWAT for further information.
-	NotsentLowWatermark int
+	UnsentThreshold int
 }
 
 // SetBufferOptions sets buffer options.
@@ -76,8 +76,8 @@ func (c *Conn) SetBufferOptions(opt *BufferOptions) error {
 	if err != nil {
 		return err
 	}
-	if opt.NotsentLowWatermark > 0 {
-		if err := setInt(s, &sockOpts[ssoNotsentLowWatermark], opt.NotsentLowWatermark); err != nil {
+	if opt.UnsentThreshold >= 0 {
+		if err := setInt(s, &sockOpts[ssoUnsentThreshold], opt.UnsentThreshold); err != nil {
 			return err
 		}
 	}

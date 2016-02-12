@@ -11,7 +11,7 @@ const (
 	ssoBuffered = iota
 	ssoAvailable
 	ssoCork
-	ssoNotsentLowWatermark
+	ssoUnsentThreshold
 	ssoKeepAliveIdleInterval
 	ssoKeepAliveProbeInterval
 	ssoKeepAliveProbeCount
