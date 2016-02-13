@@ -6,6 +6,4 @@
 
 package tcp
 
-func (c *Conn) sysfd() (int, error) {
-	return 0, errOpNoSupport
-}
+func (c *Conn) sysfd() (int, error) { return 0, errOpNoSupport }
