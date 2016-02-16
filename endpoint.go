@@ -18,7 +18,7 @@ type Conn struct {
 	net.TCPConn
 }
 
-// KeepAliveOptions represents keepalive options.
+// A KeepAliveOptions represents keepalive options.
 type KeepAliveOptions struct {
 	// IdleInterval is the idle interval until the first probe is
 	// sent.
@@ -59,11 +59,11 @@ func (c *Conn) SetKeepAliveOptions(opt *KeepAliveOptions) error {
 	return nil
 }
 
-// BufferOptions represents buffer options.
+// A BufferOptions represents buffer options.
 type BufferOptions struct {
 	// The runtime-integrated network poller doesn't report that
-	// the connection is writable while the amount of unsent TCP
-	// data size is greater than UnsentThreshold.
+	// the connection is writable while the amount of unsent data
+	// size is greater than UnsentThreshold.
 	//
 	// For now only Darwin and Linux support this option.
 	// See TCP_NOTSENT_LOWAT for further information.
