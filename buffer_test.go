@@ -54,7 +54,7 @@ func TestCorkAndUncork(t *testing.T) {
 			return
 		}
 		if n != N {
-			t.Errorf("got %v; want %v", n, N)
+			t.Errorf("got %d; want %d", n, N)
 			return
 		}
 	}()
@@ -169,7 +169,7 @@ func TestBuffered(t *testing.T) {
 		time.Sleep(100 * time.Millisecond)
 		n := tc.Buffered()
 		if n != len(m) {
-			t.Errorf("got %v; want %v", n, len(m))
+			t.Errorf("got %d; want %d", n, len(m))
 			return
 		}
 		t.Logf("%v bytes buffered to be read", n)
@@ -229,10 +229,10 @@ func TestAvailable(t *testing.T) {
 		}
 		n := tc.Available()
 		if n <= 0 {
-			t.Errorf("got %v; want >0", n)
+			t.Errorf("got %d; want >0", n)
 			return
 		}
-		t.Logf("%v bytes write available", n)
+		t.Logf("%d bytes write available", n)
 	}()
 
 	c, err := ln.Accept()
