@@ -33,7 +33,6 @@ func (st CAState) String() string {
 type SysInfo struct {
 	PathMTU         uint       `json:"path mtu"`     // path maximum transmission unit
 	AdvertisedMSS   MaxSegSize `json:"adv mss"`      // advertised maximum segment size
-	ReceiverWindow  uint       `json:"rcv wnd"`      // advertised receiver window in bytes
 	CAState         CAState    `json:"ca state"`     // state of congestion avoidance
 	KeepAliveProbes uint       `json:"ka probes"`    // # of keep alive probes sent
 	UnackSegs       uint       `json:"unack segs"`   // # of unack'd segments in transmission queue
@@ -44,12 +43,12 @@ type SysInfo struct {
 }
 
 func info(s int) (*Info, error) {
-	var v sysTCPInfo
+	var sti sysTCPInfo
 	l := uint32(sysSizeofTCPInfo)
-	if err := getsockopt(s, ianaProtocolTCP, sysTCP_INFO, unsafe.Pointer(&v), &l); err != nil {
+	if err := getsockopt(s, ianaProtocolTCP, sysTCP_INFO, unsafe.Pointer(&sti), &l); err != nil {
 		return nil, os.NewSyscallError("getsockopt", err)
 	}
-	return parseInfo(&v), nil
+	return parseInfo(&sti), nil
 }
 
 var sysStates = [12]State{Unknown, Established, SynSent, SynReceived, FinWait1, FinWait2, TimeWait, Closed, CloseWait, LastAck, Listen, Closing}
@@ -64,6 +63,8 @@ func parseInfo(sti *sysTCPInfo) *Info {
 		ti.Options = append(ti.Options, Timestamps(true))
 		ti.PeerOptions = append(ti.PeerOptions, Timestamps(true))
 	}
+	ti.SenderMSS = MaxSegSize(sti.Snd_mss)
+	ti.ReceiverMSS = MaxSegSize(sti.Rcv_mss)
 	ti.RTT = time.Duration(sti.Rtt) * time.Microsecond
 	ti.RTTVar = time.Duration(sti.Rttvar) * time.Microsecond
 	ti.RTO = time.Duration(sti.Rto) * time.Microsecond
@@ -71,17 +72,18 @@ func parseInfo(sti *sysTCPInfo) *Info {
 	ti.LastDataSent = time.Duration(sti.Last_data_sent) * time.Millisecond
 	ti.LastDataReceived = time.Duration(sti.Last_data_recv) * time.Millisecond
 	ti.LastAckReceived = time.Duration(sti.Last_ack_recv) * time.Millisecond
-	ti.CC = &CongestionControl{
-		SenderMSS:           MaxSegSize(sti.Snd_mss),
-		ReceiverMSS:         MaxSegSize(sti.Rcv_mss),
+	ti.FlowControl = &FlowControl{
+		ReceiverWindow: uint(sti.Rcv_space),
+	}
+	ti.CongestionControl = &CongestionControl{
 		SenderSSThreshold:   uint(sti.Snd_ssthresh),
 		ReceiverSSThreshold: uint(sti.Rcv_ssthresh),
 		SenderWindow:        uint(sti.Snd_cwnd),
 	}
 	ti.SysInfo = &SysInfo{
-		PathMTU:         uint(sti.Pmtu),
-		AdvertisedMSS:   MaxSegSize(sti.Advmss),
-		ReceiverWindow:  uint(sti.Rcv_space),
+		PathMTU:       uint(sti.Pmtu),
+		AdvertisedMSS: MaxSegSize(sti.Advmss),
+
 		CAState:         CAState(sti.Ca_state),
 		KeepAliveProbes: uint(sti.Probes),
 		UnackSegs:       uint(sti.Unacked),
