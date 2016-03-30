@@ -126,7 +126,7 @@ type SysCongestionControl struct {
 // A CongestionControlInfo represents congestion control
 // algorithm-specific information.
 type CongestionControlInfo interface {
-	Len() int
+	String() string
 }
 
 // A VegasInfo represents TCP Vegas congestion control information.
@@ -138,9 +138,7 @@ type VegasInfo struct {
 }
 
 // Len implements the Len method of CongestionControlInfo interface.
-func (vi *VegasInfo) Len() int {
-	return sysSizeofTCPVegasInfo
-}
+func (vi *VegasInfo) String() string { return "vegas" }
 
 // A CEState represents a state of ECN congestion encountered (CE)
 // codepoint.
@@ -157,9 +155,7 @@ type DCTCPInfo struct {
 }
 
 // Len implements the Len method of CongestionControlInfo interface.
-func (di *DCTCPInfo) Len() int {
-	return sysSizeofTCPDCTCPInfo
-}
+func (di *DCTCPInfo) String() string { return "dctcp" }
 
 func parseSysCC(name string, stcci *sysTCPCCInfo) *SysCongestionControl {
 	scc := SysCongestionControl{Algo: name}
