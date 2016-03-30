@@ -45,7 +45,6 @@ func TestKeepAliveOptions(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	defer tc.Close()
 
 	opt := tcp.KeepAliveOptions{
 		IdleInterval:  10 * time.Second, // solaris requires 10 seconds as the lowest value

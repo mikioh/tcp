@@ -68,7 +68,6 @@ func TestCorkAndUncork(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	defer tc.Close()
 	if err := tc.Cork(); err != nil {
 		t.Fatal(err)
 	}
@@ -118,7 +117,6 @@ func TestBufferOptions(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	defer tc.Close()
 
 	opt := tcp.BufferOptions{
 		UnsentThreshold: 1024,
@@ -222,7 +220,6 @@ func TestAvailable(t *testing.T) {
 			t.Error(err)
 			return
 		}
-		defer tc.Close()
 		if _, err := c.Write(m); err != nil {
 			t.Error(err)
 			return
