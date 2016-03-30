@@ -66,8 +66,8 @@ type Info struct {
 	LastDataSent      time.Duration      `json:"last data sent"`      // since last data sent [linux only]
 	LastDataReceived  time.Duration      `json:"last data rcvd"`      // since last data received [freebsd and linux only]
 	LastAckReceived   time.Duration      `json:"last ack rcvd"`       // since last ack received [linux only]
-	FlowControl       *FlowControl       `json:"flowctl,omitempty"`   // flow control information
-	CongestionControl *CongestionControl `json:"congctl,omitempty"`   // congestion control information
+	FlowControl       *FlowControl       `json:"flow ctl,omitempty"`  // flow control information
+	CongestionControl *CongestionControl `json:"cong ctl,omitempty"`  // congestion control information
 	SysInfo           *SysInfo           `json:"sys info,omitempty"`  // platform-specific information
 }
 
@@ -100,10 +100,10 @@ func (info *Info) MarshalJSON() ([]byte, error) {
 	raw["last data rcvd"] = info.LastDataReceived
 	raw["last ack rcvd"] = info.LastAckReceived
 	if info.FlowControl != nil {
-		raw["flowctl"] = info.FlowControl
+		raw["flow ctl"] = info.FlowControl
 	}
 	if info.CongestionControl != nil {
-		raw["congctl"] = info.CongestionControl
+		raw["cong ctl"] = info.CongestionControl
 	}
 	if info.SysInfo != nil {
 		raw["sys info"] = info.SysInfo
@@ -118,7 +118,8 @@ type FlowControl struct {
 
 // A CongestionControl represents TCP congestion control information.
 type CongestionControl struct {
-	SenderSSThreshold   uint `json:"snd ssthresh"` // slow start threshold for sender
-	ReceiverSSThreshold uint `json:"rcv ssthresh"` // slow start threshold for receiver [linux only]
-	SenderWindow        uint `json:"cwnd"`         // congestion window for sender
+	SenderSSThreshold    uint                  `json:"snd ssthresh"`           // slow start threshold for sender
+	ReceiverSSThreshold  uint                  `json:"rcv ssthresh"`           // slow start threshold for receiver [linux only]
+	SenderWindow         uint                  `json:"cwnd"`                   // congestion window for sender
+	SysCongestionControl *SysCongestionControl `json:"sys cong ctl,omitempty"` // platform-specific congestion control information
 }

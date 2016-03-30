@@ -24,27 +24,21 @@
 // information option. A custom net.Dial function that hooks up an
 // underlying transport connection must be prepared before monitoring.
 //
-//	func dialWithTCPConnMonitor(network, address string) (net.Conn, error) {
-//		d := net.Dialer{}
-//		c, err := d.Dial(network, address)
-//		if err != nil {
-//			return nil, err
-//		}
-//		tc, err := tcp.NewConn(c)
-//		if err != nil {
-//			c.Close()
-//			return nil, err
-//		}
-//		go tcpConnMonitor(tc) // launch a TCP connection monitor goroutine
-//		return &tc.TCPConn, nil
-//	}
-//
-// Also an application needs to construct a custom client such as an
-// HTTP client containing a custom net.Dial function and get into an
-// HTTP over TLS over TCP conversation.
-//
 //	tr := &http.Transport{
-//		Dial:            dialWithTCPConnMonitor,
+//		Dial: func(network, address string) (net.Conn, error) {
+//			d := net.Dialer{DualStack: true}
+//			c, err := d.Dial(network, address)
+//			if err != nil {
+//				return nil, err
+//			}
+//			tc, err := tcp.NewConn(c)
+//			if err != nil {
+//				c.Close()
+//				return nil, err
+//			}
+//			go tcpConnMonitor(tc)
+//			return &tc.TCPConn, nil
+//		},
 //		TLSClientConfig: &tls.Config{ServerName: "golang.org"},
 //	}
 //	client := http.Client{Transport: tr}

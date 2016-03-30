@@ -9,6 +9,7 @@ package tcp
 /*
 #include <sys/ioctl.h>
 
+#include <linux/inet_diag.h>
 #include <linux/sockios.h>
 #include <linux/tcp.h>
 */
@@ -23,7 +24,9 @@ const (
 	sysTCP_KEEPINTVL     = C.TCP_KEEPINTVL
 	sysTCP_KEEPCNT       = C.TCP_KEEPCNT
 	sysTCP_INFO          = C.TCP_INFO
+	sysTCP_CONGESTION    = C.TCP_CONGESTION
 	sysTCP_NOTSENT_LOWAT = C.TCP_NOTSENT_LOWAT
+	sysTCP_CC_INFO       = C.TCP_CC_INFO
 
 	sysTCPI_OPT_TIMESTAMPS = C.TCPI_OPT_TIMESTAMPS
 	sysTCPI_OPT_SACK       = C.TCPI_OPT_SACK
@@ -38,7 +41,16 @@ const (
 	CARecovery CAState = C.TCP_CA_Recovery
 	CALoss     CAState = C.TCP_CA_Loss
 
-	sysSizeofTCPInfo = C.sizeof_struct_tcp_info
+	sysSizeofTCPInfo      = C.sizeof_struct_tcp_info
+	sysSizeofTCPCCInfo    = C.sizeof_union_tcp_cc_info
+	sysSizeofTCPVegasInfo = C.sizeof_struct_tcpvegas_info
+	sysSizeofTCPDCTCPInfo = C.sizeof_struct_tcp_dctcp_info
 )
 
 type sysTCPInfo C.struct_tcp_info
+
+type sysTCPCCInfo C.union_tcp_cc_info
+
+type sysTCPVegasInfo C.struct_tcpvegas_info
+
+type sysTCPDCTCPInfo C.struct_tcp_dctcp_info

@@ -12,7 +12,9 @@ const (
 	sysTCP_KEEPINTVL     = 0x5
 	sysTCP_KEEPCNT       = 0x6
 	sysTCP_INFO          = 0xb
+	sysTCP_CONGESTION    = 0xd
 	sysTCP_NOTSENT_LOWAT = 0x19
+	sysTCP_CC_INFO       = 0x1a
 
 	sysTCPI_OPT_TIMESTAMPS = 0x1
 	sysTCPI_OPT_SACK       = 0x2
@@ -27,7 +29,10 @@ const (
 	CARecovery CAState = 0x3
 	CALoss     CAState = 0x4
 
-	sysSizeofTCPInfo = 0x90
+	sysSizeofTCPInfo      = 0x90
+	sysSizeofTCPCCInfo    = 0x10
+	sysSizeofTCPVegasInfo = 0x10
+	sysSizeofTCPDCTCPInfo = 0x10
 )
 
 type sysTCPInfo struct {
@@ -68,4 +73,21 @@ type sysTCPInfo struct {
 	Bytes_received  uint64
 	Segs_out        uint32
 	Segs_in         uint32
+}
+
+type sysTCPCCInfo [16]byte
+
+type sysTCPVegasInfo struct {
+	Enabled uint32
+	Rttcnt  uint32
+	Rtt     uint32
+	Minrtt  uint32
+}
+
+type sysTCPDCTCPInfo struct {
+	Enabled  uint16
+	Ce_state uint16
+	Alpha    uint32
+	Ab_ecn   uint32
+	Ab_tot   uint32
 }

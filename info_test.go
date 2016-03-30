@@ -24,8 +24,8 @@ var infoTests = []struct {
 	host, url string
 }{
 	{
-		host: "www.google.com",
-		url:  "https://www.google.com/robots.txt",
+		host: "golang.org",
+		url:  "https://golang.org/robots.txt",
 	},
 	{
 		host: "github.com",
@@ -40,10 +40,22 @@ func TestInfo(t *testing.T) {
 		t.Skipf("%s/%s", runtime.GOOS, runtime.GOARCH)
 	}
 
-	testingT = t
 	for _, tt := range infoTests {
 		tr := &http.Transport{
-			Dial:            dialWithTCPConnMonitor,
+			Dial: func(network, address string) (net.Conn, error) {
+				d := net.Dialer{DualStack: true}
+				c, err := d.Dial(network, address)
+				if err != nil {
+					return nil, err
+				}
+				tc, err := tcp.NewConn(c)
+				if err != nil {
+					c.Close()
+					return nil, err
+				}
+				go tcpConnMonitor(t, tc)
+				return tc.Conn, nil
+			},
 			TLSClientConfig: &tls.Config{ServerName: tt.host},
 		}
 		client := http.Client{Transport: tr}
@@ -59,35 +71,19 @@ func TestInfo(t *testing.T) {
 	}
 }
 
-func dialWithTCPConnMonitor(network, address string) (net.Conn, error) {
-	d := net.Dialer{DualStack: true}
-	c, err := d.Dial(network, address)
-	if err != nil {
-		return nil, err
-	}
-	tc, err := tcp.NewConn(c)
-	if err != nil {
-		c.Close()
-		return nil, err
-	}
-	go tcpConnMonitor(tc)
-	return &tc.TCPConn, nil
-}
-
-func tcpConnMonitor(c *tcp.Conn) {
-	testingT.Logf("%s %v->%v", c.LocalAddr().Network(), c.LocalAddr(), c.RemoteAddr())
+func tcpConnMonitor(t *testing.T, c *tcp.Conn) {
+	t.Logf("%s %v->%v", c.LocalAddr().Network(), c.LocalAddr(), c.RemoteAddr())
 	for {
 		ti, err := c.Info()
 		if err != nil {
-			testingT.Error(err)
 			return
 		}
 		text, err := json.Marshal(ti)
 		if err != nil {
-			testingT.Error(err)
+			t.Error(err)
 			return
 		}
-		testingT.Log(string(text))
+		t.Log(string(text))
 		time.Sleep(100 * time.Millisecond)
 	}
 }

@@ -52,7 +52,7 @@ func TestKeepAliveOptions(t *testing.T) {
 		ProbeInterval: time.Second,
 		ProbeCount:    1,
 	}
-	if err := tc.SetKeepAlive(true); err != nil {
+	if err := tc.Conn.(*net.TCPConn).SetKeepAlive(true); err != nil {
 		t.Error(err)
 	}
 	if err := tc.SetKeepAliveOptions(&opt); err != nil {

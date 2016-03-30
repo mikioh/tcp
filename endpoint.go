@@ -15,7 +15,8 @@ var _ net.Conn = &Conn{}
 // It allows to set non-portable, platform-dependent TCP-level socket
 // options.
 type Conn struct {
-	net.TCPConn
+	net.Conn
+	s int // socket descriptor for avoding data race
 }
 
 // A KeepAliveOptions represents keepalive options.
@@ -37,22 +38,18 @@ type KeepAliveOptions struct {
 
 // SetKeepAliveOptions sets keepalive options.
 func (c *Conn) SetKeepAliveOptions(opt *KeepAliveOptions) error {
-	s, err := c.sysfd()
-	if err != nil {
-		return err
-	}
 	if opt.IdleInterval >= 0 { // BSD variants accept 0, Linux doesn't
-		if err := setKeepAliveIdleInterval(s, opt.IdleInterval); err != nil {
+		if err := setKeepAliveIdleInterval(c.s, opt.IdleInterval); err != nil {
 			return err
 		}
 	}
 	if opt.ProbeInterval >= 0 { // BSD variants accept 0, Linux doesn't
-		if err := setKeepAliveProbeInterval(s, opt.ProbeInterval); err != nil {
+		if err := setKeepAliveProbeInterval(c.s, opt.ProbeInterval); err != nil {
 			return err
 		}
 	}
 	if opt.ProbeCount >= 0 { // BSD variants accept 0, Linux doesn't
-		if err := setKeepAliveProbeCount(s, opt.ProbeCount); err != nil {
+		if err := setKeepAliveProbeCount(c.s, opt.ProbeCount); err != nil {
 			return err
 		}
 	}
@@ -72,12 +69,8 @@ type BufferOptions struct {
 
 // SetBufferOptions sets buffer options.
 func (c *Conn) SetBufferOptions(opt *BufferOptions) error {
-	s, err := c.sysfd()
-	if err != nil {
-		return err
-	}
 	if opt.UnsentThreshold >= 0 {
-		if err := setInt(s, &sockOpts[ssoUnsentThreshold], opt.UnsentThreshold); err != nil {
+		if err := setInt(c.s, &sockOpts[ssoUnsentThreshold], opt.UnsentThreshold); err != nil {
 			return err
 		}
 	}
@@ -88,60 +81,41 @@ func (c *Conn) SetBufferOptions(opt *BufferOptions) error {
 // underlying socket read buffer.
 // It returns -1 when the platform doesn't support this feature.
 func (c *Conn) Buffered() int {
-	s, err := c.sysfd()
-	if err != nil {
-		return -1
-	}
-	return buffered(s)
+	return buffered(c.s)
 }
 
 // Available returns how many bytes are unused in the underlying
 // socket write buffer.
 // It returns -1 when the platform doesn't support this feature.
 func (c *Conn) Available() int {
-	s, err := c.sysfd()
-	if err != nil {
-		return -1
-	}
-	return available(s)
+	return available(c.s)
 }
 
 // Cork enables TCP_CORK option on Linux, TCP_NOPUSH option on Darwin,
 // DragonFlyBSD, FreeBSD and OpenBSD.
 func (c *Conn) Cork() error {
-	s, err := c.sysfd()
-	if err != nil {
-		return err
-	}
-	return setCork(s, true)
+	return setCork(c.s, true)
 }
 
 // Uncork disables TCP_CORK option on Linux, TCP_NOPUSH option on
 // Darwin, DragonFly BSD, FreeBSD and OpenBSD.
 func (c *Conn) Uncork() error {
-	s, err := c.sysfd()
-	if err != nil {
-		return err
-	}
-	return setCork(s, false)
+	return setCork(c.s, false)
 }
 
 // Info returns information of current connection.
 // For now this option is supported on Darwin, FreeBSD and Linux.
 func (c *Conn) Info() (*Info, error) {
-	s, err := c.sysfd()
-	if err != nil {
-		return nil, err
-	}
-	return info(s)
+	return info(c.s)
 }
 
 // NewConn returns a new Conn.
 func NewConn(c net.Conn) (*Conn, error) {
-	switch c := c.(type) {
-	case *net.TCPConn:
-		return &Conn{TCPConn: *c}, nil
-	default:
-		return nil, errInvalidArgument
+	var err error
+	tc := &Conn{Conn: c}
+	tc.s, err = tc.sysfd()
+	if err != nil {
+		return nil, err
 	}
+	return tc, nil
 }

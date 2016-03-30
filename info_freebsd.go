@@ -72,3 +72,7 @@ func parseInfo(sti *sysTCPInfo) *Info {
 	}
 	return ti
 }
+
+// A SysCongestionControl represents platform-specific congestion
+// control information.
+type SysCongestionControl struct{}

@@ -6,6 +6,7 @@ package tcp
 
 import (
 	"os"
+	"strings"
 	"time"
 	"unsafe"
 )
@@ -48,7 +49,28 @@ func info(s int) (*Info, error) {
 	if err := getsockopt(s, ianaProtocolTCP, sysTCP_INFO, unsafe.Pointer(&sti), &l); err != nil {
 		return nil, os.NewSyscallError("getsockopt", err)
 	}
-	return parseInfo(&sti), nil
+	var stcci sysTCPCCInfo
+	l = uint32(sysSizeofTCPCCInfo)
+	if err := getsockopt(s, ianaProtocolTCP, sysTCP_CC_INFO, unsafe.Pointer(&stcci), &l); err != nil {
+		return parseInfo(&sti), nil
+	}
+	b := make([]byte, 16) // see TCP_CA_NAME_MAX
+	l = uint32(16)
+	if err := getsockopt(s, ianaProtocolTCP, sysTCP_CONGESTION, unsafe.Pointer(&b[0]), &l); err != nil {
+		return parseInfo(&sti), nil
+	}
+	ti := parseInfo(&sti)
+	i := 0
+	for i = 0; i < 16; i++ {
+		if b[i] == 0 {
+			break
+		}
+	}
+	scc := parseSysCC(string(b[:i]), &stcci)
+	if ti != nil && ti.CongestionControl != nil && scc != nil {
+		ti.CongestionControl.SysCongestionControl = scc
+	}
+	return ti, nil
 }
 
 var sysStates = [12]State{Unknown, Established, SynSent, SynReceived, FinWait1, FinWait2, TimeWait, Closed, CloseWait, LastAck, Listen, Closing}
@@ -81,9 +103,8 @@ func parseInfo(sti *sysTCPInfo) *Info {
 		SenderWindow:        uint(sti.Snd_cwnd),
 	}
 	ti.SysInfo = &SysInfo{
-		PathMTU:       uint(sti.Pmtu),
-		AdvertisedMSS: MaxSegSize(sti.Advmss),
-
+		PathMTU:         uint(sti.Pmtu),
+		AdvertisedMSS:   MaxSegSize(sti.Advmss),
 		CAState:         CAState(sti.Ca_state),
 		KeepAliveProbes: uint(sti.Probes),
 		UnackSegs:       uint(sti.Unacked),
@@ -93,4 +114,75 @@ func parseInfo(sti *sysTCPInfo) *Info {
 		ForwardAckSegs:  uint(sti.Fackets),
 	}
 	return ti
+}
+
+// A SysCongestionControl represents platform-specific congestion
+// control information.
+type SysCongestionControl struct {
+	Algo   string                `json:"algo"` // congestion control algorithm name
+	CCInfo CongestionControlInfo `json:"info,omitempty"`
+}
+
+// A CongestionControlInfo represents congestion control
+// algorithm-specific information.
+type CongestionControlInfo interface {
+	Len() int
+}
+
+// A VegasInfo represents TCP Vegas congestion control information.
+type VegasInfo struct {
+	Enabled    bool          `json:"enabled"`
+	RoundTrips uint          `json:"rnd trips"` // number of round-trips
+	RTT        time.Duration `json:"rtt"`       // round-trip time
+	MinRTT     time.Duration `json:"min rtt"`   // minimum round-trip time
+}
+
+// Len implements the Len method of CongestionControlInfo interface.
+func (vi *VegasInfo) Len() int {
+	return sysSizeofTCPVegasInfo
+}
+
+// A CEState represents a state of ECN congestion encountered (CE)
+// codepoint.
+type CEState int
+
+// A DCTCPInfo represents Datacenter TCP congestion control
+// information.
+type DCTCPInfo struct {
+	Enabled         bool    `json:"enabled"`
+	CEState         CEState `json:"ce state"`    // state of ECN CE codepoint
+	Alpha           uint    `json:"alpha"`       // fraction of bytes sent
+	ECNAckedBytes   uint    `json:"ecn acked"`   // # of acked bytes with ECN
+	TotalAckedBytes uint    `json:"total acked"` // total # of acked bytes
+}
+
+// Len implements the Len method of CongestionControlInfo interface.
+func (di *DCTCPInfo) Len() int {
+	return sysSizeofTCPDCTCPInfo
+}
+
+func parseSysCC(name string, stcci *sysTCPCCInfo) *SysCongestionControl {
+	scc := SysCongestionControl{Algo: name}
+	if strings.HasPrefix(name, "dctcp") {
+		stdi := (*sysTCPDCTCPInfo)(unsafe.Pointer(stcci))
+		if stdi.Enabled == 0 {
+			return &scc
+		}
+		scc.CCInfo = &DCTCPInfo{
+			Enabled: true,
+			Alpha:   uint(stdi.Alpha),
+		}
+		return &scc
+	}
+	stvi := (*sysTCPVegasInfo)(unsafe.Pointer(stcci))
+	if stvi.Enabled == 0 {
+		return &scc
+	}
+	scc.CCInfo = &VegasInfo{
+		Enabled:    true,
+		RoundTrips: uint(stvi.Rttcnt),
+		RTT:        time.Duration(stvi.Rtt) * time.Microsecond,
+		MinRTT:     time.Duration(stvi.Minrtt) * time.Microsecond,
+	}
+	return &scc
 }
