@@ -12,6 +12,6 @@ script:
 - go test -v
 
 notifications:
-        email:
-                on_success: never
-                on_failure: never
+  email:
+    on_success: never
+    on_failure: never
