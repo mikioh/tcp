@@ -4,6 +4,4 @@
 
 package tcp
 
-type sysSockoptLen int32
-
 var sockOpts = [ssoMax]sockOpt{}

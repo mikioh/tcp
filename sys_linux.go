@@ -6,8 +6,6 @@ package tcp
 
 import "time"
 
-type sysSockoptLen int32
-
 var sockOpts = [ssoMax]sockOpt{
 	ssoBuffered:               {sysSIOCINQ, ssoTypeInt, 0},
 	ssoAvailable:              {sysSIOCOUTQ, ssoTypeInt, 0},

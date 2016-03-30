@@ -4,8 +4,6 @@
 
 package tcp
 
-type sysSockoptLen int32
-
 var sockOpts = [ssoMax]sockOpt{
 	ssoBuffered: {sysFIONREAD, ssoTypeInt, 0},
 	ssoCork:     {sysTCP_NOPUSH, ssoTypeInt, 0},

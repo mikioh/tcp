@@ -11,7 +11,7 @@ import (
 	"unsafe"
 )
 
-func getsockopt(s int, level, name int, v unsafe.Pointer, l *sysSockoptLen) error {
+func getsockopt(s int, level, name int, v unsafe.Pointer, l *uint32) error {
 	if _, _, errno := syscall.Syscall6(syscall.SYS_GETSOCKOPT, uintptr(s), uintptr(level), uintptr(name), uintptr(v), uintptr(unsafe.Pointer(l)), 0); errno != 0 {
 		return error(errno)
 	}

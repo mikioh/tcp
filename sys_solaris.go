@@ -8,8 +8,6 @@ package tcp
 
 import "time"
 
-type sysSockoptLen int32
-
 const (
 	sysTCP_CORK      = 0x18
 	sysTCP_KEEPIDLE  = 0x22
