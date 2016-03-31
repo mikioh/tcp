@@ -37,7 +37,7 @@
 //				return nil, err
 //			}
 //			go tcpConnMonitor(tc)
-//			return &tc.TCPConn, nil
+//			return tc.Conn, nil
 //		},
 //		TLSClientConfig: &tls.Config{ServerName: "golang.org"},
 //	}
