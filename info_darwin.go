@@ -12,7 +12,10 @@ import (
 
 // A SysInfo represents platform-specific information.
 type SysInfo struct {
-	SenderWindow uint `json:"snd wnd"` // advertised sender window in bytes
+	Flags        uint          `json:"flags"`     // flags
+	SenderWindow uint          `json:"snd wnd"`   // advertised sender window in bytes
+	SenderInUse  uint          `json:"snd inuse"` // bytes in send buffer including inflight data
+	SRTT         time.Duration `json:"srtt"`      // smoothed round-trip time
 }
 
 func info(s int) (*Info, error) {
@@ -38,9 +41,9 @@ func parseInfo(sti *sysTCPConnInfo) *Info {
 	}
 	ti.SenderMSS = MaxSegSize(sti.Maxseg)
 	ti.ReceiverMSS = MaxSegSize(sti.Maxseg)
-	ti.RTT = time.Duration(sti.Rttcur) * time.Microsecond
-	ti.RTTVar = time.Duration(sti.Rttvar) * time.Microsecond
-	ti.RTO = time.Duration(sti.Rto) * time.Microsecond
+	ti.RTT = time.Duration(sti.Rttcur) * time.Millisecond
+	ti.RTTVar = time.Duration(sti.Rttvar) * time.Millisecond
+	ti.RTO = time.Duration(sti.Rto) * time.Millisecond
 	ti.FlowControl = &FlowControl{
 		ReceiverWindow: uint(sti.Rcv_wnd),
 	}
@@ -49,7 +52,10 @@ func parseInfo(sti *sysTCPConnInfo) *Info {
 		SenderWindow:      uint(sti.Snd_cwnd),
 	}
 	ti.Sys = &SysInfo{
+		Flags:        uint(sti.Flags),
 		SenderWindow: uint(sti.Snd_wnd),
+		SenderInUse:  uint(sti.Snd_sbbytes),
+		SRTT:         time.Duration(sti.Srtt) * time.Millisecond,
 	}
 	return ti
 }
