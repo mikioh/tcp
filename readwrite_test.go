@@ -6,6 +6,7 @@ package tcp_test
 
 import (
 	"net"
+	"runtime"
 	"sync"
 	"testing"
 
@@ -74,7 +75,10 @@ func TestConcurrentReadWriteAndInfo(t *testing.T) {
 			go func() {
 				defer wwg.Done()
 				if _, err := tc.Info(); err != nil {
-					t.Error(err)
+					switch runtime.GOOS {
+					case "darwin", "freebsd", "linux":
+						t.Error(err)
+					}
 					return
 				}
 			}()
