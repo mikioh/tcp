@@ -132,7 +132,7 @@ type SysCongestionControlInfo interface {
 // A VegasInfo represents TCP Vegas congestion control information.
 type VegasInfo struct {
 	Enabled    bool          `json:"enabled"`
-	RoundTrips uint          `json:"rnd trips"` // number of round-trips
+	RoundTrips uint          `json:"rnd trips"` // # of round-trips
 	RTT        time.Duration `json:"rtt"`       // round-trip time
 	MinRTT     time.Duration `json:"min rtt"`   // minimum round-trip time
 }
