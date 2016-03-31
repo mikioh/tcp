@@ -48,7 +48,7 @@ func parseInfo(sti *sysTCPConnInfo) *Info {
 		SenderSSThreshold: uint(sti.Snd_ssthresh),
 		SenderWindow:      uint(sti.Snd_cwnd),
 	}
-	ti.SysInfo = &SysInfo{
+	ti.Sys = &SysInfo{
 		SenderWindow: uint(sti.Snd_wnd),
 	}
 	return ti

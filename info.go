@@ -68,7 +68,7 @@ type Info struct {
 	LastAckReceived   time.Duration      `json:"last ack rcvd"`       // since last ack received [linux only]
 	FlowControl       *FlowControl       `json:"flow ctl,omitempty"`  // flow control information
 	CongestionControl *CongestionControl `json:"cong ctl,omitempty"`  // congestion control information
-	SysInfo           *SysInfo           `json:"sys info,omitempty"`  // platform-specific information
+	Sys               *SysInfo           `json:"sys info,omitempty"`  // platform-specific information
 }
 
 // MarshalJSON implements the MarshalJSON method of json.Marshaler
@@ -105,8 +105,8 @@ func (info *Info) MarshalJSON() ([]byte, error) {
 	if info.CongestionControl != nil {
 		raw["cong ctl"] = info.CongestionControl
 	}
-	if info.SysInfo != nil {
-		raw["sys info"] = info.SysInfo
+	if info.Sys != nil {
+		raw["sys info"] = info.Sys
 	}
 	return json.Marshal(&raw)
 }
@@ -118,8 +118,8 @@ type FlowControl struct {
 
 // A CongestionControl represents TCP congestion control information.
 type CongestionControl struct {
-	SenderSSThreshold    uint                  `json:"snd ssthresh"`           // slow start threshold for sender
-	ReceiverSSThreshold  uint                  `json:"rcv ssthresh"`           // slow start threshold for receiver [linux only]
-	SenderWindow         uint                  `json:"cwnd"`                   // congestion window for sender
-	SysCongestionControl *SysCongestionControl `json:"sys cong ctl,omitempty"` // platform-specific congestion control information
+	SenderSSThreshold   uint                  `json:"snd ssthresh"`           // slow start threshold for sender
+	ReceiverSSThreshold uint                  `json:"rcv ssthresh"`           // slow start threshold for receiver [linux only]
+	SenderWindow        uint                  `json:"cwnd"`                   // congestion window for sender
+	Sys                 *SysCongestionControl `json:"sys cong ctl,omitempty"` // platform-specific congestion control information
 }

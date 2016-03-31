@@ -59,7 +59,7 @@ func parseInfo(sti *sysTCPInfo) *Info {
 		ReceiverSSThreshold: uint(sti.X__tcpi_rcv_ssthresh),
 		SenderWindow:        uint(sti.Snd_cwnd),
 	}
-	ti.SysInfo = &SysInfo{
+	ti.Sys = &SysInfo{
 		SenderWindow:      uint(sti.Snd_wnd),
 		NextEgressSeq:     uint(sti.Snd_nxt),
 		NextIngressSeq:    uint(sti.Rcv_nxt),

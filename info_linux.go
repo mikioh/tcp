@@ -68,7 +68,7 @@ func info(s int) (*Info, error) {
 	}
 	scc := parseSysCC(string(b[:i]), &stcci)
 	if ti != nil && ti.CongestionControl != nil && scc != nil {
-		ti.CongestionControl.SysCongestionControl = scc
+		ti.CongestionControl.Sys = scc
 	}
 	return ti, nil
 }
@@ -102,7 +102,7 @@ func parseInfo(sti *sysTCPInfo) *Info {
 		ReceiverSSThreshold: uint(sti.Rcv_ssthresh),
 		SenderWindow:        uint(sti.Snd_cwnd),
 	}
-	ti.SysInfo = &SysInfo{
+	ti.Sys = &SysInfo{
 		PathMTU:         uint(sti.Pmtu),
 		AdvertisedMSS:   MaxSegSize(sti.Advmss),
 		CAState:         CAState(sti.Ca_state),
@@ -119,13 +119,13 @@ func parseInfo(sti *sysTCPInfo) *Info {
 // A SysCongestionControl represents platform-specific congestion
 // control information.
 type SysCongestionControl struct {
-	Algo   string                `json:"algo"` // congestion control algorithm name
-	CCInfo CongestionControlInfo `json:"info,omitempty"`
+	Algo string                   `json:"algo"` // congestion control algorithm name
+	Info SysCongestionControlInfo `json:"info,omitempty"`
 }
 
-// A CongestionControlInfo represents congestion control
+// A SysCongestionControlInfo represents congestion control
 // algorithm-specific information.
-type CongestionControlInfo interface {
+type SysCongestionControlInfo interface {
 	String() string
 }
 
@@ -137,7 +137,7 @@ type VegasInfo struct {
 	MinRTT     time.Duration `json:"min rtt"`   // minimum round-trip time
 }
 
-// Len implements the Len method of CongestionControlInfo interface.
+// Len implements the Len method of SysCongestionControlInfo interface.
 func (vi *VegasInfo) String() string { return "vegas" }
 
 // A CEState represents a state of ECN congestion encountered (CE)
@@ -154,7 +154,7 @@ type DCTCPInfo struct {
 	TotalAckedBytes uint    `json:"total acked"` // total # of acked bytes
 }
 
-// Len implements the Len method of CongestionControlInfo interface.
+// Len implements the Len method of SysCongestionControlInfo interface.
 func (di *DCTCPInfo) String() string { return "dctcp" }
 
 func parseSysCC(name string, stcci *sysTCPCCInfo) *SysCongestionControl {
@@ -164,7 +164,7 @@ func parseSysCC(name string, stcci *sysTCPCCInfo) *SysCongestionControl {
 		if stdi.Enabled == 0 {
 			return &scc
 		}
-		scc.CCInfo = &DCTCPInfo{
+		scc.Info = &DCTCPInfo{
 			Enabled: true,
 			Alpha:   uint(stdi.Alpha),
 		}
@@ -174,7 +174,7 @@ func parseSysCC(name string, stcci *sysTCPCCInfo) *SysCongestionControl {
 	if stvi.Enabled == 0 {
 		return &scc
 	}
-	scc.CCInfo = &VegasInfo{
+	scc.Info = &VegasInfo{
 		Enabled:    true,
 		RoundTrips: uint(stvi.Rttcnt),
 		RTT:        time.Duration(stvi.Rtt) * time.Microsecond,
