@@ -10,3 +10,7 @@ package tcp
 type SysInfo struct{}
 
 func info(s int) (*Info, error) { return nil, errOpNoSupport }
+
+// A SysCongestionControl represents platform-specific congestion
+// control information.
+type SysCongestionControl struct{}
