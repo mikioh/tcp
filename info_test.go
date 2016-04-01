@@ -78,12 +78,12 @@ func tcpConnMonitor(t *testing.T, c *tcp.Conn) {
 		if err != nil {
 			return
 		}
-		text, err := json.Marshal(ti)
+		b, err := json.MarshalIndent(ti, "", "\t")
 		if err != nil {
 			t.Error(err)
 			return
 		}
-		t.Log(string(text))
+		t.Log(string(b))
 		time.Sleep(100 * time.Millisecond)
 	}
 }
