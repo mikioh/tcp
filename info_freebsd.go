@@ -68,7 +68,7 @@ func parseInfo(sti *sysTCPInfo) *Info {
 		ZeroWindowUpdates: uint(sti.Snd_zerowin),
 	}
 	if sti.Options&sysTCPI_OPT_TOE != 0 {
-		ti.SysInfo.Offloading = true
+		ti.Sys.Offloading = true
 	}
 	return ti
 }
