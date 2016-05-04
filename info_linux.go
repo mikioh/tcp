@@ -137,7 +137,8 @@ type VegasInfo struct {
 	MinRTT     time.Duration `json:"min rtt"`   // minimum round-trip time
 }
 
-// Len implements the Len method of SysCongestionControlInfo interface.
+// String implements the String method of SysCongestionControlInfo
+// interface.
 func (vi *VegasInfo) String() string { return "vegas" }
 
 // A CEState represents a state of ECN congestion encountered (CE)
@@ -154,7 +155,8 @@ type DCTCPInfo struct {
 	TotalAckedBytes uint    `json:"total acked"` // total # of acked bytes
 }
 
-// Len implements the Len method of SysCongestionControlInfo interface.
+// String implements the String method of SysCongestionControlInfo
+// interface.
 func (di *DCTCPInfo) String() string { return "dctcp" }
 
 func parseSysCC(name string, stcci *sysTCPCCInfo) *SysCongestionControl {
