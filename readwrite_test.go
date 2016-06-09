@@ -76,7 +76,9 @@ func TestConcurrentReadWriteAndInfo(t *testing.T) {
 				defer wwg.Done()
 				if _, err := tc.Info(); err != nil {
 					switch runtime.GOOS {
-					case "darwin", "freebsd", "linux":
+					case "darwin":
+						t.Log(err) // for old darwin kernels
+					case "freebsd", "linux", "netbsd":
 						t.Error(err)
 					}
 					return
