@@ -18,7 +18,7 @@ type SysInfo struct {
 	SRTT         time.Duration `json:"srtt"`      // smoothed round-trip time
 }
 
-func info(s int) (*Info, error) {
+func info(s uintptr) (*Info, error) {
 	var sti sysTCPConnInfo
 	l := uint32(sizeofTCPConnInfo)
 	if err := getsockopt(s, ianaProtocolTCP, sysTCP_CONNECTION_INFO, unsafe.Pointer(&sti), &l); err != nil {

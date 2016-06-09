@@ -6,5 +6,5 @@
 
 package tcp
 
-func buffered(s int) int  { return -1 }
-func available(s int) int { return -1 }
+func buffered(s uintptr) int  { return -1 }
+func available(s uintptr) int { return -1 }

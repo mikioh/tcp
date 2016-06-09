@@ -18,7 +18,7 @@ var _ net.Conn = &Conn{}
 // options.
 type Conn struct {
 	net.Conn
-	s int // socket descriptor for avoding data race
+	s uintptr // socket descriptor for avoding data race
 }
 
 // A KeepAliveOptions represents keepalive options.
@@ -117,5 +117,5 @@ func NewConn(c net.Conn) (*Conn, error) {
 	if err != nil {
 		return nil, err
 	}
-	return &Conn{Conn: c, s: int(s)}, nil
+	return &Conn{Conn: c, s: s}, nil
 }

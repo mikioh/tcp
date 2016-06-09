@@ -11,7 +11,7 @@ import (
 	"syscall"
 )
 
-func buffered(s int) int {
+func buffered(s uintptr) int {
 	n, err := ioctlGetInt(s, &sockOpts[ssoBuffered])
 	if err != nil {
 		return -1
@@ -19,13 +19,13 @@ func buffered(s int) int {
 	return n
 }
 
-func available(s int) int {
+func available(s uintptr) int {
 	n, err := ioctlGetInt(s, &sockOpts[ssoAvailable])
 	if err != nil {
 		return -1
 	}
 	if runtime.GOOS == "linux" {
-		l, err := syscall.GetsockoptInt(s, syscall.SOL_SOCKET, syscall.SO_SNDBUF)
+		l, err := syscall.GetsockoptInt(int(s), syscall.SOL_SOCKET, syscall.SO_SNDBUF)
 		if err != nil {
 			return -1
 		}
@@ -34,7 +34,7 @@ func available(s int) int {
 	return n
 }
 
-func ioctlGetInt(s int, opt *sockOpt) (int, error) {
+func ioctlGetInt(s uintptr, opt *sockOpt) (int, error) {
 	if opt.name < 1 || opt.typ != ssoTypeInt {
 		return 0, errOpNoSupport
 	}

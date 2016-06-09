@@ -11,16 +11,16 @@ import (
 	"unsafe"
 )
 
-func getsockopt(s int, level, name int, v unsafe.Pointer, l *uint32) error {
-	if _, _, errno := syscall.Syscall6(syscall.SYS_GETSOCKOPT, uintptr(s), uintptr(level), uintptr(name), uintptr(v), uintptr(unsafe.Pointer(l)), 0); errno != 0 {
+func getsockopt(s uintptr, level, name int, v unsafe.Pointer, l *uint32) error {
+	if _, _, errno := syscall.Syscall6(syscall.SYS_GETSOCKOPT, s, uintptr(level), uintptr(name), uintptr(v), uintptr(unsafe.Pointer(l)), 0); errno != 0 {
 		return error(errno)
 	}
 	return nil
 }
 
-func ioctl(s, ioc int) (int, error) {
+func ioctl(s uintptr, ioc int) (int, error) {
 	var i int
-	if _, _, errno := syscall.Syscall(syscall.SYS_IOCTL, uintptr(s), uintptr(ioc), uintptr(unsafe.Pointer(&i))); errno != 0 {
+	if _, _, errno := syscall.Syscall(syscall.SYS_IOCTL, s, uintptr(ioc), uintptr(unsafe.Pointer(&i))); errno != 0 {
 		return 0, error(errno)
 	}
 	return i, nil

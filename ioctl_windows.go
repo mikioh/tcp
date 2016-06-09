@@ -6,10 +6,5 @@ package tcp
 
 import "syscall"
 
-func buffered(s syscall.Handle) int {
-	return -1
-}
-
-func available(s syscall.Handle) int {
-	return -1
-}
+func buffered(s uintptr) int  { return -1 }
+func available(s uintptr) int { return -1 }

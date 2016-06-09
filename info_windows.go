@@ -9,7 +9,7 @@ import "syscall"
 // A SysInfo represents platform-specific information.
 type SysInfo struct{}
 
-func info(s syscall.Handle) (*Info, error) { return nil, errOpNoSupport }
+func info(s uintptr) (*Info, error) { return nil, errOpNoSupport }
 
 // A SysCongestionControl represents platform-specific congestion
 // control information.

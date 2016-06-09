@@ -8,9 +8,9 @@ package tcp
 
 import "time"
 
-func setCork(s int, on bool) error                           { return errOpNoSupport }
-func setKeepAliveIdleInterval(s int, d time.Duration) error  { return errOpNoSupport }
-func setKeepAliveProbeInterval(s int, d time.Duration) error { return errOpNoSupport }
-func setKeepAliveProbeCount(s int, probes int) error         { return errOpNoSupport }
-func getInt(s int, opt *sockOpt) (int, error)                { return 0, errOpNoSupport }
-func setInt(s int, opt *sockOpt, v int) error                { return errOpNoSupport }
+func setCork(s uintptr, on bool) error                           { return errOpNoSupport }
+func setKeepAliveIdleInterval(s uintptr, d time.Duration) error  { return errOpNoSupport }
+func setKeepAliveProbeInterval(s uintptr, d time.Duration) error { return errOpNoSupport }
+func setKeepAliveProbeCount(s uintptr, probes int) error         { return errOpNoSupport }
+func getInt(s uintptr, opt *sockOpt) (int, error)                { return 0, errOpNoSupport }
+func setInt(s uintptr, opt *sockOpt, v int) error                { return errOpNoSupport }

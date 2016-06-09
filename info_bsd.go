@@ -23,7 +23,7 @@ type SysInfo struct {
 	Offloading        bool `json:"offloading"`      // TCP offload processing
 }
 
-func info(s int) (*Info, error) {
+func info(s uintptr) (*Info, error) {
 	var sti sysTCPInfo
 	l := uint32(sizeofTCPInfo)
 	if err := getsockopt(s, ianaProtocolTCP, sysTCP_INFO, unsafe.Pointer(&sti), &l); err != nil {
