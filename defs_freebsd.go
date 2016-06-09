@@ -30,7 +30,7 @@ const (
 	sysTCPI_OPT_ECN        = C.TCPI_OPT_ECN
 	sysTCPI_OPT_TOE        = C.TCPI_OPT_TOE
 
-	sysSizeofTCPInfo = C.sizeof_struct_tcp_info
+	sizeofTCPInfo = C.sizeof_struct_tcp_info
 )
 
 type sysTCPInfo C.struct_tcp_info

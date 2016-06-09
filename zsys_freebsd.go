@@ -20,7 +20,7 @@ const (
 	sysTCPI_OPT_ECN        = 0x8
 	sysTCPI_OPT_TOE        = 0x10
 
-	sysSizeofTCPInfo = 0xec
+	sizeofTCPInfo = 0xec
 )
 
 type sysTCPInfo struct {

@@ -20,7 +20,7 @@ const (
 	sysTCPCI_FLAG_LOSSRECOVERY        = 0x1
 	sysTCPCI_FLAG_REORDERING_DETECTED = 0x2
 
-	sysSizeofTCPConnInfo = 0x68
+	sizeofTCPConnInfo = 0x68
 )
 
 type sysTCPConnInfo struct {

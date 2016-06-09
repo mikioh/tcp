@@ -29,10 +29,10 @@ const (
 	CARecovery CAState = 0x3
 	CALoss     CAState = 0x4
 
-	sysSizeofTCPInfo      = 0x90
-	sysSizeofTCPCCInfo    = 0x10
-	sysSizeofTCPVegasInfo = 0x10
-	sysSizeofTCPDCTCPInfo = 0x10
+	sizeofTCPInfo      = 0x90
+	sizeofTCPCCInfo    = 0x10
+	sizeofTCPVegasInfo = 0x10
+	sizeofTCPDCTCPInfo = 0x10
 )
 
 type sysTCPInfo struct {

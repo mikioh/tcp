@@ -20,7 +20,7 @@ type SysInfo struct {
 
 func info(s int) (*Info, error) {
 	var sti sysTCPConnInfo
-	l := uint32(sysSizeofTCPConnInfo)
+	l := uint32(sizeofTCPConnInfo)
 	if err := getsockopt(s, ianaProtocolTCP, sysTCP_CONNECTION_INFO, unsafe.Pointer(&sti), &l); err != nil {
 		return nil, os.NewSyscallError("getsockopt", err)
 	}

@@ -41,10 +41,10 @@ const (
 	CARecovery CAState = C.TCP_CA_Recovery
 	CALoss     CAState = C.TCP_CA_Loss
 
-	sysSizeofTCPInfo      = C.sizeof_struct_tcp_info
-	sysSizeofTCPCCInfo    = C.sizeof_union_tcp_cc_info
-	sysSizeofTCPVegasInfo = C.sizeof_struct_tcpvegas_info
-	sysSizeofTCPDCTCPInfo = C.sizeof_struct_tcp_dctcp_info
+	sizeofTCPInfo      = C.sizeof_struct_tcp_info
+	sizeofTCPCCInfo    = C.sizeof_union_tcp_cc_info
+	sizeofTCPVegasInfo = C.sizeof_struct_tcpvegas_info
+	sizeofTCPDCTCPInfo = C.sizeof_struct_tcp_dctcp_info
 )
 
 type sysTCPInfo C.struct_tcp_info

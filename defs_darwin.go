@@ -30,7 +30,7 @@ const (
 	sysTCPCI_FLAG_LOSSRECOVERY        = C.TCPCI_FLAG_LOSSRECOVERY
 	sysTCPCI_FLAG_REORDERING_DETECTED = C.TCPCI_FLAG_REORDERING_DETECTED
 
-	sysSizeofTCPConnInfo = C.sizeof_struct_tcp_connection_info
+	sizeofTCPConnInfo = C.sizeof_struct_tcp_connection_info
 )
 
 type sysTCPConnInfo C.struct_tcp_connection_info

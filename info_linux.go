@@ -45,12 +45,12 @@ type SysInfo struct {
 
 func info(s int) (*Info, error) {
 	var sti sysTCPInfo
-	l := uint32(sysSizeofTCPInfo)
+	l := uint32(sizeofTCPInfo)
 	if err := getsockopt(s, ianaProtocolTCP, sysTCP_INFO, unsafe.Pointer(&sti), &l); err != nil {
 		return nil, os.NewSyscallError("getsockopt", err)
 	}
 	var stcci sysTCPCCInfo
-	l = uint32(sysSizeofTCPCCInfo)
+	l = uint32(sizeofTCPCCInfo)
 	if err := getsockopt(s, ianaProtocolTCP, sysTCP_CC_INFO, unsafe.Pointer(&stcci), &l); err != nil {
 		return parseInfo(&sti), nil
 	}
