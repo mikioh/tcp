@@ -117,6 +117,5 @@ func NewConn(c net.Conn) (*Conn, error) {
 	if err != nil {
 		return nil, err
 	}
-	tc := &Conn{Conn: c, s: int(s)}
-	return tc, nil
+	return &Conn{Conn: c, s: int(s)}, nil
 }
