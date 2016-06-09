@@ -35,7 +35,7 @@ var infoTests = []struct {
 
 func TestInfo(t *testing.T) {
 	switch runtime.GOOS {
-	case "darwin", "freebsd", "linux":
+	case "darwin", "freebsd", "linux", "netbsd":
 	default:
 		t.Skipf("%s/%s", runtime.GOOS, runtime.GOARCH)
 	}
