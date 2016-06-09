@@ -7,6 +7,8 @@ package tcp
 import (
 	"net"
 	"time"
+
+	"github.com/mikioh/netreflect"
 )
 
 var _ net.Conn = &Conn{}
@@ -111,11 +113,10 @@ func (c *Conn) Info() (*Info, error) {
 
 // NewConn returns a new Conn.
 func NewConn(c net.Conn) (*Conn, error) {
-	var err error
-	tc := &Conn{Conn: c}
-	tc.s, err = tc.sysfd()
+	s, err := netreflect.SocketOf(c)
 	if err != nil {
 		return nil, err
 	}
+	tc := &Conn{Conn: c, s: int(s)}
 	return tc, nil
 }
