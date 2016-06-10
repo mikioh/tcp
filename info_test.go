@@ -2,6 +2,8 @@
 // Use of this source code is governed by a BSD-style
 // license that can be found in the LICENSE file.
 
+// +build darwin freebsd linux netbsd
+
 package tcp_test
 
 import (
@@ -12,11 +14,27 @@ import (
 	"net"
 	"net/http"
 	"runtime"
+	"strconv"
+	"strings"
+	"syscall"
 	"testing"
 	"time"
 
 	"github.com/mikioh/tcp"
 )
+
+func kernelVersion() []int {
+	s, err := syscall.Sysctl("kern.osrelease")
+	if err != nil {
+		return nil
+	}
+	ss := strings.Split(s, ".")
+	vers := make([]int, len(ss))
+	for i, s := range ss {
+		vers[i], _ = strconv.Atoi(s)
+	}
+	return vers
+}
 
 var infoTests = []struct {
 	host, url string
@@ -33,7 +51,12 @@ var infoTests = []struct {
 
 func TestInfo(t *testing.T) {
 	switch runtime.GOOS {
-	case "darwin", "freebsd", "linux", "netbsd":
+	case "darwin":
+		vers := kernelVersion()
+		if vers == nil || vers[0] < 15 {
+			t.Skip("not supported on this version: %v, %s/%s", vers, runtime.GOOS, runtime.GOARCH)
+		}
+	case "freebsd", "linux", "netbsd":
 	default:
 		t.Skipf("%s/%s", runtime.GOOS, runtime.GOARCH)
 	}

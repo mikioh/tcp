@@ -2,6 +2,8 @@
 // Use of this source code is governed by a BSD-style
 // license that can be found in the LICENSE file.
 
+// +build darwin freebsd linux netbsd
+
 package tcp_test
 
 import (
@@ -32,6 +34,17 @@ func server(t *testing.T, ln net.Listener) {
 }
 
 func TestConcurrentReadWriteAndInfo(t *testing.T) {
+	switch runtime.GOOS {
+	case "darwin":
+		vers := kernelVersion()
+		if vers == nil || vers[0] < 15 {
+			t.Skip("not supported on this version: %v, %s/%s", vers, runtime.GOOS, runtime.GOARCH)
+		}
+	case "freebsd", "linux", "netbsd":
+	default:
+		t.Skipf("%s/%s", runtime.GOOS, runtime.GOARCH)
+	}
+
 	ln, err := net.Listen("tcp", "127.0.0.1:0")
 	if err != nil {
 		t.Fatal(err)
@@ -75,12 +88,7 @@ func TestConcurrentReadWriteAndInfo(t *testing.T) {
 			go func() {
 				defer wwg.Done()
 				if _, err := tc.Info(); err != nil {
-					switch runtime.GOOS {
-					case "darwin":
-						t.Log(err) // for old darwin kernels
-					case "freebsd", "linux", "netbsd":
-						t.Error(err)
-					}
+					t.Error(err)
 					return
 				}
 			}()
