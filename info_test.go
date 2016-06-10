@@ -18,8 +18,6 @@ import (
 	"github.com/mikioh/tcp"
 )
 
-var testingT *testing.T
-
 var infoTests = []struct {
 	host, url string
 }{
