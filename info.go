@@ -57,8 +57,8 @@ type Info struct {
 	State             State              `json:"state"`               // connection state
 	Options           []Option           `json:"opts,omitempty"`      // requesting options
 	PeerOptions       []Option           `json:"peer opts,omitempty"` // options requested from peer
-	SenderMSS         MaxSegSize         `json:"snd mss"`             // maximum segment size for sender
-	ReceiverMSS       MaxSegSize         `json:"rcv mss"`             // maximum sengment size for receiver
+	SenderMSS         MaxSegSize         `json:"snd mss"`             // maximum segment size for sender in bytes
+	ReceiverMSS       MaxSegSize         `json:"rcv mss"`             // maximum sengment size for receiver in bytes
 	RTT               time.Duration      `json:"rtt"`                 // round-trip time
 	RTTVar            time.Duration      `json:"rtt var"`             // round-trip time variation
 	RTO               time.Duration      `json:"rto"`                 // retransmission timeout
@@ -118,8 +118,8 @@ type FlowControl struct {
 
 // A CongestionControl represents TCP congestion control information.
 type CongestionControl struct {
-	SenderSSThreshold   uint                  `json:"snd ssthresh"`  // slow start threshold for sender
-	ReceiverSSThreshold uint                  `json:"rcv ssthresh"`  // slow start threshold for receiver [linux only]
-	SenderWindow        uint                  `json:"cwnd"`          // congestion window for sender
+	SenderSSThreshold   uint                  `json:"snd ssthresh"`  // slow start threshold for sender in bytes or # of segments
+	ReceiverSSThreshold uint                  `json:"rcv ssthresh"`  // slow start threshold for receiver in bytes [linux only]
+	SenderWindow        uint                  `json:"cwnd"`          // congestion window for sender in bytes or # of segments
 	Sys                 *SysCongestionControl `json:"sys,omitempty"` // platform-specific congestion control information
 }

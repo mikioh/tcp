@@ -106,7 +106,8 @@ func (c *Conn) Uncork() error {
 }
 
 // Info returns information of current connection.
-// For now this option is supported on Darwin, FreeBSD and Linux.
+// For now this option is supported on only Darwin, FreeBSD, Linux and
+// NetBSD.
 func (c *Conn) Info() (*Info, error) {
 	return info(c.s)
 }

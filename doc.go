@@ -20,8 +20,8 @@
 //
 // Monitoring a TCP connection
 //
-// For now only Darwin, FreeBSD and Linux kernels support the TCP
-// information option. A custom net.Dial function that hooks up an
+// For now only Darwin, FreeBSD, Linux and NetBSD kernels support the
+// TCP information option. A custom net.Dial function that hooks up an
 // underlying transport connection must be prepared before monitoring.
 //
 //	tr := &http.Transport{
