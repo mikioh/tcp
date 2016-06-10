@@ -9,7 +9,7 @@ package tcp
 // A SysInfo represents platform-specific information.
 type SysInfo struct{}
 
-func info(s int) (*Info, error) { return nil, errOpNoSupport }
+func info(s uintptr) (*Info, error) { return nil, errOpNoSupport }
 
 // A SysCongestionControl represents platform-specific congestion
 // control information.
