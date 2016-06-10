@@ -13,5 +13,4 @@ var sockOpts = [ssoMax]sockOpt{
 	ssoKeepAliveIdleInterval:  {sysTCP_KEEPIDLE, ssoTypeInt, time.Second},
 	ssoKeepAliveProbeInterval: {sysTCP_KEEPINTVL, ssoTypeInt, time.Second},
 	ssoKeepAliveProbeCount:    {sysTCP_KEEPCNT, ssoTypeInt, 0},
-	ssoInfo:                   {sysTCP_INFO, ssoTypeInfo, 0},
 }

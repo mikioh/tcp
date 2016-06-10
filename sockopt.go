@@ -6,7 +6,7 @@ package tcp
 
 import "time"
 
-// Socket options
+// Sticky socket options
 const (
 	ssoBuffered = iota
 	ssoAvailable
@@ -15,17 +15,15 @@ const (
 	ssoKeepAliveIdleInterval
 	ssoKeepAliveProbeInterval
 	ssoKeepAliveProbeCount
-	ssoInfo
 	ssoMax
 )
 
-// Socket option value types
+// Sticky socket option value types
 const (
 	ssoTypeInt = iota + 1
-	ssoTypeInfo
 )
 
-// A sockOpt represents a binding for socket option.
+// A sockOpt represents a binding for sticky socket option.
 type sockOpt struct {
 	name int           // option name, must be equal or greater than 1
 	typ  int           // option value type, must be equal or greater than 1
