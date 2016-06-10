@@ -14,27 +14,11 @@ import (
 	"net"
 	"net/http"
 	"runtime"
-	"strconv"
-	"strings"
-	"syscall"
 	"testing"
 	"time"
 
 	"github.com/mikioh/tcp"
 )
-
-func kernelVersion() []int {
-	s, err := syscall.Sysctl("kern.osrelease")
-	if err != nil {
-		return nil
-	}
-	ss := strings.Split(s, ".")
-	vers := make([]int, len(ss))
-	for i, s := range ss {
-		vers[i], _ = strconv.Atoi(s)
-	}
-	return vers
-}
 
 var infoTests = []struct {
 	host, url string
