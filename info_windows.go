@@ -4,8 +4,6 @@
 
 package tcp
 
-import "syscall"
-
 // A SysInfo represents platform-specific information.
 type SysInfo struct{}
 
