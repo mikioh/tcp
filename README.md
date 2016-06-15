@@ -2,3 +2,4 @@ Package tcp provides TCP-level socket options that allow manipulation of TCP con
 
 [![GoDoc](https://godoc.org/github.com/mikioh/tcp?status.png)](https://godoc.org/github.com/mikioh/tcp)
 [![Build Status](https://travis-ci.org/mikioh/tcp.svg?branch=master)](https://travis-ci.org/mikioh/tcp)
+[![Go Report Card](https://goreportcard.com/badge/github.com/mikioh/tcp)](https://goreportcard.com/report/github.com/mikioh/tcp)
