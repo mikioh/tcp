@@ -9,6 +9,7 @@ package tcp_test
 import (
 	"crypto/tls"
 	"encoding/json"
+	"fmt"
 	"io"
 	"io/ioutil"
 	"net"
@@ -45,7 +46,13 @@ func TestInfo(t *testing.T) {
 		t.Skipf("%s/%s", runtime.GOOS, runtime.GOARCH)
 	}
 
-	for _, tt := range infoTests {
+	var logs []chan string
+	for i := 0; i < len(infoTests); i++ {
+		logs = append(logs, make(chan string, 100))
+	}
+
+	for i, tt := range infoTests {
+		sig := make(chan struct{})
 		tr := &http.Transport{
 			Dial: func(network, address string) (net.Conn, error) {
 				d := net.Dialer{DualStack: true}
@@ -58,7 +65,7 @@ func TestInfo(t *testing.T) {
 					c.Close()
 					return nil, err
 				}
-				go tcpConnMonitor(t, tc)
+				go monitor(tc, logs[i], sig)
 				return tc.Conn, nil
 			},
 			TLSClientConfig: &tls.Config{ServerName: tt.host},
@@ -72,12 +79,19 @@ func TestInfo(t *testing.T) {
 			t.Fatal(err)
 		}
 		resp.Body.Close()
-		time.Sleep(100 * time.Millisecond)
+		sig <- struct{}{}
+	}
+
+	for _, log := range logs {
+		for r := range log {
+			t.Log(r)
+		}
 	}
 }
 
-func tcpConnMonitor(t *testing.T, c *tcp.Conn) {
-	t.Logf("%s %v->%v", c.LocalAddr().Network(), c.LocalAddr(), c.RemoteAddr())
+func monitor(c *tcp.Conn, log chan<- string, sig <-chan struct{}) {
+	defer close(log)
+	log <- fmt.Sprintf("%s %v->%v", c.LocalAddr().Network(), c.LocalAddr(), c.RemoteAddr())
 	for {
 		ti, err := c.Info()
 		if err != nil {
@@ -85,10 +99,14 @@ func tcpConnMonitor(t *testing.T, c *tcp.Conn) {
 		}
 		b, err := json.MarshalIndent(ti, "", "\t")
 		if err != nil {
-			t.Error(err)
-			return
+			continue
 		}
-		t.Log(string(b))
-		time.Sleep(100 * time.Millisecond)
+		select {
+		case <-sig:
+			return
+		default:
+			log <- string(b)
+			time.Sleep(100 * time.Millisecond)
+		}
 	}
 }
