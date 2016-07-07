@@ -19,7 +19,7 @@ func Register(level, name int, fn func([]byte) (Option, error)) {
 }
 
 // Unregister unregisters a socket option parser.
-func Unregister(level, name int) (Option, error) {
+func Unregister(level, name int) {
 	parseMu.Lock()
 	defer parseMu.Unlock()
 	delete(parsers, int64(level)<<32|int64(name))
