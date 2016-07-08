@@ -24,7 +24,10 @@ func rtioctl(s uintptr, ioc uintptr, arg uintptr) syscall.Errno
 func rtsysvicall6(trap, nargs, a1, a2, a3, a4, a5, a6 uintptr) (r1, r2 uintptr, errno syscall.Errno)
 
 func ioctl(s uintptr, ioc int, b []byte) error {
-	return rtioctl(s, uintptr(ioc), uintptr(unsafe.Pointer(&b[0])))
+	if errno := rtioctl(s, uintptr(ioc), uintptr(unsafe.Pointer(&b[0]))); errno != 0 {
+		return error(errno)
+	}
+	return nil
 }
 
 func setsockopt(s uintptr, level, name int, b []byte, l uint32) error {
