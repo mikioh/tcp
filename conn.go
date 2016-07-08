@@ -5,13 +5,18 @@
 package tcp
 
 import (
+	"errors"
 	"net"
 	"time"
 
 	"github.com/mikioh/netreflect"
 )
 
-var _ net.Conn = &Conn{}
+var (
+	errOpNoSupport = errors.New("operation not supported")
+
+	_ net.Conn = &Conn{}
+)
 
 // A Conn represents a network endpoint that uses TCP connection.
 // It allows to set non-portable, platform-dependent TCP-level socket
@@ -72,7 +77,7 @@ type BufferOptions struct {
 // SetBufferOptions sets buffer options.
 func (c *Conn) SetBufferOptions(opt *BufferOptions) error {
 	if opt.UnsentThreshold >= 0 {
-		if err := setInt(c.s, &sockOpts[ssoUnsentThreshold], opt.UnsentThreshold); err != nil {
+		if err := setUnsentThreshold(c.s, opt.UnsentThreshold); err != nil {
 			return err
 		}
 	}

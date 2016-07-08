@@ -44,29 +44,29 @@ type SysInfo struct {
 }
 
 func info(s uintptr) (*Info, error) {
-	var sti sysTCPInfo
+	b := make([]byte, sizeofTCPInfo)
 	l := uint32(sizeofTCPInfo)
-	if err := getsockopt(s, ianaProtocolTCP, sysTCP_INFO, unsafe.Pointer(&sti), &l); err != nil {
+	if err := getsockopt(s, ianaProtocolTCP, sysTCP_INFO, b, &l); err != nil {
 		return nil, os.NewSyscallError("getsockopt", err)
 	}
-	var stcci sysTCPCCInfo
+	cb := make([]byte, sizeofTCPCCInfo)
 	l = uint32(sizeofTCPCCInfo)
-	if err := getsockopt(s, ianaProtocolTCP, sysTCP_CC_INFO, unsafe.Pointer(&stcci), &l); err != nil {
-		return parseInfo(&sti), nil
+	if err := getsockopt(s, ianaProtocolTCP, sysTCP_CC_INFO, cb, &l); err != nil {
+		return parseInfo((*sysTCPInfo)(unsafe.Pointer(&b[0]))), nil
 	}
-	b := make([]byte, 16) // see TCP_CA_NAME_MAX
+	nb := make([]byte, 16) // see TCP_CA_NAME_MAX
 	l = uint32(16)
-	if err := getsockopt(s, ianaProtocolTCP, sysTCP_CONGESTION, unsafe.Pointer(&b[0]), &l); err != nil {
-		return parseInfo(&sti), nil
+	if err := getsockopt(s, ianaProtocolTCP, sysTCP_CONGESTION, nb, &l); err != nil {
+		return parseInfo((*sysTCPInfo)(unsafe.Pointer(&b[0]))), nil
 	}
-	ti := parseInfo(&sti)
+	ti := parseInfo((*sysTCPInfo)(unsafe.Pointer(&b[0])))
 	i := 0
 	for i = 0; i < 16; i++ {
 		if b[i] == 0 {
 			break
 		}
 	}
-	scc := parseSysCC(string(b[:i]), &stcci)
+	scc := parseSysCC(string(nb[:i]), (*sysTCPCCInfo)(unsafe.Pointer(&cb[0])))
 	if ti != nil && ti.CongestionControl != nil && scc != nil {
 		ti.CongestionControl.Sys = scc
 	}

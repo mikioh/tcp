@@ -8,10 +8,7 @@ const (
 	sysFIONWRITE = 0x40046679
 	sysFIONSPACE = 0x40046678
 
-	sysTCP_KEEPIDLE  = 0x3
-	sysTCP_KEEPINTVL = 0x5
-	sysTCP_KEEPCNT   = 0x6
-	sysTCP_INFO      = 0x9
+	sysTCP_INFO = 0x9
 
 	sysTCPI_OPT_TIMESTAMPS = 0x1
 	sysTCPI_OPT_SACK       = 0x2

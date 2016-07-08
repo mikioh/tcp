@@ -4,12 +4,7 @@
 
 package tcp
 
-import "time"
-
-var sockOpts = [ssoMax]sockOpt{
-	ssoBuffered:               {sysFIONREAD, ssoTypeInt, 0},
-	ssoAvailable:              {sysFIONSPACE, ssoTypeInt, 0},
-	ssoKeepAliveIdleInterval:  {sysTCP_KEEPIDLE, ssoTypeInt, time.Second},
-	ssoKeepAliveProbeInterval: {sysTCP_KEEPINTVL, ssoTypeInt, time.Second},
-	ssoKeepAliveProbeCount:    {sysTCP_KEEPCNT, ssoTypeInt, 0},
+var soOptions = map[int]soOption{
+	soBuffered:  {0, sysFIONREAD},
+	soAvailable: {0, sysFIONSPACE},
 }

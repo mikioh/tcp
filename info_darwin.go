@@ -19,12 +19,12 @@ type SysInfo struct {
 }
 
 func info(s uintptr) (*Info, error) {
-	var sti sysTCPConnInfo
+	b := make([]byte, sizeofTCPConnInfo)
 	l := uint32(sizeofTCPConnInfo)
-	if err := getsockopt(s, ianaProtocolTCP, sysTCP_CONNECTION_INFO, unsafe.Pointer(&sti), &l); err != nil {
+	if err := getsockopt(s, ianaProtocolTCP, sysTCP_CONNECTION_INFO, b, &l); err != nil {
 		return nil, os.NewSyscallError("getsockopt", err)
 	}
-	return parseInfo(&sti), nil
+	return parseInfo((*sysTCPConnInfo)(unsafe.Pointer(&b[0]))), nil
 }
 
 var sysStates = [11]State{Closed, Listen, SynSent, SynReceived, Established, CloseWait, FinWait1, Closing, LastAck, FinWait2, TimeWait}
