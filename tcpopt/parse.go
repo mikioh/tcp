@@ -9,26 +9,26 @@ import (
 	"sync"
 )
 
-var parseMu sync.RWMutex
+var parserMu sync.RWMutex
 
 // Register registers a socket option parser.
 func Register(level, name int, fn func([]byte) (Option, error)) {
-	parseMu.Lock()
-	defer parseMu.Unlock()
+	parserMu.Lock()
 	parsers[int64(level)<<32|int64(name)] = fn
+	parserMu.Unlock()
 }
 
 // Unregister unregisters a socket option parser.
 func Unregister(level, name int) {
-	parseMu.Lock()
-	defer parseMu.Unlock()
+	parserMu.Lock()
 	delete(parsers, int64(level)<<32|int64(name))
+	parserMu.Unlock()
 }
 
 // Parse parses a socket option.
 func Parse(level, name int, b []byte) (Option, error) {
-	parseMu.RLock()
-	defer parseMu.RUnlock()
+	parserMu.RLock()
+	defer parserMu.RUnlock()
 	fn, ok := parsers[int64(level)<<32|int64(name)]
 	if !ok {
 		return nil, fmt.Errorf("parser for level=%#x name=%#x not found", level, name)
