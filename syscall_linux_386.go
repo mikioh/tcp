@@ -23,15 +23,17 @@ const (
 
 func socketcall(call int, a0, a1, a2, a3, a4, a5 uintptr) (int, syscall.Errno)
 
-func setsockopt(s uintptr, level, name int, b []byte, l uint32) error {
+func setsockopt(s uintptr, level, name int, b []byte) error {
+	l := uint32(len(b))
 	if _, errno := socketcall(sysSETSOCKOPT, s, uintptr(level), uintptr(name), uintptr(unsafe.Pointer(&b[0])), uintptr(l), 0); errno != 0 {
 		return error(errno)
 	}
 	return nil
 }
 
-func getsockopt(s uintptr, level, name int, b []byte, l *uint32) error {
-	if _, errno := socketcall(sysGETSOCKOPT, s, uintptr(level), uintptr(name), uintptr(unsafe.Pointer(&b[0])), uintptr(unsafe.Pointer(l)), 0); errno != 0 {
+func getsockopt(s uintptr, level, name int, b []byte) error {
+	l := uint32(len(b))
+	if _, errno := socketcall(sysGETSOCKOPT, s, uintptr(level), uintptr(name), uintptr(unsafe.Pointer(&b[0])), uintptr(unsafe.Pointer(&l)), 0); errno != 0 {
 		return error(errno)
 	}
 	return nil
