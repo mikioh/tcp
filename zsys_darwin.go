@@ -6,7 +6,6 @@ package tcp
 const (
 	sysFIONREAD = 0x4004667f
 
-	sysTCP_NOPUSH          = 0x4
 	sysTCP_CONNECTION_INFO = 0x106
 
 	sysTCPCI_OPT_TIMESTAMPS           = 0x1

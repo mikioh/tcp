@@ -35,7 +35,6 @@ const (
 const (
 	soBuffered = iota
 	soAvailable
-	soCork
 	soMax
 )
 

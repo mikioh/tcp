@@ -7,7 +7,6 @@ const (
 	sysSIOCINQ  = 0x541b
 	sysSIOCOUTQ = 0x5411
 
-	sysTCP_CORK       = 0x3
 	sysTCP_INFO       = 0xb
 	sysTCP_CONGESTION = 0xd
 	sysTCP_CC_INFO    = 0x1a

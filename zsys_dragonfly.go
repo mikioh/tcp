@@ -5,6 +5,4 @@ package tcp
 
 const (
 	sysFIONREAD = 0x4004667f
-
-	sysTCP_NOPUSH = 0x4
 )

@@ -7,5 +7,4 @@ package tcp
 var soOptions = [soMax]soOption{
 	soBuffered:  {0, sysSIOCINQ},
 	soAvailable: {0, sysSIOCOUTQ},
-	soCork:      {ianaProtocolTCP, sysTCP_CORK},
 }

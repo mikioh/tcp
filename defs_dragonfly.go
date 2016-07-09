@@ -15,6 +15,4 @@ import "C"
 
 const (
 	sysFIONREAD = C.FIONREAD
-
-	sysTCP_NOPUSH = C.TCP_NOPUSH
 )
