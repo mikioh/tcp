@@ -6,7 +6,11 @@
 
 package tcp
 
-var soOptions = map[int]soOption{}
+var soOptions = [soMax]soOption{
+	soBuffered:  {0, -1},
+	soAvailable: {0, -1},
+	soCork:      {0, -1},
+}
 
 func buffered(s uintptr) int  { return -1 }
 func available(s uintptr) int { return -1 }

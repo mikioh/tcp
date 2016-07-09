@@ -8,7 +8,6 @@ const (
 
 	sysTCP_NOPUSH          = 0x4
 	sysTCP_CONNECTION_INFO = 0x106
-	sysTCP_NOTSENT_LOWAT   = 0x201
 
 	sysTCPCI_OPT_TIMESTAMPS           = 0x1
 	sysTCPCI_OPT_SACK                 = 0x2

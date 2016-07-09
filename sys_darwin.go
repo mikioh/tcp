@@ -4,8 +4,8 @@
 
 package tcp
 
-var soOptions = map[int]soOption{
-	soBuffered:        {0, sysFIONREAD},
-	soCork:            {ianaProtocolTCP, sysTCP_NOPUSH},
-	soUnsentThreshold: {ianaProtocolTCP, sysTCP_NOTSENT_LOWAT},
+var soOptions = [soMax]soOption{
+	soBuffered:  {0, sysFIONREAD},
+	soAvailable: {0, -1},
+	soCork:      {ianaProtocolTCP, sysTCP_NOPUSH},
 }

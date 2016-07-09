@@ -7,11 +7,10 @@ const (
 	sysSIOCINQ  = 0x541b
 	sysSIOCOUTQ = 0x5411
 
-	sysTCP_CORK          = 0x3
-	sysTCP_INFO          = 0xb
-	sysTCP_CONGESTION    = 0xd
-	sysTCP_NOTSENT_LOWAT = 0x19
-	sysTCP_CC_INFO       = 0x1a
+	sysTCP_CORK       = 0x3
+	sysTCP_INFO       = 0xb
+	sysTCP_CONGESTION = 0xd
+	sysTCP_CC_INFO    = 0x1a
 
 	sysTCPI_OPT_TIMESTAMPS = 0x1
 	sysTCPI_OPT_SACK       = 0x2

@@ -13,24 +13,16 @@ import (
 )
 
 func buffered(s uintptr) int {
-	o, ok := soOptions[soBuffered]
-	if !ok {
-		return -1
-	}
 	var b [4]byte
-	if err := ioctl(s, o.name, b[:]); err != nil {
+	if err := ioctl(s, soOptions[soBuffered].name, b[:]); err != nil {
 		return -1
 	}
 	return int(nativeEndian.Uint32(b[:]))
 }
 
 func available(s uintptr) int {
-	o, ok := soOptions[soAvailable]
-	if !ok {
-		return -1
-	}
 	var b [4]byte
-	if err := ioctl(s, o.name, b[:]); err != nil {
+	if err := ioctl(s, soOptions[soAvailable].name, b[:]); err != nil {
 		return -1
 	}
 	n := int(nativeEndian.Uint32(b[:]))

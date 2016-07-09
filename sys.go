@@ -36,7 +36,7 @@ const (
 	soBuffered = iota
 	soAvailable
 	soCork
-	soUnsentThreshold
+	soMax
 )
 
 type soOption struct {
