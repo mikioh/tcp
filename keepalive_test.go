@@ -6,16 +6,25 @@ package tcp_test
 
 import (
 	"net"
+	"reflect"
 	"runtime"
 	"testing"
 	"time"
 
 	"github.com/mikioh/tcp"
+	"github.com/mikioh/tcpopt"
 )
 
 func TestKeepAliveOptions(t *testing.T) {
+	opts := []tcpopt.Option{
+		tcpopt.KeepAlive(true),
+		tcpopt.KeepAliveIdleInterval(10 * time.Second), // solaris requires 10 seconds as the lowest value
+		tcpopt.KeepAliveProbeInterval(time.Second),
+	}
 	switch runtime.GOOS {
-	case "darwin", "dragonfly", "freebsd", "linux", "netbsd", "solaris", "windows":
+	case "darwin", "dragonfly", "freebsd", "linux", "netbsd", "solaris":
+		opts = append(opts, tcpopt.KeepAliveProbeCount(1))
+	case "windows":
 	default:
 		t.Skipf("%s/%s", runtime.GOOS, runtime.GOARCH)
 	}
@@ -46,15 +55,20 @@ func TestKeepAliveOptions(t *testing.T) {
 		t.Fatal(err)
 	}
 
-	opt := tcp.KeepAliveOptions{
-		IdleInterval:  10 * time.Second, // solaris requires 10 seconds as the lowest value
-		ProbeInterval: time.Second,
-		ProbeCount:    1,
-	}
-	if err := tc.Conn.(*net.TCPConn).SetKeepAlive(true); err != nil {
-		t.Error(err)
-	}
-	if err := tc.SetKeepAliveOptions(&opt); err != nil {
-		t.Error(err)
+	for _, o := range opts {
+		var b [4]byte
+		if _, err := tc.Option(o.Level(), o.Name(), b[:]); err != nil {
+			t.Fatal(err)
+		}
+		if err := tc.SetOption(o); err != nil {
+			t.Fatal(err)
+		}
+		oo, err := tc.Option(o.Level(), o.Name(), b[:])
+		if err != nil {
+			t.Fatal(err)
+		}
+		if !reflect.DeepEqual(oo, o) {
+			t.Fatalf("got %#v; want %#v", oo, o)
+		}
 	}
 }

@@ -10,14 +10,14 @@ import (
 	"syscall"
 	"time"
 	"unsafe"
+
+	"github.com/mikioh/tcpopt"
 )
 
 var soOptions = map[int]soOption{}
 
-func buffered(s uintptr) int                    { return -1 }
-func available(s uintptr) int                   { return -1 }
-func setCork(s uintptr, on bool) error          { return errOpNoSupport }
-func setUnsentThreshold(s uintptr, n int) error { return errOpNoSupport }
+func buffered(s uintptr) int  { return -1 }
+func available(s uintptr) int { return -1 }
 
 var keepAlive = struct {
 	sync.RWMutex
@@ -30,37 +30,40 @@ var keepAlive = struct {
 	},
 }
 
-func setKeepAliveIdleInterval(s uintptr, d time.Duration) error {
-	keepAlive.Lock()
-	defer keepAlive.Unlock()
-	d += (time.Millisecond - time.Nanosecond)
-	msecs := uint32(d / time.Millisecond)
-	prev := keepAlive.Time
-	keepAlive.Time = msecs
-	rv := uint32(0)
-	siz := uint32(unsafe.Sizeof(keepAlive))
-	if err := syscall.WSAIoctl(syscall.Handle(s), syscall.SIO_KEEPALIVE_VALS, (*byte)(unsafe.Pointer(&keepAlive)), siz, nil, 0, &rv, nil, 0); err != nil {
-		keepAlive.Time = prev
-		return os.NewSyscallError("WSAIoctl", err)
+func setsockopt(s uintptr, level, name int, b []byte) error {
+	var kai tcpopt.KeepAliveIdleInterval
+	var kap tcpopt.KeepAliveProbeInterval
+	if level == kai.Level() && name == kai.Name() {
+		keepAlive.Lock()
+		defer keepAlive.Unlock()
+		prev := keepAlive.Time
+		keepAlive.Time = nativeEndian.Uint32(b)
+		rv := uint32(0)
+		siz := uint32(unsafe.Sizeof(keepAlive))
+		if err := syscall.WSAIoctl(syscall.Handle(s), syscall.SIO_KEEPALIVE_VALS, (*byte)(unsafe.Pointer(&keepAlive)), siz, nil, 0, &rv, nil, 0); err != nil {
+			keepAlive.Time = prev
+			return os.NewSyscallError("wsaioctl", err)
+		}
+		return nil
 	}
-	return nil
+	if level == kap.Level() && name == kap.Name() {
+		keepAlive.Lock()
+		defer keepAlive.Unlock()
+		prev := keepAlive.Interval
+		keepAlive.Interval = nativeEndian.Uint32(b)
+		rv := uint32(0)
+		siz := uint32(unsafe.Sizeof(keepAlive))
+		if err := syscall.WSAIoctl(syscall.Handle(s), syscall.SIO_KEEPALIVE_VALS, (*byte)(unsafe.Pointer(&keepAlive)), siz, nil, 0, &rv, nil, 0); err != nil {
+			keepAlive.Interval = prev
+			return os.NewSyscallError("wsaioctl", err)
+		}
+		return nil
+	}
+	if len(b) == 4 {
+		v := int(nativeEndian.Uint32(b))
+		return syscall.SetsockoptInt(syscall.Handle(s), level, name, v)
+	}
+	return errOpNoSupport
 }
 
-func setKeepAliveProbeInterval(s uintptr, d time.Duration) error {
-	keepAlive.Lock()
-	defer keepAlive.Unlock()
-	d += (time.Millisecond - time.Nanosecond)
-	msecs := uint32(d / time.Millisecond)
-	prev := keepAlive.Interval
-	keepAlive.Interval = msecs
-	rv := uint32(0)
-	siz := uint32(unsafe.Sizeof(keepAlive))
-	if err := syscall.WSAIoctl(syscall.Handle(s), syscall.SIO_KEEPALIVE_VALS, (*byte)(unsafe.Pointer(&keepAlive)), siz, nil, 0, &rv, nil, 0); err != nil {
-		keepAlive.Interval = prev
-		return os.NewSyscallError("WSAIoctl", err)
-	}
-	return nil
-}
-
-// See http://msdn.microsoft.com/en-us/library/windows/desktop/dd877220(v=vs.85).aspx
-func setKeepAliveProbeCount(s uintptr, n int) error { return errOpNoSupport }
+func getsockopt(s uintptr, level, name int, b []byte) error { return errOpNoSupport }

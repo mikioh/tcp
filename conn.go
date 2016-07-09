@@ -7,9 +7,10 @@ package tcp
 import (
 	"errors"
 	"net"
-	"time"
+	"os"
 
 	"github.com/mikioh/netreflect"
+	"github.com/mikioh/tcpopt"
 )
 
 var (
@@ -26,95 +27,77 @@ type Conn struct {
 	s uintptr // socket descriptor for avoding data race
 }
 
-// A KeepAliveOptions represents keepalive options.
-type KeepAliveOptions struct {
-	// IdleInterval is the idle interval until the first probe is
-	// sent.
-	// See TCP_KEEPIDLE or TCP_KEEPALIVE for further information.
-	IdleInterval time.Duration
-
-	// ProbeInterval is the interval between keepalive probes.
-	// See TCP_KEEPINTVL for further information.
-	ProbeInterval time.Duration
-
-	// ProbeCount is the number of keepalive probes should be
-	// repeated when the peer is not responding.
-	// See TCP_KEEPCNT for further information.
-	ProbeCount int
-}
-
-// SetKeepAliveOptions sets keepalive options.
-func (c *Conn) SetKeepAliveOptions(opt *KeepAliveOptions) error {
-	if opt.IdleInterval >= 0 { // BSD variants accept 0, Linux doesn't
-		if err := setKeepAliveIdleInterval(c.s, opt.IdleInterval); err != nil {
-			return err
-		}
+// SetOption sets a socket option.
+func (c *Conn) SetOption(o tcpopt.Option) error {
+	b, err := o.Marshal()
+	if err != nil {
+		return &net.OpError{Op: "set", Net: c.LocalAddr().Network(), Source: nil, Addr: c.LocalAddr(), Err: err}
 	}
-	if opt.ProbeInterval >= 0 { // BSD variants accept 0, Linux doesn't
-		if err := setKeepAliveProbeInterval(c.s, opt.ProbeInterval); err != nil {
-			return err
-		}
-	}
-	if opt.ProbeCount >= 0 { // BSD variants accept 0, Linux doesn't
-		if err := setKeepAliveProbeCount(c.s, opt.ProbeCount); err != nil {
-			return err
-		}
+	if err := setsockopt(c.s, o.Level(), o.Name(), b); err != nil {
+		return &net.OpError{Op: "set", Net: c.LocalAddr().Network(), Source: nil, Addr: c.LocalAddr(), Err: os.NewSyscallError("setsockopt", err)}
 	}
 	return nil
 }
 
-// A BufferOptions represents buffer options.
-type BufferOptions struct {
-	// The runtime-integrated network poller doesn't report that
-	// the connection is writable while the amount of unsent data
-	// size is greater than UnsentThreshold.
-	//
-	// For now only Darwin and Linux support this option.
-	// See TCP_NOTSENT_LOWAT for further information.
-	UnsentThreshold int
-}
-
-// SetBufferOptions sets buffer options.
-func (c *Conn) SetBufferOptions(opt *BufferOptions) error {
-	if opt.UnsentThreshold >= 0 {
-		if err := setUnsentThreshold(c.s, opt.UnsentThreshold); err != nil {
-			return err
-		}
+// Option returns a socket option.
+func (c *Conn) Option(level, name int, b []byte) (tcpopt.Option, error) {
+	if err := getsockopt(c.s, level, name, b); err != nil {
+		return nil, &net.OpError{Op: "get", Net: c.LocalAddr().Network(), Source: nil, Addr: c.LocalAddr(), Err: os.NewSyscallError("getsockopt", err)}
 	}
-	return nil
+	o, err := tcpopt.Parse(level, name, b)
+	if err != nil {
+		return nil, &net.OpError{Op: "get", Net: c.LocalAddr().Network(), Source: nil, Addr: c.LocalAddr(), Err: err}
+	}
+	return o, nil
 }
 
 // Buffered returns the number of bytes that can be read from the
 // underlying socket read buffer.
 // It returns -1 when the platform doesn't support this feature.
-func (c *Conn) Buffered() int {
-	return buffered(c.s)
-}
+func (c *Conn) Buffered() int { return buffered(c.s) }
 
 // Available returns how many bytes are unused in the underlying
 // socket write buffer.
 // It returns -1 when the platform doesn't support this feature.
-func (c *Conn) Available() int {
-	return available(c.s)
-}
+func (c *Conn) Available() int { return available(c.s) }
 
-// Cork enables TCP_CORK option on Linux, TCP_NOPUSH option on Darwin,
-// DragonFlyBSD, FreeBSD and OpenBSD.
+// Cork enables TCP_CORK option on Linux, TCP_NOPUSH option on BSD
+// variants.
 func (c *Conn) Cork() error {
-	return setCork(c.s, true)
+	if err := cork(c.s, true); err != nil {
+		return &net.OpError{Op: "set", Net: c.LocalAddr().Network(), Source: nil, Addr: c.LocalAddr(), Err: err}
+	}
+	return nil
 }
 
-// Uncork disables TCP_CORK option on Linux, TCP_NOPUSH option on
-// Darwin, DragonFly BSD, FreeBSD and OpenBSD.
+// Uncork disables TCP_CORK option on Linux, TCP_NOPUSH option on BSD
+// variants.
 func (c *Conn) Uncork() error {
-	return setCork(c.s, false)
+	if err := cork(c.s, false); err != nil {
+		return &net.OpError{Op: "set", Net: c.LocalAddr().Network(), Source: nil, Addr: c.LocalAddr(), Err: err}
+	}
+	return nil
+}
+
+func cork(s uintptr, on bool) error {
+	o := tcpopt.Cork(on)
+	b, err := o.Marshal()
+	if err != nil {
+		return err
+	}
+	return os.NewSyscallError("setsockopt", setsockopt(s, o.Level(), o.Name(), b))
 }
 
 // Info returns information of current connection.
+//
 // For now this option is supported on only Darwin, FreeBSD, Linux and
 // NetBSD.
 func (c *Conn) Info() (*Info, error) {
-	return info(c.s)
+	ti, err := info(c.s)
+	if err != nil {
+		return nil, &net.OpError{Op: "info", Net: c.LocalAddr().Network(), Source: nil, Addr: c.LocalAddr(), Err: err}
+	}
+	return ti, nil
 }
 
 // NewConn returns a new Conn.

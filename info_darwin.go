@@ -20,16 +20,16 @@ type SysInfo struct {
 
 func info(s uintptr) (*Info, error) {
 	b := make([]byte, sizeofTCPConnInfo)
-	l := uint32(sizeofTCPConnInfo)
-	if err := getsockopt(s, ianaProtocolTCP, sysTCP_CONNECTION_INFO, b, &l); err != nil {
+	if err := getsockopt(s, ianaProtocolTCP, sysTCP_CONNECTION_INFO, b); err != nil {
 		return nil, os.NewSyscallError("getsockopt", err)
 	}
-	return parseInfo((*sysTCPConnInfo)(unsafe.Pointer(&b[0]))), nil
+	return parseInfo(b), nil
 }
 
 var sysStates = [11]State{Closed, Listen, SynSent, SynReceived, Established, CloseWait, FinWait1, Closing, LastAck, FinWait2, TimeWait}
 
-func parseInfo(sti *sysTCPConnInfo) *Info {
+func parseInfo(b []byte) *Info {
+	sti := (*sysTCPConnInfo)(unsafe.Pointer(&b[0]))
 	ti := &Info{State: sysStates[sti.State]}
 	if sti.Options&sysTCPCI_OPT_WSCALE != 0 {
 		ti.Options = append(ti.Options, WindowScale(sti.Snd_wscale))

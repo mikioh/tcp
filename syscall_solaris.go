@@ -30,15 +30,17 @@ func ioctl(s uintptr, ioc int, b []byte) error {
 	return nil
 }
 
-func setsockopt(s uintptr, level, name int, b []byte, l uint32) error {
+func setsockopt(s uintptr, level, name int, b []byte) error {
+	l := uint32(len(b))
 	if _, _, errno := rtsysvicall6(uintptr(unsafe.Pointer(&libcSetsockopt)), 5, s, uintptr(level), uintptr(name), uintptr(unsafe.Pointer(&b[0])), uintptr(l), 0); errno != 0 {
 		return error(errno)
 	}
 	return nil
 }
 
-func getsockopt(s uintptr, level, name int, b []byte, l *uint32) error {
-	if _, _, errno := rtsysvicall6(uintptr(unsafe.Pointer(libcGetsockopt)), 5, s, uintptr(level), uintptr(name), uintptr(unsafe.Pointer(&b[0])), uintptr(unsafe.Pointer(l)), 0); errno != 0 {
+func getsockopt(s uintptr, level, name int, b []byte) error {
+	l := uint32(len(b))
+	if _, _, errno := rtsysvicall6(uintptr(unsafe.Pointer(libcGetsockopt)), 5, s, uintptr(level), uintptr(name), uintptr(unsafe.Pointer(&b[0])), uintptr(unsafe.Pointer(&l)), 0); errno != 0 {
 		return error(errno)
 	}
 	return nil

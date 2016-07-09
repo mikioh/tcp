@@ -6,14 +6,7 @@
 
 package tcp
 
-import "time"
-
 var soOptions = map[int]soOption{}
 
-func buffered(s uintptr) int                                     { return -1 }
-func available(s uintptr) int                                    { return -1 }
-func setCork(s uintptr, on bool) error                           { return errOpNoSupport }
-func setUnsentThreshold(s uintptr, n int) error                  { return errOpNoSupport }
-func setKeepAliveIdleInterval(s uintptr, d time.Duration) error  { return errOpNoSupport }
-func setKeepAliveProbeInterval(s uintptr, d time.Duration) error { return errOpNoSupport }
-func setKeepAliveProbeCount(s uintptr, n int) error              { return errOpNoSupport }
+func buffered(s uintptr) int  { return -1 }
+func available(s uintptr) int { return -1 }

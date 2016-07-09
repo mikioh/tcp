@@ -25,9 +25,9 @@
 // underlying transport connection must be prepared before monitoring.
 //
 //	tr := &http.Transport{
-//		Dial: func(network, address string) (net.Conn, error) {
+//		Dial: func(network, host string) (net.Conn, error) {
 //			d := net.Dialer{DualStack: true}
-//			c, err := d.Dial(network, address)
+//			c, err := d.Dial(network, host)
 //			if err != nil {
 //				return nil, err
 //			}
