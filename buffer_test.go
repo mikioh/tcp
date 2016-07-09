@@ -240,12 +240,8 @@ func TestBufferCap(t *testing.T) {
 		if err := tc.SetOption(o); err != nil {
 			t.Fatal(err)
 		}
-		oo, err := tc.Option(o.Level(), o.Name(), b[:])
-		if err != nil {
+		if _, err := tc.Option(o.Level(), o.Name(), b[:]); err != nil {
 			t.Fatal(err)
-		}
-		if !reflect.DeepEqual(oo, o) {
-			t.Fatalf("got %#v; want %#v", oo, o)
 		}
 	}
 }
