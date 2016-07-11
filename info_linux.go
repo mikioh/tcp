@@ -124,7 +124,8 @@ type SysCongestionControl struct {
 // A SysCongestionControlInfo represents congestion control
 // algorithm-specific information.
 type SysCongestionControlInfo interface {
-	String() string
+	// Algo returns the congestion control algorithm name.
+	Algo() string
 }
 
 // A VegasInfo represents TCP Vegas congestion control information.
@@ -135,9 +136,9 @@ type VegasInfo struct {
 	MinRTT     time.Duration `json:"min rtt"`   // minimum round-trip time
 }
 
-// String implements the String method of SysCongestionControlInfo
+// Algo implements the Algo method of SysCongestionControlInfo
 // interface.
-func (vi *VegasInfo) String() string { return "vegas" }
+func (vi *VegasInfo) Algo() string { return "vegas" }
 
 // A CEState represents a state of ECN congestion encountered (CE)
 // codepoint.
@@ -153,9 +154,9 @@ type DCTCPInfo struct {
 	TotalAckedBytes uint    `json:"total acked"` // total # of acked bytes
 }
 
-// String implements the String method of SysCongestionControlInfo
+// Algo implements the Algo method of SysCongestionControlInfo
 // interface.
-func (di *DCTCPInfo) String() string { return "dctcp" }
+func (di *DCTCPInfo) Algo() string { return "dctcp" }
 
 func parseSysCC(name string, b []byte) *SysCongestionControl {
 	stcci := (*sysTCPCCInfo)(unsafe.Pointer(&b[0]))
