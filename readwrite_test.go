@@ -13,6 +13,7 @@ import (
 	"testing"
 
 	"github.com/mikioh/tcp"
+	"github.com/mikioh/tcpinfo"
 )
 
 func server(t *testing.T, ln net.Listener) {
@@ -87,7 +88,9 @@ func TestConcurrentReadWriteAndInfo(t *testing.T) {
 			wwg.Add(1)
 			go func() {
 				defer wwg.Done()
-				if _, err := tc.Info(); err != nil {
+				var o tcpinfo.Info
+				b := make([]byte, 256)
+				if _, err := tc.Option(o.Level(), o.Name(), b); err != nil {
 					t.Error(err)
 					return
 				}

@@ -36,7 +36,7 @@
 //				c.Close()
 //				return nil, err
 //			}
-//			go tcpConnMonitor(tc)
+//			go monitor(tc)
 //			return tc.Conn, nil
 //		},
 //		TLSClientConfig: &tls.Config{ServerName: "golang.org"},
@@ -48,18 +48,25 @@
 //	}
 //
 // When the underlying transport connection is established, your
-// monitor goroutine can start monitoring the TCP connection by using
-// the Info method of tcp.Conn.
+// monitor goroutine can start monitoring the connection by using the
+// Option method of Conn and tcpinfo package.
 //
-//	 func tcpConnMonitor(c *tcp.Conn) {
+//	import "github.com/mikioh/tcpopt"
+//	import "github.com/mikioh/tcpinfo"
+//
+//	func monitor(c *tcp.Conn) {
+//		c.SetOption(tcpopt.KeepAlive(true))
+//		c.SetOption(tcpopt.KeepAliveProbeCount(3))
+//		var o tcpinfo.Info
+//		var b [256]byte
 //		for {
-//			ti, err := c.Info() // fetch TCP connection information
+//			i, err := c.Option(o.Level(), o.Name(), b[:])
 //			if err != nil {
 //				// error handling
 //			}
-//			text, err := json.Marshal(ti)
+//			txt, err := json.Marshal(i)
 //			if err != nil {
 //				// error handling
 //			}
-//			fmt.Println(text)
+//			fmt.Println(txt)
 package tcp

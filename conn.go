@@ -88,18 +88,6 @@ func cork(s uintptr, on bool) error {
 	return os.NewSyscallError("setsockopt", setsockopt(s, o.Level(), o.Name(), b))
 }
 
-// Info returns information of current connection.
-//
-// For now this option is supported on only Darwin, FreeBSD, Linux and
-// NetBSD.
-func (c *Conn) Info() (*Info, error) {
-	ti, err := info(c.s)
-	if err != nil {
-		return nil, &net.OpError{Op: "info", Net: c.LocalAddr().Network(), Source: nil, Addr: c.LocalAddr(), Err: err}
-	}
-	return ti, nil
-}
-
 // NewConn returns a new Conn.
 func NewConn(c net.Conn) (*Conn, error) {
 	s, err := netreflect.SocketOf(c)

@@ -19,6 +19,7 @@ import (
 	"time"
 
 	"github.com/mikioh/tcp"
+	"github.com/mikioh/tcpinfo"
 )
 
 var infoTests = []struct {
@@ -92,12 +93,14 @@ func TestInfo(t *testing.T) {
 func monitor(c *tcp.Conn, log chan<- string, sig <-chan struct{}) {
 	defer close(log)
 	log <- fmt.Sprintf("%s %v->%v", c.LocalAddr().Network(), c.LocalAddr(), c.RemoteAddr())
+	var o tcpinfo.Info
+	var b [256]byte
 	for {
-		ti, err := c.Info()
+		i, err := c.Option(o.Level(), o.Name(), b[:])
 		if err != nil {
 			return
 		}
-		b, err := json.MarshalIndent(ti, "", "\t")
+		txt, err := json.MarshalIndent(i, "", "\t")
 		if err != nil {
 			continue
 		}
@@ -105,8 +108,8 @@ func monitor(c *tcp.Conn, log chan<- string, sig <-chan struct{}) {
 		case <-sig:
 			return
 		default:
-			log <- string(b)
-			time.Sleep(100 * time.Millisecond)
+			log <- string(txt)
+			time.Sleep(200 * time.Millisecond)
 		}
 	}
 }

@@ -21,13 +21,6 @@ func init() {
 	}
 }
 
-func boolint32(b bool) int32 {
-	if b {
-		return 1
-	}
-	return 0
-}
-
 const (
 	ianaProtocolTCP = 0x6
 )

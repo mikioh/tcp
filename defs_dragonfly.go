@@ -8,8 +8,6 @@ package tcp
 
 /*
 #include <sys/ioctl.h>
-
-#include <netinet/tcp.h>
 */
 import "C"
 
