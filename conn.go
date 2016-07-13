@@ -14,7 +14,8 @@ import (
 )
 
 var (
-	errOpNoSupport = errors.New("operation not supported")
+	errOpNoSupport    = errors.New("operation not supported")
+	errBufferTooShort = errors.New("buffer too short")
 
 	_ net.Conn = &Conn{}
 )
@@ -41,6 +42,9 @@ func (c *Conn) SetOption(o tcpopt.Option) error {
 
 // Option returns a socket option.
 func (c *Conn) Option(level, name int, b []byte) (tcpopt.Option, error) {
+	if len(b) == 0 {
+		return nil, errBufferTooShort
+	}
 	if err := getsockopt(c.s, level, name, b); err != nil {
 		return nil, &net.OpError{Op: "get", Net: c.LocalAddr().Network(), Source: nil, Addr: c.LocalAddr(), Err: os.NewSyscallError("getsockopt", err)}
 	}
