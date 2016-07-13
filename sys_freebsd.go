@@ -4,7 +4,7 @@
 
 package tcp
 
-var soOptions = [soMax]soOption{
+var options = [soMax]option{
 	soBuffered:  {0, sysFIONREAD},
 	soAvailable: {0, sysFIONSPACE},
 }

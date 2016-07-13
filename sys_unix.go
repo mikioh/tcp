@@ -14,7 +14,7 @@ import (
 
 func buffered(s uintptr) int {
 	var b [4]byte
-	if err := ioctl(s, soOptions[soBuffered].name, b[:]); err != nil {
+	if err := ioctl(s, options[soBuffered].name, b[:]); err != nil {
 		return -1
 	}
 	return int(nativeEndian.Uint32(b[:]))
@@ -22,7 +22,7 @@ func buffered(s uintptr) int {
 
 func available(s uintptr) int {
 	var b [4]byte
-	if err := ioctl(s, soOptions[soAvailable].name, b[:]); err != nil {
+	if err := ioctl(s, options[soAvailable].name, b[:]); err != nil {
 		return -1
 	}
 	n := int(nativeEndian.Uint32(b[:]))

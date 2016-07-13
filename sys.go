@@ -31,7 +31,7 @@ const (
 	soMax
 )
 
-type soOption struct {
+type option struct {
 	level int // option level
 	name  int // option name, must be equal or greater than 1
 }

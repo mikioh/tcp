@@ -6,7 +6,7 @@
 
 package tcp
 
-var soOptions = [soMax]soOption{
+var options = [soMax]option{
 	soBuffered:  {0, -1},
 	soAvailable: {0, -1},
 }
