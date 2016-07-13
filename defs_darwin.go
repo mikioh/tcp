@@ -8,9 +8,16 @@ package tcp
 
 /*
 #include <sys/ioctl.h>
+#include <sys/socket.h>
 */
 import "C"
 
 const (
+	sysSOL_SOCKET = C.SOL_SOCKET
+
 	sysFIONREAD = C.FIONREAD
+
+	sysSO_NREAD     = C.SO_NREAD
+	sysSO_NWRITE    = C.SO_NWRITE
+	sysSO_NUMRCVPKT = C.SO_NUMRCVPKT
 )

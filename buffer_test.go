@@ -77,7 +77,7 @@ func TestBuffered(t *testing.T) {
 
 func TestAvailable(t *testing.T) {
 	switch runtime.GOOS {
-	case "freebsd", "linux", "netbsd":
+	case "darwin", "freebsd", "linux", "netbsd":
 	default:
 		t.Skipf("%s/%s", runtime.GOOS, runtime.GOARCH)
 	}

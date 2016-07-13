@@ -22,11 +22,17 @@ func buffered(s uintptr) int {
 
 func available(s uintptr) int {
 	var b [4]byte
-	if err := ioctl(s, options[soAvailable].name, b[:]); err != nil {
-		return -1
+	if runtime.GOOS == "darwin" {
+		if err := getsockopt(s, options[soAvailable].level, options[soAvailable].name, b[:]); err != nil {
+			return -1
+		}
+	} else {
+		if err := ioctl(s, options[soAvailable].name, b[:]); err != nil {
+			return -1
+		}
 	}
 	n := int(nativeEndian.Uint32(b[:]))
-	if runtime.GOOS == "linux" {
+	if runtime.GOOS == "darwin" || runtime.GOOS == "linux" {
 		var o tcpopt.SendBuffer
 		if err := getsockopt(s, o.Level(), o.Name(), b[:]); err != nil {
 			return -1
