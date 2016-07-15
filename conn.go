@@ -25,7 +25,7 @@ var (
 // options.
 type Conn struct {
 	net.Conn
-	s uintptr // socket descriptor for avoding data race
+	s uintptr // socket descriptor for configuring options
 }
 
 // SetOption sets a socket option.
