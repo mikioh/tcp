@@ -185,7 +185,7 @@ func TestCorkAndUncork(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	if err := tc.Cork(); err != nil {
+	if err := tc.SetOption(tcpopt.Cork(true)); err != nil {
 		t.Fatal(err)
 	}
 	b := make([]byte, N)
@@ -195,7 +195,7 @@ func TestCorkAndUncork(t *testing.T) {
 		}
 		time.Sleep(5 * time.Millisecond)
 	}
-	if err := tc.Uncork(); err != nil {
+	if err := tc.SetOption(tcpopt.Cork(false)); err != nil {
 		t.Fatal(err)
 	}
 

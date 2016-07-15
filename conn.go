@@ -65,33 +65,6 @@ func (c *Conn) Buffered() int { return buffered(c.s) }
 // It returns -1 when the platform doesn't support this feature.
 func (c *Conn) Available() int { return available(c.s) }
 
-// Cork enables TCP_CORK option on Linux, TCP_NOPUSH option on BSD
-// variants.
-func (c *Conn) Cork() error {
-	if err := cork(c.s, true); err != nil {
-		return &net.OpError{Op: "set", Net: c.LocalAddr().Network(), Source: nil, Addr: c.LocalAddr(), Err: err}
-	}
-	return nil
-}
-
-// Uncork disables TCP_CORK option on Linux, TCP_NOPUSH option on BSD
-// variants.
-func (c *Conn) Uncork() error {
-	if err := cork(c.s, false); err != nil {
-		return &net.OpError{Op: "set", Net: c.LocalAddr().Network(), Source: nil, Addr: c.LocalAddr(), Err: err}
-	}
-	return nil
-}
-
-func cork(s uintptr, on bool) error {
-	o := tcpopt.Cork(on)
-	b, err := o.Marshal()
-	if err != nil {
-		return err
-	}
-	return os.NewSyscallError("setsockopt", setsockopt(s, o.Level(), o.Name(), b))
-}
-
 // NewConn returns a new Conn.
 func NewConn(c net.Conn) (*Conn, error) {
 	s, err := netreflect.SocketOf(c)
