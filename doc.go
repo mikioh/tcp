@@ -24,6 +24,8 @@
 // TCP information option. A custom net.Dial function that hooks up an
 // underlying transport connection must be prepared before monitoring.
 //
+//	import "github.com/mikioh/tcp"
+//
 //	tr := &http.Transport{
 //		Dial: func(network, host string) (net.Conn, error) {
 //			d := net.Dialer{DualStack: true}
