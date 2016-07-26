@@ -5,6 +5,5 @@
 package tcp
 
 var options = [soMax]option{
-	soBuffered:  {0, sysFIONREAD},
-	soAvailable: {0, -1},
+	soBuffered: {0, sysFIONREAD},
 }

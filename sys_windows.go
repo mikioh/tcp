@@ -14,10 +14,7 @@ import (
 	"github.com/mikioh/tcpopt"
 )
 
-var options = [soMax]option{
-	soBuffered:  {0, -1},
-	soAvailable: {0, -1},
-}
+var options [soMax]option
 
 func buffered(s uintptr) int  { return -1 }
 func available(s uintptr) int { return -1 }
