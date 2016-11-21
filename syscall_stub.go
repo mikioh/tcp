@@ -6,5 +6,12 @@
 
 package tcp
 
-func setsockopt(s uintptr, level, name int, b []byte) error { return errOpNoSupport }
-func getsockopt(s uintptr, level, name int, b []byte) error { return errOpNoSupport }
+import "errors"
+
+func setsockopt(s uintptr, level, name int, b []byte) error {
+	return errors.New("operation not supported")
+}
+
+func getsockopt(s uintptr, level, name int, b []byte) error {
+	return errors.New("operation not supported")
+}

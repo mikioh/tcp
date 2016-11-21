@@ -5,6 +5,7 @@
 package tcp
 
 import (
+	"errors"
 	"os"
 	"sync"
 	"syscall"
@@ -63,7 +64,9 @@ func setsockopt(s uintptr, level, name int, b []byte) error {
 		v := int(nativeEndian.Uint32(b))
 		return syscall.SetsockoptInt(syscall.Handle(s), level, name, v)
 	}
-	return errOpNoSupport
+	return errors.New("operation not supported")
 }
 
-func getsockopt(s uintptr, level, name int, b []byte) error { return errOpNoSupport }
+func getsockopt(s uintptr, level, name int, b []byte) error {
+	return errors.New("operation not supported")
+}

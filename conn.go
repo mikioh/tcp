@@ -13,12 +13,7 @@ import (
 	"github.com/mikioh/tcpopt"
 )
 
-var (
-	errOpNoSupport    = errors.New("operation not supported")
-	errBufferTooShort = errors.New("buffer too short")
-
-	_ net.Conn = &Conn{}
-)
+var _ net.Conn = &Conn{}
 
 // A Conn represents a network endpoint that uses TCP connection.
 // It allows to set non-portable, platform-dependent TCP-level socket
@@ -43,7 +38,7 @@ func (c *Conn) SetOption(o tcpopt.Option) error {
 // Option returns a socket option.
 func (c *Conn) Option(level, name int, b []byte) (tcpopt.Option, error) {
 	if len(b) == 0 {
-		return nil, errBufferTooShort
+		return nil, errors.New("short buffer")
 	}
 	if err := getsockopt(c.s, level, name, b); err != nil {
 		return nil, &net.OpError{Op: "get", Net: c.LocalAddr().Network(), Source: nil, Addr: c.LocalAddr(), Err: os.NewSyscallError("getsockopt", err)}
@@ -64,6 +59,20 @@ func (c *Conn) Buffered() int { return buffered(c.s) }
 // socket write buffer.
 // It returns -1 when the platform doesn't support this feature.
 func (c *Conn) Available() int { return available(c.s) }
+
+// OrignalDst returns an original destination address, which is an
+// address not modified by intermediate entities such as network
+// address and port translators inside the kernel, on the connection.
+//
+// Only Linux and BSD variants using PF support this feature.
+func (c *Conn) OriginalDst() (net.Addr, error) {
+	la := c.LocalAddr().(*net.TCPAddr)
+	od, err := originalDst(c.s, la, c.RemoteAddr().(*net.TCPAddr))
+	if err != nil {
+		return nil, &net.OpError{Op: "get", Net: c.LocalAddr().Network(), Source: nil, Addr: la, Err: err}
+	}
+	return od, nil
+}
 
 // NewConn returns a new Conn.
 func NewConn(c net.Conn) (*Conn, error) {
