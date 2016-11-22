@@ -48,7 +48,7 @@ func TestOriginalDst(t *testing.T) {
 		t.Skipf("not supported on %s", runtime.GOOS)
 	}
 
-	for _, address := range []string{"127.0.0.1:0", "[::1]:0"} {
+	for _, address := range []string{"127.0.0.1:0"} {
 		ln, err := net.Listen("tcp", address)
 		if err != nil {
 			t.Fatal(err)
