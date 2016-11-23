@@ -57,13 +57,13 @@
 // monitor goroutine can start monitoring the connection by using the
 // Option method of Conn and tcpinfo package.
 //
-//	func monitor(c *tcp.Conn) {
-//		c.SetOption(tcpopt.KeepAlive(true))
-//		c.SetOption(tcpopt.KeepAliveProbeCount(3))
+//	func monitor(tc *tcp.Conn) {
+//		tc.SetOption(tcpopt.KeepAlive(true))
+//		tc.SetOption(tcpopt.KeepAliveProbeCount(3))
 //		var o tcpinfo.Info
 //		var b [256]byte
 //		for {
-//			i, err := c.Option(o.Level(), o.Name(), b[:])
+//			i, err := tc.Option(o.Level(), o.Name(), b[:])
 //			if err != nil {
 //				// error handling
 //			}
