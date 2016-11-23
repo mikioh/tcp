@@ -17,7 +17,7 @@ package tcp
 #include <net/if.h>
 #include <net/pfvar.h>
 
-#include <netinet/tcp.h>
+#include <netinet/in.h>
 
 #include <netpfil/pf/pf.h>
 */
