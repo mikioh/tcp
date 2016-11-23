@@ -36,9 +36,10 @@ func originalDst(_ uintptr, la, ra *net.TCPAddr) (net.Addr, error) {
 	binary.BigEndian.PutUint16((*[2]byte)(unsafe.Pointer(&nl.Sport))[:], uint16(ra.Port))
 	binary.BigEndian.PutUint16((*[2]byte)(unsafe.Pointer(&nl.Dport))[:], uint16(la.Port))
 	nl.Proto = ianaProtocolTCP
+	ioc := uintptr(sysDIOCNATLOOK)
 	for _, dir := range []byte{sysPF_OUT, sysPF_IN} {
 		nl.Direction = dir
-		err = ioctl(fd, sysDIOCNATLOOK, b)
+		err = ioctl(fd, int(ioc), b)
 		if err == nil || err != syscall.ENOENT {
 			break
 		}
