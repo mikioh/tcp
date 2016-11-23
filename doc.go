@@ -24,7 +24,11 @@
 // TCP information option. A custom net.Dial function that hooks up an
 // underlying transport connection must be prepared before monitoring.
 //
-//	import "github.com/mikioh/tcp"
+//	import (
+//		"github.com/mikioh/tcp"
+//		"github.com/mikioh/tcpinfo"
+//		"github.com/mikioh/tcpopt"
+//	)
 //
 //	tr := &http.Transport{
 //		Dial: func(network, host string) (net.Conn, error) {
@@ -52,9 +56,6 @@
 // When the underlying transport connection is established, your
 // monitor goroutine can start monitoring the connection by using the
 // Option method of Conn and tcpinfo package.
-//
-//	import "github.com/mikioh/tcpopt"
-//	import "github.com/mikioh/tcpinfo"
 //
 //	func monitor(c *tcp.Conn) {
 //		c.SetOption(tcpopt.KeepAlive(true))
