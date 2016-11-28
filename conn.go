@@ -60,7 +60,7 @@ func (c *Conn) Buffered() int { return buffered(c.s) }
 // It returns -1 when the platform doesn't support this feature.
 func (c *Conn) Available() int { return available(c.s) }
 
-// OrignalDst returns an original destination address, which is an
+// OriginalDst returns an original destination address, which is an
 // address not modified by intermediate entities such as network
 // address and port translators inside the kernel, on the connection.
 //
