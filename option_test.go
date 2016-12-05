@@ -40,7 +40,7 @@ func TestOptionWithVariousBufferLenghts(t *testing.T) {
 func TestOriginalDst(t *testing.T) {
 	switch runtime.GOOS {
 	case "linux":
-	case "freebsd", "openbsd":
+	case "dragonfly", "freebsd", "openbsd":
 		if os.Getuid() != 0 {
 			t.Skip("must be root")
 		}
