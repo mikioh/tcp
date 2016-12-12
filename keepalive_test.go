@@ -57,18 +57,22 @@ func TestKeepAliveOptions(t *testing.T) {
 
 	for _, o := range opts {
 		var b [4]byte
-		if _, err := tc.Option(o.Level(), o.Name(), b[:]); err != nil {
-			t.Fatal(err)
+		if runtime.GOOS != "windows" {
+			if _, err := tc.Option(o.Level(), o.Name(), b[:]); err != nil {
+				t.Fatal(err)
+			}
 		}
 		if err := tc.SetOption(o); err != nil {
 			t.Fatal(err)
 		}
-		oo, err := tc.Option(o.Level(), o.Name(), b[:])
-		if err != nil {
-			t.Fatal(err)
-		}
-		if !reflect.DeepEqual(oo, o) {
-			t.Fatalf("got %#v; want %#v", oo, o)
+		if runtime.GOOS != "windows" {
+			oo, err := tc.Option(o.Level(), o.Name(), b[:])
+			if err != nil {
+				t.Fatal(err)
+			}
+			if !reflect.DeepEqual(oo, o) {
+				t.Fatalf("got %#v; want %#v", oo, o)
+			}
 		}
 	}
 }

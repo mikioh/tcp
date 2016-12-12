@@ -234,14 +234,18 @@ func TestBufferCap(t *testing.T) {
 		tcpopt.ReceiveBuffer(1<<16 - 1),
 	} {
 		var b [4]byte
-		if _, err := tc.Option(o.Level(), o.Name(), b[:]); err != nil {
-			t.Fatal(err)
+		if runtime.GOOS != "windows" {
+			if _, err := tc.Option(o.Level(), o.Name(), b[:]); err != nil {
+				t.Fatal(err)
+			}
 		}
 		if err := tc.SetOption(o); err != nil {
 			t.Fatal(err)
 		}
-		if _, err := tc.Option(o.Level(), o.Name(), b[:]); err != nil {
-			t.Fatal(err)
+		if runtime.GOOS != "windows" {
+			if _, err := tc.Option(o.Level(), o.Name(), b[:]); err != nil {
+				t.Fatal(err)
+			}
 		}
 	}
 }
