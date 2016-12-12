@@ -13,6 +13,7 @@ install:
   - go get github.com/mikioh/tcp
   - go get github.com/mikioh/tcpopt
   - go get github.com/mikioh/tcpinfo
+  - go get golang.org/x/net/nettest
 
 build_script:
   - go test -v -race
