@@ -26,7 +26,7 @@ func TestKeepAliveOptions(t *testing.T) {
 		opts = append(opts, tcpopt.KeepAliveProbeCount(1))
 	case "windows":
 	default:
-		t.Skipf("%s/%s", runtime.GOOS, runtime.GOARCH)
+		t.Skipf("not supported on %s/%s", runtime.GOOS, runtime.GOARCH)
 	}
 
 	ln, err := net.Listen("tcp", "127.0.0.1:0")

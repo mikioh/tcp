@@ -39,11 +39,11 @@ func TestConcurrentReadWriteAndInfo(t *testing.T) {
 	case "darwin":
 		vers := kernelVersion()
 		if vers == nil || vers[0] < 15 {
-			t.Skipf("%v, %s/%s", vers, runtime.GOOS, runtime.GOARCH)
+			t.Skipf("not supported on %v, %s/%s", vers, runtime.GOOS, runtime.GOARCH)
 		}
 	case "freebsd", "linux", "netbsd":
 	default:
-		t.Skipf("%s/%s", runtime.GOOS, runtime.GOARCH)
+		t.Skipf("not supported on %s/%s", runtime.GOOS, runtime.GOARCH)
 	}
 
 	ln, err := net.Listen("tcp", "127.0.0.1:0")

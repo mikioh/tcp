@@ -45,7 +45,7 @@ func TestOriginalDst(t *testing.T) {
 			t.Skip("must be root")
 		}
 	default:
-		t.Skipf("not supported on %s", runtime.GOOS)
+		t.Skipf("not supported on %s/%s", runtime.GOOS, runtime.GOARCH)
 	}
 
 	for _, address := range []string{"127.0.0.1:0"} {

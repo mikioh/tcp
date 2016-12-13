@@ -20,7 +20,7 @@ func TestBuffered(t *testing.T) {
 	switch runtime.GOOS {
 	case "darwin", "dragonfly", "freebsd", "linux", "netbsd", "openbsd":
 	default:
-		t.Skipf("%s/%s", runtime.GOOS, runtime.GOARCH)
+		t.Skipf("not supported on %s/%s", runtime.GOOS, runtime.GOARCH)
 	}
 
 	ln, err := net.Listen("tcp", "127.0.0.1:0")
@@ -79,7 +79,7 @@ func TestAvailable(t *testing.T) {
 	switch runtime.GOOS {
 	case "darwin", "freebsd", "linux", "netbsd":
 	default:
-		t.Skipf("%s/%s", runtime.GOOS, runtime.GOARCH)
+		t.Skipf("not supported on %s/%s", runtime.GOOS, runtime.GOARCH)
 	}
 
 	ln, err := net.Listen("tcp", "127.0.0.1:0")
@@ -137,7 +137,7 @@ func TestCorkAndUncork(t *testing.T) {
 	case "dragonfly":
 		t.Log("you may need to adjust the net.inet.tcp.disable_nopush kernel state")
 	default:
-		t.Skipf("%s/%s", runtime.GOOS, runtime.GOARCH)
+		t.Skipf("not supported on %s/%s", runtime.GOOS, runtime.GOARCH)
 	}
 
 	const N = 1280
@@ -254,7 +254,7 @@ func TestBufferTrim(t *testing.T) {
 	switch runtime.GOOS {
 	case "darwin", "linux":
 	default:
-		t.Skipf("%s/%s", runtime.GOOS, runtime.GOARCH)
+		t.Skipf("not supported on %s/%s", runtime.GOOS, runtime.GOARCH)
 	}
 
 	ln, err := net.Listen("tcp", "127.0.0.1:0")

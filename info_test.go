@@ -40,11 +40,11 @@ func TestInfo(t *testing.T) {
 	case "darwin":
 		vers := kernelVersion()
 		if vers == nil || vers[0] < 15 {
-			t.Skipf("%v, %s/%s", vers, runtime.GOOS, runtime.GOARCH)
+			t.Skipf("not supported on %v, %s/%s", vers, runtime.GOOS, runtime.GOARCH)
 		}
 	case "freebsd", "linux", "netbsd":
 	default:
-		t.Skipf("%s/%s", runtime.GOOS, runtime.GOARCH)
+		t.Skipf("not supported on %s/%s", runtime.GOOS, runtime.GOARCH)
 	}
 
 	var logs []chan string
