@@ -4,7 +4,21 @@
 
 package tcp
 
+import (
+	"encoding/binary"
+	"unsafe"
+)
+
 var options = [soMax]option{
 	soBuffered:  {0, sysFIONREAD},
 	soAvailable: {sysSOL_SOCKET, sysSO_NWRITE},
+}
+
+func (nl *pfiocNatlook) rdPort() int {
+	return int(binary.BigEndian.Uint16((*[2]byte)(unsafe.Pointer(&nl.Rdxport))[:2]))
+}
+
+func (nl *pfiocNatlook) setPort(remote, local int) {
+	binary.BigEndian.PutUint16((*[2]byte)(unsafe.Pointer(&nl.Sxport))[:2], uint16(remote))
+	binary.BigEndian.PutUint16((*[2]byte)(unsafe.Pointer(&nl.Dxport))[:2], uint16(local))
 }

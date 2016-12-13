@@ -2,12 +2,11 @@
 // Use of this source code is governed by a BSD-style
 // license that can be found in the LICENSE file.
 
-// +build dragonfly freebsd openbsd
+// +build darwin dragonfly freebsd openbsd
 
 package tcp
 
 import (
-	"encoding/binary"
 	"net"
 	"os"
 	"syscall"
@@ -33,8 +32,7 @@ func originalDst(_ uintptr, la, ra *net.TCPAddr) (net.Addr, error) {
 		copy(nl.Daddr[:], la.IP)
 		nl.Af = sysAF_INET6
 	}
-	binary.BigEndian.PutUint16((*[2]byte)(unsafe.Pointer(&nl.Sport))[:], uint16(ra.Port))
-	binary.BigEndian.PutUint16((*[2]byte)(unsafe.Pointer(&nl.Dport))[:], uint16(la.Port))
+	nl.setPort(ra.Port, la.Port)
 	nl.Proto = ianaProtocolTCP
 	ioc := uintptr(sysDIOCNATLOOK)
 	for _, dir := range []byte{sysPF_OUT, sysPF_IN} {
@@ -48,7 +46,7 @@ func originalDst(_ uintptr, la, ra *net.TCPAddr) (net.Addr, error) {
 		return nil, err
 	}
 	od := new(net.TCPAddr)
-	od.Port = int(binary.BigEndian.Uint16((*[2]byte)(unsafe.Pointer(&nl.Rdport))[:]))
+	od.Port = nl.rdPort()
 	if nl.Af == sysAF_INET {
 		od.IP = make(net.IP, net.IPv4len)
 		copy(od.IP, nl.Rdaddr[:net.IPv4len])
