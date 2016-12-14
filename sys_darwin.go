@@ -15,7 +15,7 @@ var options = [soMax]option{
 }
 
 func (nl *pfiocNatlook) rdPort() int {
-	return int(binary.BigEndian.Uint16((*[2]byte)(unsafe.Pointer(&nl.Rdxport))[:2]))
+	return int(binary.BigEndian.Uint16(nl.Rdxport[:2]))
 }
 
 func (nl *pfiocNatlook) setPort(remote, local int) {
