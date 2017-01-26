@@ -15,7 +15,7 @@ import (
 
 var _ net.Conn = &Conn{}
 
-// A Conn represents a network endpoint that uses TCP connection.
+// A Conn represents an end point that uses TCP connection.
 // It allows to set non-portable, platform-dependent TCP-level socket
 // options.
 type Conn struct {
@@ -74,7 +74,7 @@ func (c *Conn) OriginalDst() (net.Addr, error) {
 	return od, nil
 }
 
-// NewConn returns a new Conn.
+// NewConn returns a new end point.
 func NewConn(c net.Conn) (*Conn, error) {
 	s, err := netreflect.SocketOf(c)
 	if err != nil {
