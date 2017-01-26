@@ -37,7 +37,7 @@ func originalDst(s uintptr, la, _ *net.TCPAddr) (net.Addr, error) {
 	sa := (*sockaddrInet6)(unsafe.Pointer(&b[0]))
 	od.IP = make(net.IP, net.IPv6len)
 	copy(od.IP, sa.Addr[:])
-	od.Port = int(binary.BigEndian.Uint16((*[2]byte)(unsafe.Pointer(&od.Port))[:]))
+	od.Port = int(binary.BigEndian.Uint16((*[2]byte)(unsafe.Pointer(&sa.Port))[:]))
 	od.Zone = zoneCache.name(int(sa.Scope_id))
 	return od, nil
 }
