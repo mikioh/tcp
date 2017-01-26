@@ -9,6 +9,11 @@ import (
 	"unsafe"
 )
 
+var options [soMax]option
+
+func buffered(s uintptr) int  { return -1 }
+func available(s uintptr) int { return -1 }
+
 //go:cgo_import_dynamic libcGetsockopt getsockopt "libsocket.so"
 //go:cgo_import_dynamic libcSetsockopt setsockopt "libsocket.so"
 
