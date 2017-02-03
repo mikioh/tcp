@@ -14,11 +14,12 @@ import (
 func originalDst(s uintptr, la, _ *net.TCPAddr) (net.Addr, error) {
 	var level, name int
 	var b []byte
-	if len(la.IP) == net.IPv4len {
+	if la.IP.To4() != nil {
 		level = ianaProtocolIP
 		name = sysSO_ORIGINAL_DST
 		b = make([]byte, sizeofSockaddrInet)
-	} else {
+	}
+	if la.IP.To16() != nil && la.IP.To4() == nil {
 		level = ianaProtocolIPv6
 		name = sysIP6T_SO_ORIGINAL_DST
 		b = make([]byte, sizeofSockaddrInet6)
@@ -27,17 +28,18 @@ func originalDst(s uintptr, la, _ *net.TCPAddr) (net.Addr, error) {
 		return nil, os.NewSyscallError("getsockopt", err)
 	}
 	od := new(net.TCPAddr)
-	if len(b) == sizeofSockaddrInet {
+	switch len(b) {
+	case sizeofSockaddrInet:
 		sa := (*sockaddrInet)(unsafe.Pointer(&b[0]))
 		od.IP = make(net.IP, net.IPv4len)
 		copy(od.IP, sa.Addr[:])
 		od.Port = int(binary.BigEndian.Uint16((*[2]byte)(unsafe.Pointer(&sa.Port))[:]))
-		return od, nil
+	case sizeofSockaddrInet6:
+		sa := (*sockaddrInet6)(unsafe.Pointer(&b[0]))
+		od.IP = make(net.IP, net.IPv6len)
+		copy(od.IP, sa.Addr[:])
+		od.Port = int(binary.BigEndian.Uint16((*[2]byte)(unsafe.Pointer(&sa.Port))[:]))
+		od.Zone = zoneCache.name(int(sa.Scope_id))
 	}
-	sa := (*sockaddrInet6)(unsafe.Pointer(&b[0]))
-	od.IP = make(net.IP, net.IPv6len)
-	copy(od.IP, sa.Addr[:])
-	od.Port = int(binary.BigEndian.Uint16((*[2]byte)(unsafe.Pointer(&sa.Port))[:]))
-	od.Zone = zoneCache.name(int(sa.Scope_id))
 	return od, nil
 }

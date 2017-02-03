@@ -47,10 +47,11 @@ func originalDst(_ uintptr, la, ra *net.TCPAddr) (net.Addr, error) {
 	}
 	od := new(net.TCPAddr)
 	od.Port = nl.rdPort()
-	if nl.Af == sysAF_INET {
+	switch nl.Af {
+	case sysAF_INET:
 		od.IP = make(net.IP, net.IPv4len)
 		copy(od.IP, nl.Rdaddr[:net.IPv4len])
-	} else {
+	case sysAF_INET6:
 		od.IP = make(net.IP, net.IPv6len)
 		copy(od.IP, nl.Rdaddr[:])
 	}
