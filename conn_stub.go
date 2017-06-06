@@ -11,6 +11,6 @@ import (
 	"net"
 )
 
-func originalDst(s uintptr, la, ra *net.TCPAddr) (net.Addr, error) {
-	return nil, errors.New("operation not supported")
+func (c *Conn) originalDst(la, ra *net.TCPAddr) (net.Addr, error) {
+	return nil, errors.New("not implemented")
 }

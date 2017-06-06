@@ -13,7 +13,7 @@ import (
 	"unsafe"
 )
 
-func originalDst(_ uintptr, la, ra *net.TCPAddr) (net.Addr, error) {
+func (*Conn) originalDst(la, ra *net.TCPAddr) (net.Addr, error) {
 	f, err := os.Open("/dev/pf")
 	if err != nil {
 		return nil, err

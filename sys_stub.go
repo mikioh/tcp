@@ -10,13 +10,14 @@ import "errors"
 
 var options [soMax]option
 
-func buffered(s uintptr) int  { return -1 }
-func available(s uintptr) int { return -1 }
-
-func setsockopt(s uintptr, level, name int, b []byte) error {
-	return errors.New("operation not supported")
+func ioctl(s uintptr, ioc int, b []byte) error {
+	return errors.New("not implemented")
 }
 
-func getsockopt(s uintptr, level, name int, b []byte) error {
-	return errors.New("operation not supported")
+func setsockopt(s uintptr, level, name int, b []byte) error {
+	return errors.New("not implemented")
+}
+
+func getsockopt(s uintptr, level, name int, b []byte) (int, error) {
+	return 0, errors.New("not implemented")
 }

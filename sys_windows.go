@@ -17,8 +17,9 @@ import (
 
 var options [soMax]option
 
-func buffered(s uintptr) int  { return -1 }
-func available(s uintptr) int { return -1 }
+func ioctl(s uintptr, ioc int, b []byte) error {
+	return errors.New("not implemented")
+}
 
 var keepAlive = struct {
 	sync.RWMutex
@@ -64,9 +65,9 @@ func setsockopt(s uintptr, level, name int, b []byte) error {
 		v := int(nativeEndian.Uint32(b))
 		return syscall.SetsockoptInt(syscall.Handle(s), level, name, v)
 	}
-	return errors.New("operation not supported")
+	return errors.New("not implemented")
 }
 
-func getsockopt(s uintptr, level, name int, b []byte) error {
-	return errors.New("operation not supported")
+func getsockopt(s uintptr, level, name int, b []byte) (int, error) {
+	return 0, errors.New("not implemented")
 }

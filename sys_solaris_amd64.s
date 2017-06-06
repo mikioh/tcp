@@ -7,5 +7,5 @@
 TEXT ·rtioctl(SB),NOSPLIT,$0
 	JMP	runtime·syscall_ioctl(SB)
 
-TEXT ·rtsysvicall6(SB),NOSPLIT,$0
-	JMP	runtime·syscall_sysvicall6(SB)
+TEXT	·sysvicall6(SB),NOSPLIT,$0-88
+	JMP	syscall·sysvicall6(SB)

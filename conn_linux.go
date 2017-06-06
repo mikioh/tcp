@@ -7,11 +7,10 @@ package tcp
 import (
 	"encoding/binary"
 	"net"
-	"os"
 	"unsafe"
 )
 
-func originalDst(s uintptr, la, _ *net.TCPAddr) (net.Addr, error) {
+func (c *Conn) originalDst(la, _ *net.TCPAddr) (net.Addr, error) {
 	var level, name int
 	var b []byte
 	if la.IP.To4() != nil {
@@ -24,8 +23,8 @@ func originalDst(s uintptr, la, _ *net.TCPAddr) (net.Addr, error) {
 		name = sysIP6T_SO_ORIGINAL_DST
 		b = make([]byte, sizeofSockaddrInet6)
 	}
-	if err := getsockopt(s, level, name, b); err != nil {
-		return nil, os.NewSyscallError("getsockopt", err)
+	if _, err := c.option(level, name, b); err != nil {
+		return nil, err
 	}
 	od := new(net.TCPAddr)
 	switch len(b) {

@@ -13,9 +13,8 @@ const (
 
 type sockaddrStorage struct {
 	Family        uint16
-	Pad_cgo_0     [6]byte
+	X__ss_padding [118]int8
 	X__ss_align   uint64
-	X__ss_padding [112]int8
 }
 
 type sockaddr struct {
