@@ -4,9 +4,6 @@
 package tcp
 
 const (
-	sysSIOCINQ  = 0x541b
-	sysSIOCOUTQ = 0x5411
-
 	sysSO_ORIGINAL_DST      = 0x50
 	sysIP6T_SO_ORIGINAL_DST = 0x50
 )

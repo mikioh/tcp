@@ -9,6 +9,11 @@ import (
 	"unsafe"
 )
 
+const (
+	sysSIOCINQ  = 0x541b
+	sysSIOCOUTQ = 0x5411
+)
+
 func ioctl(s uintptr, ioc int, b []byte) error {
 	if _, _, errno := syscall.Syscall(syscall.SYS_IOCTL, s, uintptr(ioc), uintptr(unsafe.Pointer(&b[0]))); errno != 0 {
 		return error(errno)

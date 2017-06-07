@@ -23,9 +23,6 @@ package tcp
 import "C"
 
 const (
-	sysSIOCINQ  = C.SIOCINQ
-	sysSIOCOUTQ = C.SIOCOUTQ
-
 	sysSO_ORIGINAL_DST      = C.SO_ORIGINAL_DST
 	sysIP6T_SO_ORIGINAL_DST = C.IP6T_SO_ORIGINAL_DST
 )
