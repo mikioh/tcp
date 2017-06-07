@@ -83,7 +83,6 @@ func (c *Conn) available() int {
 			var o tcpopt.SendBuffer
 			_, operr = getsockopt(s, o.Level(), o.Name(), b[:])
 			if operr != nil {
-				n = -1
 				return
 			}
 			n = int(nativeEndian.Uint32(b[:])) - n
