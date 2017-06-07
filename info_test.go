@@ -53,7 +53,7 @@ func TestInfo(t *testing.T) {
 	}
 
 	for i, tt := range infoTests {
-		sig := make(chan struct{})
+		sig := make(chan struct{}, 1)
 		tr := &http.Transport{
 			Dial: func(network, address string) (net.Conn, error) {
 				d := net.Dialer{DualStack: true}
@@ -79,8 +79,8 @@ func TestInfo(t *testing.T) {
 		if _, err := io.Copy(ioutil.Discard, resp.Body); err != nil {
 			t.Fatal(err)
 		}
-		resp.Body.Close()
 		sig <- struct{}{}
+		resp.Body.Close()
 	}
 
 	for _, log := range logs {
