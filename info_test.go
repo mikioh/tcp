@@ -104,6 +104,18 @@ func monitor(c *tcp.Conn, log chan<- string, sig <-chan struct{}) {
 		if err != nil {
 			continue
 		}
+		if runtime.GOOS == "linux" {
+			var oo tcpinfo.CCInfo
+			ci, err := c.Option(oo.Level(), oo.Name(), b[:])
+			if err != nil {
+				return
+			}
+			ctxt, err := json.MarshalIndent(ci, "", "\t")
+			if err != nil {
+				continue
+			}
+			txt = append(txt, ctxt...)
+		}
 		select {
 		case <-sig:
 			return
