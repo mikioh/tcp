@@ -104,12 +104,6 @@ func monitor(c *tcp.Conn, log chan<- string, sig <-chan struct{}) {
 		if err != nil {
 			continue
 		}
-		if runtime.GOOS == "linux" {
-			var oo tcpinfo.CCInfo
-			if _, err := c.Option(oo.Level(), oo.Name(), b[:]); err != nil {
-				return
-			}
-		}
 		select {
 		case <-sig:
 			return
