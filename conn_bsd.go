@@ -43,7 +43,7 @@ func (*Conn) originalDst(la, ra *net.TCPAddr) (net.Addr, error) {
 		}
 	}
 	if err != nil {
-		return nil, err
+		return nil, os.NewSyscallError("ioctl", err)
 	}
 	od := new(net.TCPAddr)
 	od.Port = nl.rdPort()

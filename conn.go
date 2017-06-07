@@ -7,7 +7,6 @@ package tcp
 import (
 	"errors"
 	"net"
-	"os"
 
 	"github.com/mikioh/tcpopt"
 )
@@ -21,7 +20,7 @@ func (c *Conn) SetOption(o tcpopt.Option) error {
 		return &net.OpError{Op: "set", Net: c.LocalAddr().Network(), Source: nil, Addr: c.LocalAddr(), Err: err}
 	}
 	if err := c.setOption(o.Level(), o.Name(), b); err != nil {
-		return &net.OpError{Op: "set", Net: c.LocalAddr().Network(), Source: nil, Addr: c.LocalAddr(), Err: os.NewSyscallError("setsockopt", err)}
+		return &net.OpError{Op: "set", Net: c.LocalAddr().Network(), Source: nil, Addr: c.LocalAddr(), Err: err}
 	}
 	return nil
 }
@@ -33,7 +32,7 @@ func (c *Conn) Option(level, name int, b []byte) (tcpopt.Option, error) {
 	}
 	n, err := c.option(level, name, b)
 	if err != nil {
-		return nil, &net.OpError{Op: "get", Net: c.LocalAddr().Network(), Source: nil, Addr: c.LocalAddr(), Err: os.NewSyscallError("getsockopt", err)}
+		return nil, &net.OpError{Op: "get", Net: c.LocalAddr().Network(), Source: nil, Addr: c.LocalAddr(), Err: err}
 	}
 	o, err := tcpopt.Parse(level, name, b[:n])
 	if err != nil {
