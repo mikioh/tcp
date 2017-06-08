@@ -24,6 +24,8 @@ type Conn struct {
 	c syscall.RawConn
 }
 
+func (c *Conn) ok() bool { return c != nil && c.Conn != nil && c.c != nil }
+
 func (c *Conn) setOption(level, name int, b []byte) error {
 	var operr error
 	fn := func(s uintptr) {

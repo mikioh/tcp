@@ -24,6 +24,8 @@ type Conn struct {
 	s uintptr // socket descriptor for configuring options
 }
 
+func (c *Conn) ok() bool { return c != nil && c.Conn != nil }
+
 func (c *Conn) setOption(level, name int, b []byte) error {
 	s, err := socketOf(c.Conn)
 	if err != nil {
