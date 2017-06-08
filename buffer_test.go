@@ -17,12 +17,6 @@ import (
 )
 
 func TestBuffered(t *testing.T) {
-	switch runtime.GOOS {
-	case "darwin", "dragonfly", "freebsd", "linux", "netbsd", "openbsd":
-	default:
-		t.Skipf("not supported on %s/%s", runtime.GOOS, runtime.GOARCH)
-	}
-
 	ln, err := net.Listen("tcp", "127.0.0.1:0")
 	if err != nil {
 		t.Fatal(err)
@@ -57,7 +51,13 @@ func TestBuffered(t *testing.T) {
 		time.Sleep(100 * time.Millisecond)
 		n := tc.Buffered()
 		if n != len(m) {
-			t.Errorf("got %d; want %d", n, len(m))
+			switch runtime.GOOS {
+			case "darwin", "dragonfly", "freebsd", "linux", "netbsd", "openbsd":
+				t.Errorf("got %d; want %d", n, len(m))
+			default:
+				t.Logf("not supported on %s/%s", runtime.GOOS, runtime.GOARCH)
+
+			}
 			return
 		}
 		t.Logf("%v bytes buffered to be read", n)
@@ -76,12 +76,6 @@ func TestBuffered(t *testing.T) {
 }
 
 func TestAvailable(t *testing.T) {
-	switch runtime.GOOS {
-	case "darwin", "freebsd", "linux", "netbsd":
-	default:
-		t.Skipf("not supported on %s/%s", runtime.GOOS, runtime.GOARCH)
-	}
-
 	ln, err := net.Listen("tcp", "127.0.0.1:0")
 	if err != nil {
 		t.Fatal(err)
@@ -116,7 +110,12 @@ func TestAvailable(t *testing.T) {
 		}
 		n := tc.Available()
 		if n <= 0 {
-			t.Errorf("got %d; want >0", n)
+			switch runtime.GOOS {
+			case "darwin", "freebsd", "linux", "netbsd":
+				t.Errorf("got %d; want >0", n)
+			default:
+				t.Logf("not supported on %s/%s", runtime.GOOS, runtime.GOARCH)
+			}
 			return
 		}
 		t.Logf("%d bytes write available", n)
@@ -133,7 +132,7 @@ func TestAvailable(t *testing.T) {
 
 func TestCorkAndUncork(t *testing.T) {
 	switch runtime.GOOS {
-	case "darwin", "freebsd", "linux", "openbsd", "solaris":
+	case "darwin", "freebsd", "linux", "openbsd":
 	case "dragonfly":
 		t.Log("you may need to adjust the net.inet.tcp.disable_nopush kernel state")
 	default:
