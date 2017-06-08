@@ -99,20 +99,16 @@ func (c *Conn) available() int {
 
 // NewConn returns a new end point.
 func NewConn(c net.Conn) (*Conn, error) {
-	var err error
 	cc := &Conn{Conn: c}
 	switch c := c.(type) {
 	case *net.TCPConn:
+		var err error
 		cc.c, err = c.SyscallConn()
-	case *net.UDPConn:
-		cc.c, err = c.SyscallConn()
-	case *net.IPConn:
-		cc.c, err = c.SyscallConn()
+		if err != nil {
+			return nil, err
+		}
+		return cc, nil
 	default:
 		return nil, errors.New("unknown connection type")
 	}
-	if err != nil {
-		return nil, err
-	}
-	return cc, nil
 }
