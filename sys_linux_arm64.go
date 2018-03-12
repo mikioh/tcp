@@ -5,6 +5,6 @@
 package tcp
 
 const (
-	ysSIOCINQ   = 0x541b
+	sysSIOCINQ  = 0x541b
 	sysSIOCOUTQ = 0x5411
 )
