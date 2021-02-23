@@ -97,9 +97,14 @@ func (c *Conn) available() int {
 
 // NewConn returns a new end point.
 func NewConn(c net.Conn) (*Conn, error) {
+	type tcpConn interface {
+		SyscallConn() (syscall.RawConn, error)
+		SetLinger(int) error
+	}
+	var _ tcpConn = &net.TCPConn{}
 	cc := &Conn{Conn: c}
 	switch c := c.(type) {
-	case *net.TCPConn:
+	case tcpConn:
 		var err error
 		cc.c, err = c.SyscallConn()
 		if err != nil {

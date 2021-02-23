@@ -46,3 +46,18 @@ func TestConn(t *testing.T) {
 		return tc, p.Conn, func() { tc.Close(); p.Conn.Close() }, nil
 	})
 }
+
+func TestWrappedConn(t *testing.T) {
+	type wrappedConn struct{ *net.TCPConn }
+	ln, err := net.Listen("tcp", "127.0.0.1:0")
+	if err != nil {
+		t.Fatal(err)
+	}
+	conn, err := net.DialTCP("tcp", nil, ln.Addr().(*net.TCPAddr))
+	if err != nil {
+		t.Fatal(err)
+	}
+	if _, err = tcp.NewConn(&wrappedConn{conn}); err != nil {
+		t.Fatalf("couldn't initialize from a wrapped conn: %v", err)
+	}
+}
